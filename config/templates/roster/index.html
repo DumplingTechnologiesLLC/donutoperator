@@ -1,24 +1,101 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Donut - KBP{% endblock %}
+
 
 {% block content %}
-{% extends 'base.html' %}
-
-{% block title %}Competitions{% endblock %}
-
-{% block content %}
-<div class="row">
+<div class="row" id="app">
     <div class="col-lg-12">
-        <h1>Officer Involved Shootings</h1>
-        <div class="wrapper">
-            <table id="shootings_table" class="table table-striped table-hover">
-                <thead>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>{{year}} Officer Involved Shootings</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card border-dark" style="margin-bottom:20px;">
+                <div class="card-header">Filters</div>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group row">
+                            <div class="col-lg-4">
+                                <label for="state_select">Filter by state</label>
+                                <select id="state_select" class="form-control" style="width:100%" multiple="multiple">
+                                    <option></option>
+                                    <option v-for="state in states" v-bind:value="state.value">((state.display))</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="race_select">Filter by race</label>
+                                <select id="race_select" class="form-control" style="width:100%" multiple="multiple">
+                                    <option></option>
+                                    <option v-for="race in races" v-bind:value="race.value">((race.display))</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="tag_select">Filter by tag</label>
+                                <select id="tag_select" class="form-control" style="width:100%" multiple="multiple">
+                                    <option></option>
+                                    <option v-for="tag in all_tags" v-bind:value="tag.value">((tag.display))</option>
+                                </select>
+                            </div>
+                        </div>
+                         <div class="form-group row">
+                            <div class="col-lg-4">
+                                <label for="name_text">Filter by name</label>
+                                <input id="name_text" type="text" class="form-control" placeholder="Partial and similar matches will be included." v-model="name">
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="city_text">Filter by city</label>
+                                <input id="city_text" type="text" class="form-control" placeholder="Partial and similar matches will be included." v-model="city">
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="gender_select">Filter by gender</label>
+                                <select id="gender_select" class="form-control" style="width:100%" multiple="multiple">
+                                    <option></option>
+                                    <option v-for="gender in genders" v-bind:value="gender.value">((gender.display))</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-4">
+                                <label for="name_text">Killed on or after</label>
+                                <div class="input-group date" id="start_date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#start_date"/>
+                                    <div class="input-group-append" data-target="#start_date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="name_text">Killed on or before</label>
+                                <div class="input-group date" id="end_date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#end_date"/>
+                                    <div class="input-group-append" data-target="#end_date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <button type="button" class="btn btn-warning" v-on:click="resetFilters" style="margin-top:30px;">Reset Filters</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr style="background-color:white;">
                             <th>Name</th>
+                            <th>Date</th>
                             <th>Race</th>
+                            <th>Gender</th>
                             <th>State</th>
                             <th>City</th>
                             <th>Tags</th>                 
@@ -26,97 +103,273 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for shooting in shootings %}
-                            <tr>
-                                <td>
-                                    {{ shooting.name }}
-                                </td>
-                                <td>
-                                    {{ shooting.race }}
-                                </td>
-                                <td>
-                                    {{ shooting.state }}
-                                </td>
-                                <td>
-                                    {{ shooting.city }}
-                                </td>
-                                <td>
-                                    {% for tag in shooting.tags.all() %}
-                                    {% empty %}
-                                    {% endfor %}
-                                    }
-                                </td>
-                                <td>
-                                    {{ shooting.end_date_of_registration}}
-                                </td>
-                                <td>
-                                    <a href="{% url 'competition:signup' competition=comp.id %}" class="btn btn-sm btn-primary {% if comp.past_registration %} btn-disabled {% endif %}"  {% if comp.past_registration %} disabled="disabled" {% endif %}>Register</a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4" style="text-align:center">
-                                    No shootings yet
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-            </table>
-        </div>        
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <h1>Past Competitions TODO SPA</h1>
-        <div class="wrapper">
-            <table id="past_events" class="table table-striped table-hover">
-                <thead>
-                    <thead>
-                        <tr>
-                            <th>Competition Name</th>
-                            <th>Competition Date</th>
-                            <th>&nbsp;</th>
+                        <tr v-for="shooting in displayed_shootings">
+                            <td>
+                                ((shooting.name))
+                            </td>
+                            <td>
+                                ((shooting.date))
+                            </td>
+                            <td>
+                                ((shooting.race))
+                            </td>
+                            <td>
+                                ((shooting.gender))
+                            </td>
+                            <td>
+                                ((shooting.state))
+                            </td>
+                            <td>
+                                ((shooting.city))
+                            </td>
+                            <td>
+                                <span style="padding: 5px; margin-right: 5px" v-for="tag in shooting.tags" class="badge badge-primary">((tag.text))</span>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-primary">Details</button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for comp in past_competitions %}
-                            <tr>
-                                <td>
-                                    {{ comp.name }}
-                                </td>
-                                <td>
-                                    {{ comp.date_of_start }}
-                                </td>
-                                <td>
-                                    <a href="" class="btn btn-sm btn-primary">View Results</a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4" style="text-align:center">
-                                    No competitions yet
-                                </td>
-                            </tr>
-                        {% endfor %}
+                        <tr v-show="shootings.length == 0">
+                            <td colspan="6" style="text-align:center">
+                                No shootings yet
+                            </td>
+                        </tr>
                     </tbody>
-            </table>
-        </div>      
+                </table>
+            </div>
+        </div>
     </div>
+
 </div>
+
 
 {% endblock content %}
 
 {% block js %}
 <script type="text/javascript">
-    $("#upcoming_events").floatThead({
-        scrollContainer: function($table){
-            return $table.closest('.wrapper');
+    setTimeout(function() {
+        // loader is on base.html. Blocks the user from doing anything until page loads
+        $("#loader_cover").addClass("toggled");
+        $("#body").removeAttr("style")
+    },1500);
+    $(function() {
+        // $("#shootings_table").floatThead({
+        //     scrollContainer: function($table){
+        //         return $table.closest('.wrapper');
+        //     }
+        // });
+        $("#state_select").select2({
+            theme: "bootstrap",
+            placeholder: "Select state or states"
+        })
+        $('#state_select').on("change", function(e) { 
+            // what you would like to happen
+            vue_app.states_selected = $(this).val();
+        });
+        $("#race_select").select2({
+            theme: "bootstrap",
+            placeholder: "Select race or races"
+        })
+        $('#race_select').on("change", function(e) { 
+            // what you would like to happen
+            vue_app.races_selected = $(this).val();
+        });
+        $("#tag_select").select2({
+            theme: "bootstrap",
+            placeholder: "Select tag or tags"
+        })
+        $('#tag_select').on("change", function(e) { 
+            // what you would like to happen
+            vue_app.tags_selected = $(this).val();
+        });
+        $("#gender_select").select2({
+            theme: "bootstrap",
+            placeholder: "Select gender or genders"
+        })
+        $('#gender_select').on("change", function(e) { 
+            // what you would like to happen
+            vue_app.genders_selected = $(this).val();
+        });
+        $('#start_date').datetimepicker({
+            format:"L",
+            useCurrent: false,
+        });
+        $('#end_date').datetimepicker({
+            format:"L",
+            useCurrent: false,
+        });
+        $('#start_date').on("change.datetimepicker", function (e) {
+            vue_app.start_date = $('#start_date').datetimepicker('viewDate');
+        });
+        $('#end_date').on("change.datetimepicker", function (e) {
+            vue_app.end_date = $('#end_date').datetimepicker('viewDate');
+        });
+    })
+    // $.get("https://cors-anywhere.herokuapp.com/http://www.killedbypolice.net/kbp2018", function(data) {
+    //     raw_text = data;
+    //     start_point = raw_text.indexOf('<table border="1" Cellspacing="0" Cellpadding="0" Width="100%" background="">')
+    //     ripped_table = "";
+    //     while (ripped_table.indexOf("</table>") < 0) {
+    //         ripped_table += raw_text[start_point++]
+    //     }
+    //     console.log(ripped_table)
+    // })
+    var vue_app = new Vue({
+        el: '#app',
+        delimiters: ["((","))"],
+        data: {
+            states_selected: [], // populated by jQuery upon select2 select
+            races_selected: [], // populated by jQuery upon select2 select
+            tags_selected: [], // populate by jQuery upon select2 select
+            genders_selected: [], // populate by jQuery upon select2 select
+            start_date: "", // populate by jQuery upon dp.change
+            end_date: "", // populate by jQuery upon dp.change
+            name: "", // two way binding for filter
+            city: "", // two way binding for filter
+            races: [
+                {% for race in races %}
+                {
+                    value: `{{race.0}}`,
+                    display: `{{race.1}}`
+                },
+                {% endfor %}
+            ], // used for filling select2
+            states: [
+                {% for state in states %}
+                {
+                    value: `{{state.0}}`,
+                    display: `{{state.1}}`
+                },
+                {% endfor %}
+            ], // used for filling select2
+            genders: [
+                {% for gender in genders %}
+                {
+                    value: `{{gender.0}}`,
+                    display: `{{gender.1}}`
+                },
+                {% endfor %}
+            ], // used for filling select2
+            all_tags: [
+                {% for tag in all_tags %}
+                {
+                    value: `{{tag.text}}`,
+                    display: `{{tag.text}}`
+                },
+                {% endfor %}
+            ], // used for filling select2
+            shootings: [
+                {% for shooting in shootings %}
+                {
+                    id: `{{shooting.pk}}`,
+                    name: `{{shooting.name}}`,
+                    date: `{{shooting.date}}`,
+                    race: `{{shooting.get_race_display }}`,
+                    race_value: `{{shooting.race}}`,
+                    gender: `{{shooting.get_gender_display}}`,
+                    gender_value: `{{shooting.gender}}`,
+                    state: `{{shooting.get_state_display }}`,
+                    state_value: `{{shooting.state}}`,
+                    city: `{{shooting.city }}`,
+                    tags: [
+                        {% for tag in shooting.tags.all %}
+                        {
+                            id:{{tag.pk}},
+                            text: `{{tag.text}}`,
+                        },
+                        {% endfor %}
+                    ]
+                },                                   
+                {% endfor %}
+            ],
+            
+        },
+        methods: {
+            resetFilters: function() {
+                $("#state_select").val("").trigger("change")
+                $("#race_select").val("").trigger("change")
+                $("#tag_select").val("").trigger("change")
+                $("#gender_select").val("").trigger("change");
+                this.name = "";
+                this.city = "";
+                this.states_selected = [];
+                this.genders_selected = [];
+                this.races_selected = [];
+                this.tags_selected = [];
+                this.start_date = "";
+                this.end_date = "";
+                $('#start_date').datetimepicker('clear');
+                $('#end_date').datetimepicker('clear');
+            }
+        },
+        computed: {
+            displayed_shootings: function() {
+                var self = this;
+                var displayed_shootings = this.shootings;
+                if (this.name.length > 0) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        if (shooting.name.toUpperCase().indexOf(self.name.toUpperCase()) > -1) {
+                            return true;
+                        } 
+                    })
+                }
+                if (this.city.length > 0) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        if (shooting.city.toUpperCase().indexOf(self.city.toUpperCase()) > -1) {
+                            return true;
+                        } 
+                    })
+                }
+                if (this.states_selected.length > 0) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        if (self.states_selected.indexOf(shooting.state_value) > -1) {
+                            return true;
+                        }
+                    })
+                }
+                if (this.genders_selected.length > 0) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        if (self.genders_selected.indexOf(shooting.gender_value) > -1) {
+                            return true;
+                        }
+                    })
+                }
+                if (this.races_selected.length > 0) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        if (self.races_selected.indexOf(shooting.race_value) > -1) {
+                            return true;
+                        }
+                    })
+                }
+                if (this.tags_selected.length > 0) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        for (var y = 0; y < shooting.tags.length; y++) {
+                            if (self.tags_selected.indexOf(shooting.tags[y].text) > -1) {
+                                return true;
+                            }
+                        }
+                    })
+                }
+                if (this.start_date.length != 0) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        var date = moment(shooting.date, "MMMM D, YYYY");
+                        if (self.start_date < date) {
+                            return true;
+                        }
+                    })
+                }
+                if (this.end_date.length != 0) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        var date = moment(shooting.date, "MMMM D, YYYY");
+                        if (self.end_date > date) {
+                            return true;
+                        }
+                    })
+                }
+                return displayed_shootings
+            }
         }
-    });
-    $("#past_events").floatThead({
-        scrollContainer: function($table){
-            return $table.closest('.wrapper');
-        }
-    });
+    })
+
+// console.log(ripped_table)
 </script>
 {% endblock %}

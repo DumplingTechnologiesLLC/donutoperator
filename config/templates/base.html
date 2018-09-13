@@ -3,10 +3,10 @@
 {% load static %}
 
 <head>
+    <title>KBP - Donut</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Ballroom Comp</title>
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-confirm.min.js' %}"></script>
@@ -15,17 +15,18 @@
     <script type="text/javascript" src="{% static 'js/jquery.form.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/moment.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bootstrap-datetimepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/tempusdominus-bootstrap-4.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vuex.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/Sortable.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/sha256.jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/fuzzyset.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/select2.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/select2-bootstrap.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-datetimepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tempusdominus-bootstrap-4.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-confirm.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.min.css' %}">
@@ -34,8 +35,7 @@
     {% block custom_scripts %}
     {% endblock custom_scripts %}
 </head>
-<body>
-    {% include 'session_security/all.html' %}
+<body id="body" style="overflow:hidden">
 
     
     {% include 'partials/navbar.html' %}
@@ -60,10 +60,12 @@
             $("#messages").fadeOut("quick")
         }, 3000)
     </script>
-    <div style="position: absolute; left: 45%; top:25%; z-index:3;">
-        <i id="loader" class="fa fa-circle-o-notch fa-spin fa-5x fa-fw toggled" style="z-index:3"></i>
-    </div>
     <!-- main content here -->
+    <div id="loader_cover" class="loader" style="width:100%; height:100%; background-color:black; opacity:.8; z-index:2; position:absolute; left:0; top:0">
+        <div style="position: absolute; left: 45%; top:25%; z-index:3;">
+            <i id="loader" class="fa fa-circle-o-notch fa-spin fa-5x fa-fw" style="z-index:3"></i>
+        </div>
+    </div>
     <div class="container-fluid">
         {% block content %}
         {% endblock content %}

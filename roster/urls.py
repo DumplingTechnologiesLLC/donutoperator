@@ -3,5 +3,5 @@ from roster import views
 app_name = "roster"
 
 urlpatterns = [
-    url(r'^$', RosterListView.as_view(), name="index"),
+    url(r'^$', views.RosterListView.as_view(), name="index"),
 ]
