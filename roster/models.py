@@ -53,7 +53,8 @@ class Shooting(models.Model):
         (46, "WA"),
         (47, "WV"),
         (48, "WI"),
-        (49, "WY")
+        (49, "WY"),
+        (50, "DC"),
     )
     GENDER_CHOICES = (
         (0, "Male"),
@@ -66,7 +67,9 @@ class Shooting(models.Model):
         (2,"Black"),
         (3,"Native Hawaiian or Other Pacific Islander"),
         (4,"White"),
-        (5,"Hispanice/Latino")
+        (5,"Hispanice/Latino"),
+        (6,"None Given"),
+        (7,"Other"),
     )
     state = models.IntegerField("State", choices=STATE_CHOICES)
     city = models.CharField("City", max_length=256, blank=True, null=True)
@@ -89,13 +92,14 @@ class Shooting(models.Model):
         null=True
     )
     age = models.IntegerField("Age", blank=True, null=True)
-    race = models.IntegerField("Race", choices=STATE_CHOICES)
+    race = models.IntegerField("Race", choices=RACE_CHOICES)
+    gender = models.IntegerField("Gender", choices=GENDER_CHOICES)
     date = models.DateField(auto_now=False, auto_now_add=False)
 
 
 class Tag(models.Model):
-    text = models.CharField("Text", max_length=100, unique=True)
-    studio = models.ForeignKey(
+    text = models.CharField("Text", max_length=100)
+    shooting = models.ForeignKey(
         Shooting,
         on_delete=models.CASCADE,
         related_name="tags"
