@@ -884,3 +884,14 @@ def populate_year(table):
 
 
 populate_year(table_2018)
+
+for shooting in Shooting.objects.all():
+        description = shooting.description.split(",")
+        appended_description = ""
+        if len(description) > 1:
+                for desc in description:
+                        appended_description += "<a href='" + desc + "'>" + desc + "</a><br/>"
+        else:
+                appended_description += "<a href='" + description[0] + "'>" + description[0] + "</a><br/>"
+        shooting.description = appended_description
+        shooting.save()
