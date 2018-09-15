@@ -9,7 +9,7 @@ from roster.models import Shooting, Tag
 #   0              1    2   3         4        5    6
 #["July 28, 2018","CO","M","No Name", "No Age","G","https://denver.cbslocal.com/2018/07/29/police-aurora-deadly-shooting-adams-county/",],
 
-ripped_table = [
+table_2018 = [
         ["July 28, 2018","CO","M","No Name", "No Age","G","https://denver.cbslocal.com/2018/07/29/police-aurora-deadly-shooting-adams-county/",],
         ["July 27, 2018","TX","M","No Name", "No Age","G","http://www.kten.com/story/38753782/man-with-gun-shot-dead-by-pilot-point-police",],
         ["July 27, 2018","OH","M/B","Lamar C. Richardson Jr.","25","G","http://www.toledoblade.com/Police-Fire/2018/07/27/Toledo-police-on-scene-of-an-officer-involved-shooting.html",],
@@ -756,127 +756,131 @@ ripped_table = [
         ["January 1, 2018","CA","M/B","Deautry Charles Ross","34","TR","https://www.dailybreeze.com/2018/01/04/knife-wielding-man-who-died-after-being-tased-at-torrance-crate-barrel-is-identified/",]
     ]
 
-for x in range(0, len(ripped_table)):
-    date = ripped_table[x][0]
-    name = ripped_table[x][3]
-    date = datetime.strptime(date, '%B %d, %Y')
-    state = ripped_table[x][1]
-    for y in range(0, len(Shooting.STATE_CHOICES)):
-        if Shooting.STATE_CHOICES[y][1] == state:
-            state = y
-            break
-    gender = ripped_table[x][2]
-    race = 6
-    if gender == "No Gender":
-        gender = 2
-    elif len(gender) == 1:
-        if gender == "M":
-            gender = 0
-        elif gender == "F":
-            gender = 1
-        else:
-            gender = 2
-    else:
-        gender_split = gender.split("/")
-        print("{} {} {}".format(date, name, gender_split))
-        gender = gender_split[0]
-        race_bit = gender_split[1]
-        if gender == "M":
-            gender = 0
-        elif gender == "F":
-            gender = 1
-        else:
-            gender = 2
-        if race_bit == "W":
-            race = 4
-        elif race_bit == "B":
-            race = 2
-        elif race_bit == "L":
-            race = 5
-        elif race_bit == "PI":
-            race = 3
-        elif race_bit == "I":
-            race = 0
-        elif race_bit == "A":
-            race = 1
-        elif race_bit == "O":
-            race = 7
-    age = ripped_table[x][4]
-    if age == "No Age":
-        age = -1
-    comments = ripped_table[x]    
-    shooting = Shooting.objects.create(
-        name=name,
-        state=state,
-        age=age,
-        gender=gender,
-        race=race,
-        description=comments,
-        date=date.strftime("%Y-%m-%d")
-    )
-    tag = ripped_table[x][5]
-    if len(tag) > 1:
-        # stuff
-        for y in range(0, len(tag)):
-            tag_bit = tag[y]
-            if tag_bit == "G":
-                Tag.objects.create(
-                    text="Gun",
-                    shooting=shooting
-                )
-            elif tag_bit == "T":
-                Tag.objects.create(
-                    text="Taser",
-                    shooting=shooting
-                )
-            elif tag_bit == "R":
-                Tag.objects.create(
-                    text="Restraint/Physical Force",
-                    shooting=shooting
-                )
-            elif tag_bit == "C":
-                Tag.objects.create(
-                    text="Chemical",
-                    shooting=shooting
-                )
-            elif tag_bit == "V":
-                Tag.objects.create(
-                    text="Vehicle",
-                    shooting=shooting
-                )
-            elif tag_bit == "O":
-                Tag.objects.create(
-                    text="Other",
-                    shooting=shooting
-                )
-    else:
-        if tag == "G":
-            Tag.objects.create(
-                text="Gun",
-                shooting=shooting
+def populate_year(table):
+        for x in range(0, len(table)):
+            date = table[x][0]
+            name = table[x][3]
+            date = datetime.strptime(date, '%B %d, %Y')
+            state = table[x][1]
+            for y in range(0, len(Shooting.STATE_CHOICES)):
+                if Shooting.STATE_CHOICES[y][1] == state:
+                    state = y
+                    break
+            gender = table[x][2]
+            race = 6
+            if gender == "No Gender":
+                gender = 2
+            elif len(gender) == 1:
+                if gender == "M":
+                    gender = 0
+                elif gender == "F":
+                    gender = 1
+                else:
+                    gender = 2
+            else:
+                gender_split = gender.split("/")
+                print("{} {} {}".format(date, name, gender_split))
+                gender = gender_split[0]
+                race_bit = gender_split[1]
+                if gender == "M":
+                    gender = 0
+                elif gender == "F":
+                    gender = 1
+                else:
+                    gender = 2
+                if race_bit == "W":
+                    race = 4
+                elif race_bit == "B":
+                    race = 2
+                elif race_bit == "L":
+                    race = 5
+                elif race_bit == "PI":
+                    race = 3
+                elif race_bit == "I":
+                    race = 0
+                elif race_bit == "A":
+                    race = 1
+                elif race_bit == "O":
+                    race = 7
+            age = table[x][4]
+            if age == "No Age":
+                age = -1
+            comments = table[x][6]
+            shooting = Shooting.objects.create(
+                name=name,
+                state=state,
+                age=age,
+                gender=gender,
+                race=race,
+                description=comments,
+                date=date.strftime("%Y-%m-%d")
             )
-        elif tag == "T":
-            Tag.objects.create(
-                text="Taser",
-                shooting=shooting
-            )
-        elif tag == "R":
-            Tag.objects.create(
-                text="Restraint/Physical Force",
-                shooting=shooting
-            )
-        elif tag == "C":
-            Tag.objects.create(
-                text="Chemical",
-                shooting=shooting
-            )
-        elif tag == "V":
-            Tag.objects.create(
-                text="Vehicle",
-                shooting=shooting
-            )
-        elif tag == "O":
-            Tag.objects.create(
-                text="Other",
-                shooting=shooting
-            )
+            tag = table[x][5]
+            if len(tag) > 1:
+                # stuff
+                for y in range(0, len(tag)):
+                    tag_bit = tag[y]
+                    if tag_bit == "G":
+                        Tag.objects.create(
+                            text="Gun",
+                            shooting=shooting
+                        )
+                    elif tag_bit == "T":
+                        Tag.objects.create(
+                            text="Taser",
+                            shooting=shooting
+                        )
+                    elif tag_bit == "R":
+                        Tag.objects.create(
+                            text="Restraint/Physical Force",
+                            shooting=shooting
+                        )
+                    elif tag_bit == "C":
+                        Tag.objects.create(
+                            text="Chemical",
+                            shooting=shooting
+                        )
+                    elif tag_bit == "V":
+                        Tag.objects.create(
+                            text="Vehicle",
+                            shooting=shooting
+                        )
+                    elif tag_bit == "O":
+                        Tag.objects.create(
+                            text="Other",
+                            shooting=shooting
+                        )
+            else:
+                if tag == "G":
+                    Tag.objects.create(
+                        text="Gun",
+                        shooting=shooting
+                    )
+                elif tag == "T":
+                    Tag.objects.create(
+                        text="Taser",
+                        shooting=shooting
+                    )
+                elif tag == "R":
+                    Tag.objects.create(
+                        text="Restraint/Physical Force",
+                        shooting=shooting
+                    )
+                elif tag == "C":
+                    Tag.objects.create(
+                        text="Chemical",
+                        shooting=shooting
+                    )
+                elif tag == "V":
+                    Tag.objects.create(
+                        text="Vehicle",
+                        shooting=shooting
+                    )
+                elif tag == "O":
+                    Tag.objects.create(
+                        text="Other",
+                        shooting=shooting
+                    )
+
+
+populate_year(table_2018)

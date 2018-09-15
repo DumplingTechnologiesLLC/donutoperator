@@ -125,7 +125,7 @@
                             <td>
                                 <span style="padding: 5px; margin-right: 5px" v-for="tag in shooting.tags" class="badge badge-primary">((tag.text))</span>
                             <td>
-                                <button type="button" class="btn btn-sm btn-primary">Details</button>
+                                <button v-on:click="openDetails(shooting.id)" type="button" class="btn btn-sm btn-primary">Details</button>
                             </td>
                         </tr>
                         <tr v-show="shootings.length == 0">
@@ -138,7 +138,42 @@
             </div>
         </div>
     </div>
-
+    <div class="modal" id="shooting_details" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">((displayed_shooting.name)), ((displayed_shooting.date))</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Donut's Take</h5>
+                            <div v-if="displayed_shooting.video_url != 'None'" v-html="displayed_shooting.video_url"> </div>
+                            <div v-else style="background-color:gray; width:100%; height:315px" class="d-flex flex-row    p-2 flex-column justify-content-center flex-fill">
+                                <div class="align-self-center p-2"><h1 style="color:white;">No Video Available</h1></div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Further Details</h5>
+                            <div style="height: 200px; overflow-y: scroll" v-if="displayed_shooting.description !== undefined && displayed_shooting.description.length != 0"  v-html="displayed_shooting.description">
+                                
+                            </div>
+                            <p style="height:200px; overflow-y:scroll" v-else>No further details at this time.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -225,6 +260,8 @@
             end_date: "", // populate by jQuery upon dp.change
             name: "", // two way binding for filter
             city: "", // two way binding for filter
+            displayed_video: "",
+            displayed_shooting: {},
             races: [
                 {% for race in races %}
                 {
@@ -270,6 +307,8 @@
                     state: `{{shooting.get_state_display }}`,
                     state_value: `{{shooting.state}}`,
                     city: `{{shooting.city }}`,
+                    video_url: `{{shooting.video_url|safe}}`,
+                    description: `{{shooting.description|safe}}`,
                     tags: [
                         {% for tag in shooting.tags.all %}
                         {
@@ -281,7 +320,8 @@
                 },                                   
                 {% endfor %}
             ],
-            
+        },
+        mounted: function() {
         },
         methods: {
             resetFilters: function() {
@@ -299,6 +339,13 @@
                 this.end_date = "";
                 $('#start_date').datetimepicker('clear');
                 $('#end_date').datetimepicker('clear');
+            },
+            openDetails: function(id) {
+                shooting = this.shootings.find(function(shooting) {
+                    return shooting.id == id
+                })
+                this.displayed_shooting = shooting
+                $('#shooting_details').modal('toggle');
             }
         },
         computed: {

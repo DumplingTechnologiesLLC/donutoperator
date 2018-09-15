@@ -96,6 +96,9 @@ class Shooting(models.Model):
     gender = models.IntegerField("Gender", choices=GENDER_CHOICES)
     date = models.DateField(auto_now=False, auto_now_add=False)
 
+    def __str__(self):
+        return "{} {}".format(self.date, self.name)
+
 
 class Tag(models.Model):
     text = models.CharField("Text", max_length=100)
