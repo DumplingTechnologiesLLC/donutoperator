@@ -1,6 +1,7 @@
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django
+import re
 from datetime import datetime
 django.setup()
 
@@ -886,13 +887,11 @@ def populate_year(table):
 populate_year(table_2018)
 
 for shooting in Shooting.objects.all():
-        description = shooting.description.split(",")
-        appended_description = ""
-        if len(description) > 1:
-                for desc in description:
-                        appended_description += "<a href='" + desc + "'>" + desc + "</a><br/>"
-        else:
-                appended_description += "<a href='" + description[0] + "'>" + description[0] + "</a><br/>"
-        shooting.description = appended_description
+        description = shooting.description
+        print("{} {}".format("Changing", description))
+        description = re.sub(r"<a href='.*'>", "", description)
+        description = re.sub(r"</a>", "", description)
+        description = re.sub(r"<br/>", ",", description)
+        shooting.description = description
         shooting.name = shooting.name.lstrip()
         shooting.save()
