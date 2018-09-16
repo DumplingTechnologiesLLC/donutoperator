@@ -92,14 +92,42 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr style="background-color:white;">
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Race</th>
-                            <th>Gender</th>
-                            <th>State</th>
-                            <th>City</th>
-                            <th>Tags</th>                 
-                            <th>Details</th>
+                            <th class="noselect" style="cursor: pointer;" v-on:click="order_by('name')">
+                                Name 
+                                <i class="fa fa-sort-asc" v-if="order.name == 1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order.name == -1" aria-hidden="true"></i>
+                            </th>
+                            <th class="noselect" style="cursor: pointer;" v-on:click="order_by('date')">
+                                Date 
+                                <i class="fa fa-sort-asc" v-if="order.date == 1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order.date == -1" aria-hidden="true"></i>
+                            </th>
+                            <th class="noselect" style="cursor: pointer;" v-on:click="order_by('race')">
+                                Race 
+                                <i class="fa fa-sort-asc" v-if="order.race == 1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order.race == -1" aria-hidden="true"></i>
+                            </th>
+                            <th class="noselect" style="cursor: pointer;" v-on:click="order_by('gender')">
+                                Gender 
+                                <i class="fa fa-sort-asc" v-if="order.gender == 1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order.gender == -1" aria-hidden="true"></i>
+                            </th>
+                            <th class="noselect" style="cursor: pointer;" v-on:click="order_by('state')">
+                                State 
+                                <i class="fa fa-sort-asc" v-if="order.state == 1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order.state == -1" aria-hidden="true"></i>
+                            </th>
+                            <th class="noselect" style="cursor: pointer;" v-on:click="order_by('city')">
+                                City 
+                                <i class="fa fa-sort-asc" v-if="order.city == 1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order.city == -1" aria-hidden="true"></i>
+                            </th>
+                            <th>
+                                Tags 
+                            </th>
+                            <th>
+                                Details 
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -252,6 +280,15 @@
         el: '#app',
         delimiters: ["((","))"],
         data: {
+            order: {
+                name: 0,
+                date: 0,
+                race: 0,
+                gender: 0,
+                state: 0,
+                city: 0,
+            },
+            order_attribute: "",
             states_selected: [], // populated by jQuery upon select2 select
             races_selected: [], // populated by jQuery upon select2 select
             tags_selected: [], // populate by jQuery upon select2 select
@@ -322,9 +359,45 @@
             ],
         },
         mounted: function() {
+            var self = this;
+            for (var x = 0; x < self.shootings.length; x++) {
+                self.shootings[x].date = self.shootings[x].date.replace("Jan.", "January");
+                self.shootings[x].date = self.shootings[x].date.replace("Feb.", "February");
+                self.shootings[x].date = self.shootings[x].date.replace("Aug.", "August");
+                self.shootings[x].date = self.shootings[x].date.replace("Sept.", "September");
+                self.shootings[x].date = self.shootings[x].date.replace("Sep.", "September");
+                self.shootings[x].date = self.shootings[x].date.replace("Oct.", "October");
+                self.shootings[x].date = self.shootings[x].date.replace("Nov.", "November");
+                self.shootings[x].date = self.shootings[x].date.replace("Dec.", "December");
+            }
         },
         methods: {
+            order_by: function(attribute) {
+                var self = this;
+                this.order_attribute = attribute;
+                $.each(self.order, function(key, value) {
+                    if (key == attribute) {
+                        if (self.order[attribute] == 0) {
+                            self.order[attribute] = 1;
+                        }
+                        else if (self.order[attribute] == 1) {
+                            self.order[attribute] = -1;
+                        }
+                        else {
+                            self.order[attribute] = 1;
+                        }
+                    }
+                    else {
+                        self.order[key] = 0;
+                    }
+                });
+            },
             resetFilters: function() {
+                var self = this;
+                self.order_attribute = "";
+                $.each(self.order, function(key, value) {
+                    self.order[key] = 0;
+                });
                 $("#state_select").val("").trigger("change")
                 $("#race_select").val("").trigger("change")
                 $("#tag_select").val("").trigger("change")
@@ -351,7 +424,7 @@
         computed: {
             displayed_shootings: function() {
                 var self = this;
-                var displayed_shootings = this.shootings;
+                var displayed_shootings = this.shootings.slice();
                 if (this.name.length > 0) {
                     displayed_shootings = displayed_shootings.filter(function(shooting) {
                         if (shooting.name.toUpperCase().indexOf(self.name.toUpperCase()) > -1) {
@@ -411,6 +484,41 @@
                             return true;
                         }
                     })
+                }
+                if (self.order_attribute != "") {
+                    order_order = self.order[self.order_attribute];
+                    if (order_order == 1) {
+                        displayed_shootings.sort(function(a , b) {
+                            if (self.order_attribute == "date") {
+                                if (moment(a[self.order_attribute], "MMMM DD, YYYY").isBefore(moment(b[self.order_attribute], "MMMM DD, YYYY"))) {
+                                    return 1;
+                                }
+                                else if (moment(b[self.order_attribute], "MMMM DD, YYYY").isBefore(moment(a[self.order_attribute], "MMMM DD, YYYY"))) {
+                                    return -1;
+                                }
+                                return 0
+                            }
+                            else {
+                                return a[self.order_attribute].localeCompare(b[self.order_attribute])
+                            }
+                        })
+                    }
+                    else {
+                        displayed_shootings.sort(function(a , b) {
+                            if (self.order_attribute == "date") {
+                                if (moment(a[self.order_attribute], "MMMM DD, YYYY").isBefore(moment(b[self.order_attribute], "MMMM DD, YYYY"))) {
+                                    return -1;
+                                }
+                                else if (moment(b[self.order_attribute], "MMMM DD, YYYY").isBefore(moment(a[self.order_attribute], "MMMM DD, YYYY"))) {
+                                    return 1;
+                                }
+                                return 0
+                            }
+                            else {
+                                return b[self.order_attribute].localeCompare(a[self.order_attribute])
+                            }
+                        })
+                    }
                 }
                 return displayed_shootings
             }

@@ -16,9 +16,28 @@
             </li>
         </ul>
         <ul class="navbar-nav navbar-right">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Sign In</a>
+            {% if user.is_superuser %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Admin Actions
+                </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Submit New Shooting</a>
+            <a class="dropdown-item" href="#">Submit New Bodycam</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Submit News Story</a>
+            </div>
             </li>
+            {% endif %}
+            {% if user.is_authenticated %}
+             <li class="nav-item">
+                <a class="nav-link" href="#">Sign Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="#">Sign In <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+            </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
