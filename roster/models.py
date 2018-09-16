@@ -100,6 +100,16 @@ class Shooting(models.Model):
         return "{} {}".format(self.date, self.name)
 
 
+
+class Source(models.Model):
+    text = models.CharField("Text", max_length=100)
+    shooting = models.ForeignKey(
+        Shooting,
+        on_delete=models.CASCADE,
+        related_name="sources"
+    )
+
+
 class Tag(models.Model):
     text = models.CharField("Text", max_length=100)
     shooting = models.ForeignKey(
