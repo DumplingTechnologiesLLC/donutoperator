@@ -12,7 +12,7 @@ class RosterListView(View):
     '''
 
     def get(self, request):
-        shootings = Shooting.objects.all()
+        shootings = Shooting.objects.all().order_by('-date')
         now = datetime.datetime.now()
         distinct_tags = Tag.objects.values('text').annotate(
             text_count=Count('text')).values('text')

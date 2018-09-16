@@ -894,4 +894,5 @@ for shooting in Shooting.objects.all():
         else:
                 appended_description += "<a href='" + description[0] + "'>" + description[0] + "</a><br/>"
         shooting.description = appended_description
+        shooting.name = shooting.name.lstrip()
         shooting.save()
