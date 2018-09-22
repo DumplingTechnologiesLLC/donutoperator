@@ -101,7 +101,7 @@ class Shooting(models.Model):
 
 
 class Source(models.Model):
-    text = models.CharField("Text", max_length=100)
+    text = models.CharField("Text", max_length=1000)
     shooting = models.ForeignKey(
         Shooting,
         on_delete=models.CASCADE,
@@ -113,7 +113,7 @@ class Source(models.Model):
 
 
 class Tag(models.Model):
-    text = models.CharField("Text", max_length=100)
+    text = models.CharField("Text", max_length=1000)
     shooting = models.ForeignKey(
         Shooting,
         on_delete=models.CASCADE,

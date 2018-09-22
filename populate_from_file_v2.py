@@ -10,8 +10,9 @@ from roster.models import Shooting, Tag, Source
 fp = open("db_as_text.txt", "r")
 table_2018 = fp.read()
 table_2018 = json.loads(table_2018)
-
+print("creating...")
 for entry in table_2018:
+    print(entry)
     shooting = Shooting.objects.create(
         state=entry["state"],
         city=entry["city"],
@@ -29,7 +30,9 @@ for entry in table_2018:
             shooting=shooting,
         )
     for source in entry['sources']:
+        print(source)
         Source.objects.create(
             text=source["text"],
             shooting=shooting
         )
+print("done")
