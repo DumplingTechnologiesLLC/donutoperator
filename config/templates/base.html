@@ -29,15 +29,183 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-confirm.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <!-- dynamic follows -->
     {% block custom_scripts %}
     {% endblock custom_scripts %}
 </head>
 <body id="body" style="overflow:hidden">
 
-    
-    {% include 'partials/navbar.html' %}
-
+    <div id="nav_related">
+       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="{% url 'roster:index' %}">Donut Operator HQ</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor02">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Bodycam Database</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">News Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav navbar-right">
+                    {% if user.is_superuser %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Admin Actions
+                        </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <button class="dropdown-item" onclick="$('#add_killing').modal('toggle')">Submit New Killing</button>
+                    <a class="dropdown-item" href="#">Submit New Bodycam</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Submit News Story</a>
+                    </div>
+                    </li>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Sign Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Sign In <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        {% if user.is_authenticated %}
+        <div id="add_killing" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="width:800px; margin-left:-25%">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add New Killing</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" >
+                        <form class="form" action="" method="post">
+                            <div class="form-group row">
+                                <div class="col-lg-6">
+                                    <label for="new_tags_select">What tags would you like to associate to this killing?</label>
+                                    <select id="new_tags_select" class="form-control" style="width:100%" multiple="multiple">
+                                        <option></option>
+                                        <option v-for="tag in all_tags" v-bindvalue="((tag.value))">((tag.display))</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="new_age">Add new tag</label>
+                                    <input type="text" class="form-control" v-model="tag_input">
+                                </div>
+                                <div class="col-lg-2">
+                                    <label style="color:white" for="new_age">Add new tag</label>
+                                    <button type="button" class="btn btn-secondary" v-on:click="addTag">Add</button>
+                                </div>
+                            </div>
+                             <div class="form-group row">
+                                 <div class="col-lg-6">
+                                    <label for="new_gender_select">What gender was the individual?</label>
+                                    <select id="new_gender_select" class="form-control" style="width:100%">
+                                        <option></option>
+                                        {% for gender in genders %}
+                                        <option value="{{gender.0}}">{{gender.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="new_race_select">What race was the individual?</label>
+                                    <select id="new_race_select" class="form-control" style="width:100%">
+                                        <option></option>
+                                        {% for race in races %}
+                                        <option value="{{race.0}}">{{race.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-lg-6">
+                                    <label for="name_text">When did this killing take place?</label>
+                                    <div class="input-group date" id="new_date" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#new_date"/>
+                                        <div class="input-group-append" data-target="#new_date" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>          
+                                 <div class="col-lg-6">
+                                    <label for="new_state_select">In which state did this killing take place?</label>
+                                    <select id="new_state_select" class="form-control" style="width:100%">
+                                        <option></option>
+                                        {% for state in states %}
+                                            <option value="{{state.0}}">{{state.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class='form-group row'>
+                               <div class="col-lg-6">
+                                    <label for="new_city">What city was the shooting in?</label>
+                                    <input type="text" class="form-control" v-model="shooting.city">
+                                </div>                     
+                               <div class="col-lg-6">
+                                    <label for="new_age">What was the age of the individual?</label>
+                                    <input type="number" class="form-control" v-model="shooting.age">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <div class="col-lg-6">
+                                    <label for="new_race_select">If you made a video on this killing, link it here.</label>
+                                    <input type="text" class="form-control" v-model="shooting.video_url">
+                                     <small id="fileHelp" class="form-text text-muted">Provide the full, unshortened url to the <strong>YouTube</strong> video. I'll handle the rest. It should look something like this: https://www.youtube.com/watch?v=vGY_4rB0FGc</small>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="new_name">What was the name of the individual?</label>
+                                    <input type="text" class="form-control" v-model="shooting.name">
+                                </div>
+                            </div>
+                            <label for="new_race_select">Sources</label>
+                            <div v-for="source, index in shooting.sources" class="form-group row">
+                                <div class="col-lg-12">
+                                    <input type="text" class="form-control" v-model="shooting.sources[index]">
+                                     <small id="fileHelp" class="form-text text-muted">Provide the full, unshortened url. I'll handle the rest.</small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-lg-6">
+                                    <button class="btn btn-block btn-secondary" type="button" v-on:click="addSource">Add Source</button>
+                                </div>
+                                <div class="col-lg-6">
+                                    <button class="btn btn-block btn-danger" type="button" v-on:click="removeSource">Remove Source</button>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-lg-12">
+                                    <label for="new_race_select">Optional description / More details</label>
+                                    <textarea class="form-control" style="width:100%;" rows="4" v-model="shooting.description"></textarea>
+                                </div>
+                            </div>
+                            <div class='form-group row'>                                    
+                                
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" v-on:click="submitKilling" class="btn btn-primary">Save changes</button>
+                        <button type="button" v-on:click="clearModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
     {% if messages %}
         <div class="container">
             <ul id="messages" class="messages list-unstyled" style="margin-top:1em; z-index:2; text-align: center;">
@@ -73,6 +241,171 @@
     {% block js %}
     {% endblock js %}
     <script type="text/javascript">
+        {% if user.is_authenticated %}
+        $(function() {
+            $('#new_date').datetimepicker({
+                format:"L",
+                useCurrent: false,
+            });
+            $('#new_date').on("change.datetimepicker", function (e) {
+                nav_app.shooting.date = $('#new_date').datetimepicker('viewDate');
+            });
+            $("#new_state_select").select2({
+                theme: "bootstrap",
+                placeholder: "Select state",
+                dropdownParent: $("#add_killing"),
+            })
+            $('#new_state_select').on("change", function(e) { 
+                // what you would like to happen
+                nav_app.shooting.state = $(this).val();
+            });
+
+            $("#new_race_select").select2({
+                theme: "bootstrap",
+                dropdownParent: $("#add_killing"),
+                placeholder: "Select race"
+            })
+            $("#new_tags_select").select2({
+                theme: "bootstrap",
+                // dropdownParent: $("#add_killing"),
+                placeholder: "Select tags"
+            });
+            $('#new_tags_select').on("change", function(e) { 
+                // what you would like to happen
+                nav_app.shooting.tags = $(this).val();
+            });
+            $('#new_race_select').on("change", function(e) { 
+                // what you would like to happen
+                nav_app.shooting.race = $(this).val();
+            });
+            $("#new_gender_select").select2({
+                theme: "bootstrap",
+                // dropdownParent: $("#add_killing"),
+                placeholder: "Select gender"
+            })
+            $('#new_gender_select').on("change", function(e) { 
+                // what you would like to happen
+                nav_app.shooting.gender = $(this).val();
+            });
+        })
+        var nav_app = new Vue({
+            el: '#nav_related',
+            delimiters: ["((","))"],
+            data: {
+                tag_input: "",
+                shooting: {
+                    name: "",
+                    date: "",
+                    race: "",
+                    age: "",
+                    gender: "",
+                    state: "",
+                    city: "",
+                    video_url: "",
+                    sources: [],
+                    description: "",
+                    tags: [
+                            //id:{{tag.pk}},
+                            //text: `{{tag.text}}`,
+                    ]
+                },
+                genders: [
+                    {% for gender in genders %}
+                    {
+                        value: `{{gender.0}}`,
+                        display: `{{gender.1}}`
+                    },
+                    {% endfor %}
+                ], // used for filling select2
+                all_tags: [
+                    {% for tag in all_tags %}
+                    {
+                        value: `{{tag.text}}`,
+                        display: `{{tag.text}}`
+                    },
+                    {% endfor %}
+                ], // used for filling select2
+            },
+            methods: {
+                clearModal: function() {
+                    this.tag_input = ""
+                    this.shooting.name = ""
+                    this.shooting.date = ""
+                    this.shooting.race = ""
+                    this.shooting.age = ""
+                    this.shooting.gender = ""
+                    this.shooting.state = ""
+                    this.shooting.city = ""
+                    this.shooting.video_url = ""
+                    this.shooting.sources = []
+                    this.shooting.description = ""
+                    this.shooting.tags = []
+                    $("#new_state_select").val("").trigger("change")
+                    $("#new_race_select").val("").trigger("change")
+                    $("#new_tags_select").val("").trigger("change")
+                    $("#new_gender_select").val("").trigger("change");
+                    $('#new_date').datetimepicker('clear');
+                },
+                submitKilling: function() {
+                    console.log(this.shooting)
+                    data = {
+                        csrfmiddlewaretoken: "{{csrf_token}}",
+                        shooting: JSON.stringify(this.shooting)
+                    }
+                    date = this.shooting.date.format("YYYY-MM-DD")
+                    data.shooting.date = date;
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'roster:submit-killing' %}",
+                        data: data,
+                        success: function() {
+                            $.alert({
+                                title: 'Success!',
+                                content: 'Killing submitted. The page will now reload.',
+                                type: 'green',
+                                typeAnimated: true,
+                                autoClose: 'close|4000',
+                                buttons: {
+                                    close: function () {
+                                        window.location.reload()
+                                    }
+                                }
+                            });
+                        },
+                        error: function(data) {
+                            console.log(data)
+                            $.confirm({
+                                title: 'Encountered an error!',
+                                content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
+                                type: 'red',
+                                typeAnimated: true,
+                                backgroundDismiss: false,
+                                buttons: {
+                                    close: function () {
+                                    }
+                                }
+                            });
+                        },
+                    });
+                },
+                addTag: function() {
+                    var self = this;
+                    $('#new_tags_select').append($("<option></option>").attr("value", self.tag_input).attr('selected', 'selected').text(self.tag_input));
+                    $("#new_tags_select").trigger("change")
+                },
+                removeSource: function() {
+                    this.shooting.sources.pop()
+                },
+                addSource: function() {
+                    this.shooting.sources.push("")
+                },
+                openKillingModal: function() {
+                    console.log("clicked")
+                    $("#add_killing").modal("toggle")
+                }
+            }
+        });
+        {% endif %}
         function showSuccessMessage(message) {
             /*
                 Shows success message DOM element for UX.

@@ -97,6 +97,11 @@
                                 <i class="fa fa-sort-asc" v-if="order.name == 1" aria-hidden="true"></i>
                                 <i class="fa fa-sort-desc" v-if="order.name == -1" aria-hidden="true"></i>
                             </th>
+                            <th class="noselect" style="cursor: pointer;" v-on:click="order_by('age')">
+                                Age 
+                                <i class="fa fa-sort-asc" v-if="order.age == 1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order.age == -1" aria-hidden="true"></i>
+                            </th>
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('date')">
                                 Date 
                                 <i class="fa fa-sort-asc" v-if="order.date == 1" aria-hidden="true"></i>
@@ -134,6 +139,9 @@
                         <tr v-for="shooting in displayed_shootings">
                             <td>
                                 ((shooting.name))
+                            </td>
+                            <td>
+                                ((displayAge(shooting.age) ))
                             </td>
                             <td>
                                 ((shooting.date))
@@ -186,6 +194,18 @@
                         </div>
                     </div>
                     <hr>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Sources</h5>
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr v-for="source in displayed_shooting.sources">
+                                        <td style="max-width: 100px; word-wrap: break-word;"><a v-bind:href="source">((source))</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <h5>Further Details</h5>
@@ -282,6 +302,7 @@
         data: {
             order: {
                 name: 0,
+                age: 0,
                 date: 0,
                 race: 0,
                 gender: 0,
@@ -336,6 +357,7 @@
                 {
                     id: `{{shooting.pk}}`,
                     name: `{{shooting.name}}`,
+                    age: `{{shooting.age}}`,
                     date: `{{shooting.date}}`,
                     race: `{{shooting.get_race_display }}`,
                     race_value: `{{shooting.race}}`,
@@ -352,6 +374,11 @@
                             id:{{tag.pk}},
                             text: `{{tag.text}}`,
                         },
+                        {% endfor %}
+                    ],
+                    sources: [
+                        {% for source in shooting.sources.all %}
+                        "{{source.text}}",
                         {% endfor %}
                     ]
                 },                                   
@@ -419,6 +446,14 @@
                 })
                 this.displayed_shooting = shooting
                 $('#shooting_details').modal('toggle');
+            },
+            displayAge: function(age) {
+                if (age > -1) {
+                    return age
+                }
+                else {
+                    return "No Age"
+                }
             }
         },
         computed: {
