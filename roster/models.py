@@ -62,14 +62,14 @@ class Shooting(models.Model):
         (2, "Unknown")
     )
     RACE_CHOICES = (
-        (0,"Native American"),
-        (1,"Asian"),
-        (2,"Black"),
-        (3,"Native Hawaiian or Other Pacific Islander"),
-        (4,"White"),
-        (5,"Hispanice/Latino"),
-        (6,"None Given"),
-        (7,"Other"),
+        (0, "Native American"),
+        (1, "Asian"),
+        (2, "Black"),
+        (3, "Native Hawaiian or Other Pacific Islander"),
+        (4, "White"),
+        (5, "Hispanic/Latino"),
+        (6, "None Given"),
+        (7, "Other"),
     )
     state = models.IntegerField("State", choices=STATE_CHOICES)
     city = models.CharField("City", max_length=256, blank=True, null=True)
@@ -100,7 +100,6 @@ class Shooting(models.Model):
         return "{} {}".format(self.date, self.name)
 
 
-
 class Source(models.Model):
     text = models.CharField("Text", max_length=100)
     shooting = models.ForeignKey(
@@ -108,6 +107,9 @@ class Source(models.Model):
         on_delete=models.CASCADE,
         related_name="sources"
     )
+
+    def __str__(self):
+        return self.text
 
 
 class Tag(models.Model):
@@ -117,3 +119,6 @@ class Tag(models.Model):
         on_delete=models.CASCADE,
         related_name="tags"
     )
+
+    def __str__(self):
+        return self.text
