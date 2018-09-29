@@ -7,9 +7,17 @@
 {% block content %}
 <div class="row" id="app">
     <div class="col-lg-12">
+        <div class="row" style="padding-top:15px; padding-bottom: 15px">
+            <div class="col-lg-6" style="display:flex;align-items:center;">
+                <a v-bind:href="calculatePreviousYear()" class="btn btn-secondary">View Previous Year's Data</a>
+            </div>
+            <div class="col-lg-6" style="display:flex;justify-content:flex-end;align-items:center;">
+                <a v-if="year != currentYear" v-bind:href="calculateNextYear()" class="btn btn-secondary">View Following Year's Data</a>
+            </div>
+        </div>
         <div class="row">
-            <div class="col-lg-12">
-                <h1>{{year}} Officer Involved Shootings</h1>
+            <div class="col-lg-12" style="display:flex;justify-content:center;align-items:center;">
+                <h1>{{year}} Officer Involved Killings</h1>
             </div>
         </div>
         <div class="row">
@@ -133,6 +141,11 @@
                             <th>
                                 Details 
                             </th>
+                            {% if user.is_authenticated %}
+                            <th>
+                                Admin Actions
+                            </th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -163,11 +176,23 @@
                             <td>
                                 <button v-on:click="openDetails(shooting.id)" type="button" class="btn btn-sm btn-primary">Details</button>
                             </td>
+                            {% if user.is_authenticated %}
+                            <td>
+                                <button v-on:click="editShooting(shooting.id)" type="button" class="btn btn-sm btn-primary">Edit</button>
+                                <button v-on:click="deleteShooting(shooting.id)" type="button" class="btn btn-sm btn-danger"><i style="font-size:16px" class="fa fa-trash fa-2" aria-hidden="true"></i></button>
+                            </td>
+                            {% endif %}
                         </tr>
                         <tr v-show="shootings.length == 0">
-                            <td colspan="6" style="text-align:center">
+                            {% if user.is_authenticated %}
+                            <td colspan="10" style="text-align:center">
                                 No shootings yet
                             </td>
+                            {% else %}
+                            <td colspan="9" style="text-align:center">
+                                No shootings yet
+                            </td>
+                            {% endif %}
                         </tr>
                     </tbody>
                 </table>
@@ -352,38 +377,8 @@
                 },
                 {% endfor %}
             ], // used for filling select2
-            shootings: [
-                {% for shooting in shootings %}
-                {
-                    id: `{{shooting.pk}}`,
-                    name: `{{shooting.name}}`,
-                    age: `{{shooting.age}}`,
-                    date: `{{shooting.date}}`,
-                    race: `{{shooting.get_race_display }}`,
-                    race_value: `{{shooting.race}}`,
-                    gender: `{{shooting.get_gender_display}}`,
-                    gender_value: `{{shooting.gender}}`,
-                    state: `{{shooting.get_state_display }}`,
-                    state_value: `{{shooting.state}}`,
-                    city: `{{shooting.city }}`,
-                    video_url: `{{shooting.video_url|safe}}`,
-                    description: `{{shooting.description|safe}}`,
-                    tags: [
-                        {% for tag in shooting.tags.all %}
-                        {
-                            id:{{tag.pk}},
-                            text: `{{tag.text}}`,
-                        },
-                        {% endfor %}
-                    ],
-                    sources: [
-                        {% for source in shooting.sources.all %}
-                        "{{source.text}}",
-                        {% endfor %}
-                    ]
-                },                                   
-                {% endfor %}
-            ],
+            shootings: {{shootings|safe}},
+            year: "{{year}}"
         },
         mounted: function() {
             var self = this;
@@ -399,6 +394,91 @@
             }
         },
         methods: {
+            {% if user.is_authenticated %}
+            deleteShooting: function(id) {
+                console.log(id)
+                var data = {
+                    "id": parseInt(id),
+                    "csrfmiddlewaretoken": "{{csrf_token}}",
+                }
+                $.confirm({
+                    type: "red",
+                    title: "Are you sure?",
+                    content: "This action cannot be undone. Are you sure you want to continue?",
+                    buttons: {
+                        Yes: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: "{% url 'roster:delete-killing' %}",
+                                data: data,
+                                success: function() {
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: 'Killing deleted succesfully. The page will now reload.',
+                                        type: 'green',
+                                        typeAnimated: true,
+                                        autoClose: 'close|4000',
+                                        buttons: {
+                                            close: function () {
+                                                window.location.reload()
+                                            }
+                                        }
+                                    });
+                                },
+                                error: function(data) {
+                                    console.log(data)
+                                    $.confirm({
+                                        title: 'Encountered an error!',
+                                        content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
+                                        type: 'red',
+                                        typeAnimated: true,
+                                        backgroundDismiss: false,
+                                        buttons: {
+                                            close: function () {
+                                            }
+                                        }
+                                    });
+                                },
+                            });
+                        },
+                        Cancel: function() {
+
+                        }
+                    }
+                })
+            },
+            editShooting: function(id) {
+                for (var x = 0; x < this.shootings.length; x++) {
+                    if (this.shootings[x].id == id) {
+                        tags = []
+                        for (var y = 0; y < this.shootings[x].tags.length; y++) {
+                            tags.push(this.shootings[x].tags[y].text)
+                        }
+                        nav_app.shooting.id = this.shootings[x].id
+                        nav_app.shooting.name = this.shootings[x].name
+                        nav_app.shooting.date = this.shootings[x].date
+                        nav_app.shooting.race = this.shootings[x].race_value
+                        nav_app.shooting.age = this.shootings[x].age
+                        nav_app.shooting.gender = this.shootings[x].gender_value
+                        nav_app.shooting.state = this.shootings[x].state_value
+                        nav_app.shooting.city = this.shootings[x].city
+                        if (this.shootings[x].unfiltered_video_url == "None") {
+                            nav_app.shooting.video_url = ""
+                        }
+                        else {
+                            nav_app.shooting.video_url = this.shootings[x].unfiltered_video_url
+                        }
+                        nav_app.shooting.sources = this.shootings[x].sources
+                        nav_app.shooting.description = this.shootings[x].description
+                        nav_app.shooting.tags = tags
+
+                        nav_app.creating = false;
+                        nav_app.openKillingModal();
+                        return;
+                    }
+                }
+            },
+            {% endif %}
             order_by: function(attribute) {
                 var self = this;
                 this.order_attribute = attribute;
@@ -440,6 +520,18 @@
                 $('#start_date').datetimepicker('clear');
                 $('#end_date').datetimepicker('clear');
             },
+            calculateNextYear: function() {
+                var year = moment("{{year}}", "YYYY").add(1, "y").format("YYYY")
+                var url = "{% url 'roster:date-index' date=1234 %}";
+                url = url.replace("1234", year);
+                return url;
+            },
+            calculatePreviousYear: function() {
+                var year = moment("{{year}}", "YYYY").subtract(1, "y").format("YYYY")  
+                var url = "{% url 'roster:date-index' date=1234 %}";
+                url = url.replace("1234", year);
+                return url;
+            },
             openDetails: function(id) {
                 shooting = this.shootings.find(function(shooting) {
                     return shooting.id == id
@@ -457,6 +549,9 @@
             }
         },
         computed: {
+            currentYear: function() {
+                return moment().format("YYYY")
+            },
             displayed_shootings: function() {
                 var self = this;
                 var displayed_shootings = this.shootings.slice();

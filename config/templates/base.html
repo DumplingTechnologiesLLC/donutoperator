@@ -7,21 +7,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery-confirm.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.floatThead.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/select2.full.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.form.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/moment.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/tempusdominus-bootstrap-4.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/vuex.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/Sortable.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/sha256.jquery.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/fuzzyset.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/select2.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/select2-bootstrap.css' %}">
@@ -34,7 +19,7 @@
     {% block custom_scripts %}
     {% endblock custom_scripts %}
 </head>
-<body id="body" style="overflow:hidden">
+<body id="body">
 
     <div id="nav_related">
        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -85,7 +70,8 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content" style="width:800px; margin-left:-25%">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add New Killing</h5>
+                        <h5 v-if="creating" class="modal-title">Add New Killing</h5>
+                        <h5 v-else class="modal-title">Edit Killing</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -227,22 +213,38 @@
         }, 3000)
     </script>
     <!-- main content here -->
-    <div id="loader_cover" class="loader" style="width:100%; height:100%; background-color:black; opacity:.8; z-index:2; position:absolute; left:0; top:0">
-        <div style="position: absolute; left: 45%; top:25%; z-index:3;">
-            <i id="loader" class="fa fa-circle-o-notch fa-spin fa-5x fa-fw" style="z-index:3"></i>
-        </div>
+    <div id="loader_cover" class="overlay" style="background: black; position: absolute; top: 20px; right: 0; bottom: 0; left: 0; opacity: 0.7; z-index: 999;">
+        <!-- <div style="position: absolute; left: 45%; top:25%; z-index:3;"> -->
+            <i id="loader" class="fa fa-circle-o-notch fa-spin fa-5x fa-fw overlay-text" style="margin-left: 150px; margin-top: -15px;"></i>
+            <span class="overlay-text">Now Loading</span>
+        <!-- </div> -->
     </div>
     <div class="container-fluid">
         {% block content %}
         {% endblock content %}
     </div>
-    
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-confirm.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.floatThead.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/select2.full.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/moment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/tempusdominus-bootstrap-4.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/vuex.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Sortable.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/sha256.jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/fuzzyset.js' %}"></script>
     <!-- javascript will go here -->
     {% block js %}
     {% endblock js %}
     <script type="text/javascript">
         {% if user.is_authenticated %}
         $(function() {
+
             $('#new_date').datetimepicker({
                 format:"L",
                 useCurrent: false,
@@ -292,8 +294,10 @@
             el: '#nav_related',
             delimiters: ["((","))"],
             data: {
+                creating: true,
                 tag_input: "",
                 shooting: {
+                    id: "",
                     name: "",
                     date: "",
                     race: "",
@@ -328,7 +332,9 @@
             },
             methods: {
                 clearModal: function() {
+                    this.creating = true
                     this.tag_input = ""
+                    this.shooting.id = ""
                     this.shooting.name = ""
                     this.shooting.date = ""
                     this.shooting.race = ""
@@ -347,50 +353,86 @@
                     $('#new_date').datetimepicker('clear');
                 },
                 submitKilling: function() {
-                    console.log(this.shooting)
                     data = {
                         csrfmiddlewaretoken: "{{csrf_token}}",
                         shooting: JSON.stringify(this.shooting)
                     }
                     date = this.shooting.date.format("YYYY-MM-DD")
                     data.shooting.date = date;
-                    $.ajax({
-                        type: "POST",
-                        url: "{% url 'roster:submit-killing' %}",
-                        data: data,
-                        success: function() {
-                            $.alert({
-                                title: 'Success!',
-                                content: 'Killing submitted. The page will now reload.',
-                                type: 'green',
-                                typeAnimated: true,
-                                autoClose: 'close|4000',
-                                buttons: {
-                                    close: function () {
-                                        window.location.reload()
+                    if (this.creating) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'roster:submit-killing' %}",
+                            data: data,
+                            success: function() {
+                                $.alert({
+                                    title: 'Success!',
+                                    content: 'Killing submitted. The page will now reload.',
+                                    type: 'green',
+                                    typeAnimated: true,
+                                    autoClose: 'close|4000',
+                                    buttons: {
+                                        close: function () {
+                                            window.location.reload()
+                                        }
                                     }
-                                }
-                            });
-                        },
-                        error: function(data) {
-                            console.log(data)
-                            $.confirm({
-                                title: 'Encountered an error!',
-                                content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
-                                type: 'red',
-                                typeAnimated: true,
-                                backgroundDismiss: false,
-                                buttons: {
-                                    close: function () {
+                                });
+                            },
+                            error: function(data) {
+                                console.log(data)
+                                $.confirm({
+                                    title: 'Encountered an error!',
+                                    content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
+                                    type: 'red',
+                                    typeAnimated: true,
+                                    backgroundDismiss: false,
+                                    buttons: {
+                                        close: function () {
+                                        }
                                     }
-                                }
-                            });
-                        },
-                    });
+                                });
+                            },
+                        });
+                    }
+                    else {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'roster:edit-killing' %}",
+                            data: data,
+                            success: function() {
+                                $.alert({
+                                    title: 'Success!',
+                                    content: 'Killing edited succesfully. The page will now reload.',
+                                    type: 'green',
+                                    typeAnimated: true,
+                                    autoClose: 'close|4000',
+                                    buttons: {
+                                        close: function () {
+                                            window.location.reload()
+                                        }
+                                    }
+                                });
+                            },
+                            error: function(data) {
+                                console.log(data)
+                                $.confirm({
+                                    title: 'Encountered an error!',
+                                    content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
+                                    type: 'red',
+                                    typeAnimated: true,
+                                    backgroundDismiss: false,
+                                    buttons: {
+                                        close: function () {
+                                        }
+                                    }
+                                });
+                            },
+                        });
+                    }
                 },
                 addTag: function() {
                     var self = this;
-                    $('#new_tags_select').append($("<option></option>").attr("value", self.tag_input).attr('selected', 'selected').text(self.tag_input));
+                    $('#new_tags_select').append($("<option></option>").attr("value", self.tag_input.trim()).attr('selected', 'selected').text(self.tag_input));
                     $("#new_tags_select").trigger("change")
                 },
                 removeSource: function() {
@@ -400,8 +442,16 @@
                     this.shooting.sources.push("")
                 },
                 openKillingModal: function() {
-                    console.log("clicked")
+                    var self = this;
                     $("#add_killing").modal("toggle")
+                    if (!self.creating ) {
+                        $("#new_date").datetimepicker("date", moment(self.shooting.date, "YYYY-MM-DD"))
+                        $("#new_state_select").val(self.shooting.state).trigger("change")
+                        $("#new_race_select").val(self.shooting.race).trigger("change")
+                        $("#new_tags_select").val(self.shooting.tags).trigger("change")
+                        $("#new_gender_select").val(self.shooting.gender).trigger("change");
+                    }
+                    console.log("clicked")
                 }
             }
         });
