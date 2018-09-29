@@ -19,6 +19,7 @@ for shooting in shootings:
         "city": shooting.city,
         "description": shooting.description,
         "video_url": shooting.video_url,
+        "unfiltered_video_url": shooting.unfiltered_video_url,
         "name": shooting.name,
         "age": shooting.age,
         "race": shooting.race,

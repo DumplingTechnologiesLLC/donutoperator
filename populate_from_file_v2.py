@@ -18,6 +18,7 @@ for entry in table_2018:
         city=entry["city"],
         description=entry["description"],
         video_url=entry["video_url"],
+        unfiltered_video_url=entry["unfiltered_video_url"],
         name=entry["name"],
         age=entry["age"],
         race=entry["race"],
