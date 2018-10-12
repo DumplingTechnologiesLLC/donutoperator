@@ -55,6 +55,8 @@ class Shooting(models.Model):
         (48, "WI"),
         (49, "WY"),
         (50, "DC"),
+        (51, "PR"),
+        (52, "GU"),
     )
     GENDER_CHOICES = (
         (0, "Male"),
