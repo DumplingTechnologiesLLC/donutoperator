@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
@@ -116,6 +116,7 @@ class RosterListView(View):
         print(distinct_tags)
         return render(request, "roster/index.html", {
             "shootings": [obj.as_dict() for obj in shootings],
+            "total": shootings.count(),
             "year": display_date.year,
             "states": Shooting.STATE_CHOICES,
             "races": Shooting.RACE_CHOICES,

@@ -7,9 +7,8 @@ django.setup()
 
 from roster.models import Shooting, Tag, Source
 
-fp = open("db_as_text.txt", "w")
-shootings = Shooting.objects.prefetch_related(
-    "sources").prefetch_related("tags").all()
+fp = open("db_backup.js", "w")
+shootings = Shooting.objects.all()
 shootings_as_json = []
 for shooting in shootings:
     data = {
@@ -36,5 +35,5 @@ for shooting in shootings:
         })
     shootings_as_json.append(data)
 
-with open("db_as_text.txt", 'w') as outfile:
+with open("db_backup.js", 'w') as outfile:
     json.dump(shootings_as_json, outfile)

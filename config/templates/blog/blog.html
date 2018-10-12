@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+     {# assuming that your base.html contains block content   #}
+     {#   and instance variable being supplied from view      #}
+
+
+{% block content %}
+    <div class="row" style="margin-top:40px;">
+    	<div class="col-lg-6 offset-lg-3">
+            <h3 > {{instance.title}} </h3><br>
+            <span class="text-muted">Published on: {{instance.publish_date|date:"M d, Y"}}</span><br>
+            <span class="text-muted">Last Modified: {{instance.modified|date:"M d, Y G:i"}}</span>
+            <span class="text-muted">Views: {{instance.views}}</span>
+            <hr>
+            <div> {{ instance.content | safe }}  </div>
+    	</div>
+    </div>
+    
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(function() {
+        $("#loader_cover").addClass("toggled");
+        $("#body").removeAttr("style");
+        $( "img" ).each(function( index ) {
+        	var src = $(this).attr("src");
+        	console.log(src.substring(2, src.length))
+        	$(this).attr("src", src.substring(2, src.length));
+		});
+    })
+</script>
+{% endblock js%}

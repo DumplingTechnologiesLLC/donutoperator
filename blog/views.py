@@ -1,3 +1,123 @@
+from django.views.generic import CreateView, DetailView
+from django.http import HttpResponseRedirect
+from django.views import View
+from blog.models import Post
+from filebrowser.sites import site
+from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from blog.forms import PostForm
 from django.shortcuts import render
+site.directory = "uploads/"
 
-# Create your views here.
+
+class PostDashboard(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "blog/blog_dashboard.html", {
+            "posts": Post.objects.all()
+        })
+
+    def post(self, request):
+        method = request.POST.get("action")
+        if method == "delete":
+            pk = request.POST.get("pk")
+            try:
+                article = Post.objects.get(pk=pk)
+                article.delete()
+                messages.success(request, "Article deleted successfully")
+                return HttpResponseRedirect(reverse("blog:dashboard"))
+            except Post.DoesNotExist:
+                messages.error(request, "We couldn't find that article in the database.")
+                return HttpResponseRedirect(reverse("blog:dashboard"))
+        elif method == "publish":
+            pk = request.POST.get("pk")
+            try:
+                article = Post.objects.get(pk=pk)
+                if article.published:
+                    article.published = False
+                    article.save()
+                    messages.success(
+                        request, "Article taken down from public view successfully.")
+                    return HttpResponseRedirect(reverse("blog:dashboard"))
+                else:
+                    article.published = True
+                    article.save()
+                    messages.success(request, "Article published successfully.")
+                    return HttpResponseRedirect(reverse("blog:dashboard"))
+            except Post.DoesNotExist:
+                messages.error(request, "We couldn't find that article in the database.")
+                return HttpResponseRedirect(reverse("blog:dashboard"))
+        else:
+            messages.warning(
+                request, "The server had an issue. We aren't sure what happened.")
+            return HttpResponseRedirect(reverse("blog:dashboard"))
+
+
+class PostIndexView(View):
+    def get(self, request):
+        return render(request, "blog/blog_index.html", {
+            "posts": Post.objects.all().exclude(published=False)
+        })
+
+
+class PostCreateView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        form = PostForm()
+        return render(request, "blog/create_blog.html", {
+            "form": form,
+        })
+
+    def post(self, request):
+        print(request.FILES)
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save(commit=False)
+            form.image = request.FILES.get("cover_image")
+            form.save()
+            messages.success(request, ("Article successfully submitted. Click publish"
+                                       " to make publically available"))
+            return HttpResponseRedirect(reverse("blog:dashboard"))
+        else:
+            messages.error(request, ("Please check the form for errors and try again."))
+            return render(request, "blog/create_blog.html", {
+                "form": form,
+            })
+
+
+class PostEditView(LoginRequiredMixin, View):
+
+    def get(self, request, pk):
+        post = Post.objects.get(pk=pk)
+        form = PostForm(instance=post)
+        return render(request, "blog/edit_blog.html", {
+            "form": form,
+        })
+
+    def post(self, request, pk):
+        post = Post.objects.get(pk=pk)
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save(commit=False)
+            form.image = request.FILES.get("cover_image")
+            form.save()
+            messages.success(request, ("Article successfully edited."))
+            return HttpResponseRedirect(reverse("blog:dashboard"))
+        else:
+            messages.error(request, ("Please check the form for errors and try again."))
+            return render(request, "blog/create_blog.html", {
+                "form": form,
+            })
+# class PostCreateView(CreateView):
+#     template_name = 'blog/create_blog.html'
+#     fields = ('content',)
+#     model = Post
+
+#     def get_success_url(self):
+#         return reverse('roster:index')
+
+
+class PostDisplayView(DetailView):
+    template_name = 'blog/blog.html'
+    context_object_name = 'instance'
+    model = Post

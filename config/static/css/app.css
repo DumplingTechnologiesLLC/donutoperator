@@ -11,6 +11,37 @@
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
+.ultimate_override {
+  width:100% !important;
+}
+.news-card {
+    overflow: hidden;
+    border-radius: 5px 5px 0 0;
+    -ms-flex: 1 1 300px;
+    flex: 1 1 300px;
+    flex-direction: column;
+    transition: all .4s;
+    overflow: hidden;
+    margin: 10px 20px 20px 10px;
+    min-height: 300px;
+    box-shadow: 5px 10px 30px rgba(39,128,227,.1), 1px 3px 8px rgba(39,128,227,.03); 
+}
+.news-card-bottom {
+  justify-content: space-between;
+  display:flex;
+  align-items: flex-end;
+}
+.news-image {
+    width: auto;
+    height: 200px !important;
+    background-size: cover;
+}
+.card:hover {
+    transform: scale(1.03);
+}
+[v-cloak] {
+  display: none;
+}
 /*.loader {
   width:100%;
   height:100%;
