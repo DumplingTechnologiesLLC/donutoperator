@@ -108,16 +108,16 @@ class PostEditView(LoginRequiredMixin, View):
             return render(request, "blog/create_blog.html", {
                 "form": form,
             })
-# class PostCreateView(CreateView):
-#     template_name = 'blog/create_blog.html'
-#     fields = ('content',)
-#     model = Post
-
-#     def get_success_url(self):
-#         return reverse('roster:index')
 
 
-class PostDisplayView(DetailView):
-    template_name = 'blog/blog.html'
-    context_object_name = 'instance'
-    model = Post
+class PostDisplayView(View):
+    def get(self, request, pk):
+        try:
+            post = Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            messages.error(request, "That article no longer exists.")
+            return HttpResponseRedirect(reverse("blog:blog-index"))
+        return render(request, "blog/blog.html", {
+            "instance": post,
+            "posts": Post.objects.all().exclude(pk=post.id)
+        })
