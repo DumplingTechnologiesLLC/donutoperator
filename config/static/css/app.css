@@ -11,6 +11,30 @@
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
+.facebook-button {
+  background-color: #4267B2;
+  color: white;
+  padding: 15px;
+  border-radius: 50%;
+  padding-left: 18px;
+  padding-right: 15px;
+  font-size: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width:50px;
+}
+.twitter-button {
+  background-color: #1B95E0;
+  color: white;
+  padding: 15px;
+  border-radius: 50%;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width:50px;
+}
 .ultimate_override {
   width:100% !important;
 }

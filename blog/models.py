@@ -30,6 +30,7 @@ class Post(models.Model):
     created = models.DateTimeField("Creation Date", editable=False)
     publish_date = models.DateTimeField("Publish Date", null=True, blank=True)
     modified = models.DateTimeField("Last Modified", editable=False)
+    authors = models.CharField("Authors", max_length=100, default="Donutoperator")
     cover_image = models.ImageField(
         default='DonutsDonut.png', upload_to=image_directory_path, storage=image_storage)
     views = models.IntegerField(default=0)
