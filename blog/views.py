@@ -1,4 +1,4 @@
-from django.views.generic import CreateView, DetailView
+from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.views import View
 from blog.models import Post
@@ -35,12 +35,14 @@ class PostDashboard(LoginRequiredMixin, View):
                 article = Post.objects.get(pk=pk)
                 if article.published:
                     article.published = False
+                    article.publish_date = None
                     article.save()
                     messages.success(
                         request, "Article taken down from public view successfully.")
                     return HttpResponseRedirect(reverse("blog:dashboard"))
                 else:
                     article.published = True
+                    article.publish_date = timezone.now()
                     article.save()
                     messages.success(request, "Article published successfully.")
                     return HttpResponseRedirect(reverse("blog:dashboard"))
@@ -100,6 +102,7 @@ class PostEditView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save(commit=False)
             form.image = request.FILES.get("cover_image")
+            form.modified = timezone.now()
             form.save()
             messages.success(request, ("Article successfully edited."))
             return HttpResponseRedirect(reverse("blog:dashboard"))
@@ -114,6 +117,8 @@ class PostDisplayView(View):
     def get(self, request, pk):
         try:
             post = Post.objects.get(pk=pk)
+            post.views += 1
+            post.save()
         except Post.DoesNotExist:
             messages.error(request, "That article no longer exists.")
             return HttpResponseRedirect(reverse("blog:blog-index"))
