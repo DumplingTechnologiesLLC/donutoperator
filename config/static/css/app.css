@@ -36,7 +36,7 @@
     height: 200px !important;
     background-size: cover;
 }
-.card:hover {
+.news-card:hover {
     transform: scale(1.03);
 }
 [v-cloak] {
