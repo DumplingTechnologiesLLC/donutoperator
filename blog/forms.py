@@ -24,10 +24,13 @@ class PostForm(forms.ModelForm):
         required=False,
         help_text="It is strongly recommended that you choose an image with dimensions 200px x 250px")
 
+    authors = forms.CharField(initial="Donutoperator")
+
     class Meta:
         model = Post
         fields = [
             "title",
+            "authors",
             "description",
             "read_length",
             "content",
