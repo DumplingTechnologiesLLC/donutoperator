@@ -22,7 +22,7 @@
 						<p style="word-wrap: break-word; max-width:200px; overflow:hidden; max-height:50px; text-overflow: ellipsis" class="card-text mb-auto">{{post.description}}</p>
 						<a href="{% url 'blog:display' pk=post.id %}" class="btn btn-outline-primary" style='margin-top:5px'>Read article</a>
 					</div>
-					<img class="card-img-top news-image" src="{{post.cover_image.url}}" alt="Card image cap" style="width: 200px; height: 250px;">
+					<img class="card-img-top news-image" src="{{post.cover_image.url}}" alt="Card image cap" style="width: auto; height: 250px; align-self:center">
 				</div>
 				{% empty %}
 				<div class="jumbotron" style="margin-left: auto; margin-top: 30px;">
