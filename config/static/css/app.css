@@ -1,7 +1,46 @@
 .custom-select2 {
   color:red !important;
   background-color:blue;
-} 
+}
+.social-media-container {
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+@media only screen and (max-width: 600px) {
+  .social-media-container {
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
+.reddit-button {
+  color: #FE4500;
+  font-size: 47px;
+  margin-top: -9px;
+}
+@media only screen and (max-width: 600px) {
+  .reddit-button {
+    color: #FE4500;
+    font-size: 47px;
+    margin-top: -9px;
+    margin-left:5px;
+  }
+}
+.reddit-button:hover {
+  color: #FE4500;
+  text-decoration: none;
+}
+.social-media-buttons {
+  display:flex;
+  flex-direction:column;
+}
+@media only screen and (max-width: 600px) {
+  .social-media-buttons {
+    display:flex;
+    flex-direction:row;
+  }
+}
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -12,16 +51,24 @@
                                   supported by Chrome and Opera */
 }
 .facebook-button {
-  background-color: #4267B2;
-  color: white;
-  padding: 15px;
-  border-radius: 50%;
-  padding-left: 18px;
-  padding-right: 15px;
-  font-size: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  width:50px;
+  color: #4267B2;
+}
+.facebook-button:hover {
+  text-deocration: none;
+}
+@media only screen and (max-width: 600px) {
+  .facebook-button {
+    color: #4267B2;
+    margin-right:5px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .twitter-override {
+    margin-top:10px;
+  }
+}
+.twitter-override {
+
 }
 .twitter-button {
   background-color: #1B95E0;
