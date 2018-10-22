@@ -1,19 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
 
-     {# assuming that your base.html contains block content   #}
-     {#   and instance variable being supplied from view      #}
-
 
 {% block content %}
     <div class="row" style="margin-top:40px;">
-    	<div class="col-lg-3" style="display:flex; flex-direction: row; justify-content: flex-end;">
-    		<div style="display:flex; flex-direction:column">
+    	<div class="col-lg-3 social-media-container">
+    		<div class="social-media-buttons">
 	    		<a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fdonutoperator.herokuapp.com%2Fposts%2F{{instance.id}}" target="_blank" class="facebook-button" style="margin-bottom:5px">
-					<i class="fa fa-facebook" aria-hidden="true"></i>
+                    <img src="{% static 'facebook-button.png' %}" style="width: 50px; height:50px;">
 				</a>
 				<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="Check out Donut&#39;s take on this!" data-hashtags="Donutoperator" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    			
+    			<a class="reddit-button" href="//www.reddit.com/submit?url=http%3A%2F%2Fdonutoperator.herokuapp.com%2Fposts%2F{{instance.id}}">
+                    <i class="fa fa-reddit" aria-hidden="true"></i>
+                </a>
     		</div>
 			<!-- <a href="https://twitter.com/share?ref_src=http%3A%2F%2Fdonutoperator.herokuapp.com%2Fposts%2F{{instance.id}}" class="twitter-button" data-show-count="false"><i class="fa fa-twitter" aria-hidden="true"></i></a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> -->
 			<!-- <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> -->
@@ -46,6 +45,7 @@
 
     $(function() {
     	setTimeout(function() {
+            $("#twitter-widget-1").addClass("twitter-override");
     		$("#b").addClass("twitter-button");
     	},3500)
   //   	var isMobile = false; //initiate as false
