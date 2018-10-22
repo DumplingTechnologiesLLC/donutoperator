@@ -1,3 +1,4 @@
+from copy import deepcopy
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.views import View
@@ -119,10 +120,36 @@ class PostDisplayView(View):
             post = Post.objects.get(pk=pk)
             post.views += 1
             post.save()
+            copied_post = deepcopy(post)
+            print(copied_post.content)
+            print("")
+            print("")
+            print("")
+            while "```" in copied_post.content:
+                start = copied_post.content.index("```")
+                end = copied_post.content.index("```", start + 1)
+                quote = copied_post.content[start + 3: end]
+                while "<p>" in quote:
+                    start_of_p = quote.index("<p>")
+                    prior_to_p = quote[:start_of_p]
+                    try:
+                    	end_of_p = quote.index("</p>", start_of_p)
+                    except ValueError:
+                    	break
+                    after_p = quote[end_of_p:]
+                    inner_quote = quote[start_of_p + 3: end_of_p]
+                    quote = prior_to_p + '<p style="display:flex; justify-content:center; align-items:center;">' + \
+                        inner_quote + after_p
+                prior_to_quote = copied_post.content[0:start - 3]
+                after_quote = copied_post.content[end + 3:]
+                prior_to_quote = prior_to_quote[0:-1] + \
+                    '<p style="display:flex; justify-content:center; align-items:center;">'
+                copied_post.content = prior_to_quote + quote + after_quote
+            print(copied_post.content)
         except Post.DoesNotExist:
             messages.error(request, "That article no longer exists.")
             return HttpResponseRedirect(reverse("blog:blog-index"))
         return render(request, "blog/blog.html", {
-            "instance": post,
+            "instance": copied_post,
             "posts": Post.objects.all().exclude(pk=post.id)
         })
