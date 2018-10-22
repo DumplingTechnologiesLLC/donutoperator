@@ -121,10 +121,8 @@ class PostDisplayView(View):
             post.views += 1
             post.save()
             copied_post = deepcopy(post)
-            print(copied_post.content)
-            print("")
-            print("")
-            print("")
+            # this is so that the html is displayed with quotes correctly, without
+            # modifying the text that Donut writes so he can still edit it
             while "```" in copied_post.content:
                 start = copied_post.content.index("```")
                 end = copied_post.content.index("```", start + 1)
@@ -145,7 +143,6 @@ class PostDisplayView(View):
                 prior_to_quote = prior_to_quote[0:-1] + \
                     '<p style="display:flex; justify-content:center; align-items:center;">'
                 copied_post.content = prior_to_quote + quote + after_quote
-            print(copied_post.content)
         except Post.DoesNotExist:
             messages.error(request, "That article no longer exists.")
             return HttpResponseRedirect(reverse("blog:blog-index"))
