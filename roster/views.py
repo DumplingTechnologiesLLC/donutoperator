@@ -66,9 +66,7 @@ class EditShootingView(LoginRequiredMixin, View):
 
 class SubmitShootingView(LoginRequiredMixin, View):
     def post(self, request):
-        # print(request.POST)
         data = json.loads(request.POST.get("shooting"))
-        # print(data)
         url = None
         if (data["video_url"] is not None and len(data["video_url"]) > 0 and
                 data["video_url"].find("?") > -1):
