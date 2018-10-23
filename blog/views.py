@@ -136,12 +136,12 @@ class PostDisplayView(View):
                     	break
                     after_p = quote[end_of_p:]
                     inner_quote = quote[start_of_p + 3: end_of_p]
-                    quote = prior_to_p + '<p style="display:flex; justify-content:center; align-items:center;">' + \
+                    quote = prior_to_p + '<p style="display:flex; justify-content:center; align-items:center; font-style:italic">' + \
                         inner_quote + after_p
                 prior_to_quote = copied_post.content[0:start - 3]
                 after_quote = copied_post.content[end + 3:]
                 prior_to_quote = prior_to_quote[0:-1] + \
-                    '<p style="display:flex; justify-content:center; align-items:center;">'
+                    '<p style="display:flex; justify-content:center; align-items:center; font-style:italic">'
                 copied_post.content = prior_to_quote + quote + after_quote
         except Post.DoesNotExist:
             messages.error(request, "That article no longer exists.")

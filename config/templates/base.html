@@ -39,7 +39,7 @@
                         <a class="nav-link" href="{% url 'blog:blog-index' %}">News Blog</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="{% url 'about-page' %}">About</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav navbar-right">
@@ -163,9 +163,12 @@
                             </div>
                             <label for="new_race_select">Sources</label>
                             <div v-for="source, index in shooting.sources" class="form-group row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-11">
                                     <input type="text" class="form-control" v-model="shooting.sources[index]">
                                      <small id="fileHelp" class="form-text text-muted">Provide the full, unshortened url. I'll handle the rest.</small>
+                                </div>
+                                <div class="col-lg-1">
+                                    <button v-on:click="spliceSource(index)" type="button" class="btn btn-danger"><i style="font-size:16px" class="fa fa-trash fa-2" aria-hidden="true"></i></button>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -173,7 +176,7 @@
                                     <button class="btn btn-block btn-secondary" type="button" v-on:click="addSource">Add Source</button>
                                 </div>
                                 <div class="col-lg-6">
-                                    <button class="btn btn-block btn-danger" type="button" v-on:click="removeSource">Remove Source</button>
+                                    <button class="btn btn-block btn-danger" type="button" v-on:click="removeSource">Remove Last Source</button>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -358,6 +361,82 @@
                     $('#new_date').datetimepicker('clear');
                 },
                 submitKilling: function() {
+                    if (this.shooting.video_url.length > 0 && this.shooting.video_url.search(/http[s]*:\/\/www\.youtube\.com\/watch\?v=/) < 0) {
+                        $.confirm({
+                            title: 'Please review your submission',
+                            content: "The video URL must be a valid, unshortened Youtube URL.",
+                            type: 'red',
+                            typeAnimated: true,
+                            backgroundDismiss: false,
+                            buttons: {
+                                close: function () {
+                                }
+                            }
+                        });
+                        return;
+                    }
+                    else if (this.shooting.video_url.length > 0 && this.shooting.video_url.search(/http[s]*:\/\/www\.youtube\.com\/watch\?v=/) > -1) {
+                        if (this.shooting.video_url.indexOf("&") > -1) {
+                            this.shooting.video_url = this.shooting.video_url.substring(0, this.shooting.video_url.indexOf("&"));
+                        }
+                    }
+
+                    if (this.shooting.date == "") {
+                        $.confirm({
+                            title: 'Please review your submission',
+                            content: "Date cannot be blank.",
+                            type: 'red',
+                            typeAnimated: true,
+                            backgroundDismiss: false,
+                            buttons: {
+                                close: function () {
+                                }
+                            }
+                        });
+                        return;
+                    }
+                    if (this.shooting.state == "") {
+                        $.confirm({
+                            title: 'Please review your submission',
+                            content: "State cannot be blank.",
+                            type: 'red',
+                            typeAnimated: true,
+                            backgroundDismiss: false,
+                            buttons: {
+                                close: function () {
+                                }
+                            }
+                        });
+                        return;
+                    }
+                    if (this.shooting.race == "") {
+                        $.confirm({
+                            title: 'Please review your submission',
+                            content: "Race cannot be blank.",
+                            type: 'red',
+                            typeAnimated: true,
+                            backgroundDismiss: false,
+                            buttons: {
+                                close: function () {
+                                }
+                            }
+                        });
+                        return;
+                    }
+                    if (this.shooting.gender == "") {
+                        $.confirm({
+                            title: 'Please review your submission',
+                            content: "Gender cannot be blank.",
+                            type: 'red',
+                            typeAnimated: true,
+                            backgroundDismiss: false,
+                            buttons: {
+                                close: function () {
+                                }
+                            }
+                        });
+                        return;
+                    }
                     data = {
                         csrfmiddlewaretoken: "{{csrf_token}}",
                         shooting: JSON.stringify(this.shooting)
@@ -385,17 +464,32 @@
                             },
                             error: function(data) {
                                 console.log(data)
-                                $.confirm({
-                                    title: 'Encountered an error!',
-                                    content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
-                                    type: 'red',
-                                    typeAnimated: true,
-                                    backgroundDismiss: false,
-                                    buttons: {
-                                        close: function () {
+                                if (data.status == 400) {
+                                    $.confirm({
+                                        title: 'Please review your submission',
+                                        content: data.responseText,
+                                        type: 'red',
+                                        typeAnimated: true,
+                                        backgroundDismiss: false,
+                                        buttons: {
+                                            close: function () {
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
+                                else {
+                                    $.confirm({
+                                        title: 'Encountered an error!',
+                                        content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
+                                        type: 'red',
+                                        typeAnimated: true,
+                                        backgroundDismiss: false,
+                                        buttons: {
+                                            close: function () {
+                                            }
+                                        }
+                                    });
+                                }
                             },
                         });
                     }
@@ -420,17 +514,32 @@
                             },
                             error: function(data) {
                                 console.log(data)
-                                $.confirm({
-                                    title: 'Encountered an error!',
-                                    content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
-                                    type: 'red',
-                                    typeAnimated: true,
-                                    backgroundDismiss: false,
-                                    buttons: {
-                                        close: function () {
+                                if (data.status == 400) {
+                                    $.confirm({
+                                        title: 'Please review your submission',
+                                        content: data.responseText,
+                                        type: 'red',
+                                        typeAnimated: true,
+                                        backgroundDismiss: false,
+                                        buttons: {
+                                            close: function () {
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
+                                else {
+                                    $.confirm({
+                                        title: 'Encountered an error!',
+                                        content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
+                                        type: 'red',
+                                        typeAnimated: true,
+                                        backgroundDismiss: false,
+                                        buttons: {
+                                            close: function () {
+                                            }
+                                        }
+                                    });
+                                }
                             },
                         });
                     }
@@ -439,6 +548,9 @@
                     var self = this;
                     $('#new_tags_select').append($("<option></option>").attr("value", self.tag_input.trim()).attr('selected', 'selected').text(self.tag_input));
                     $("#new_tags_select").trigger("change")
+                },
+                spliceSource: function(index) {
+                    this.shooting.sources.splice(index, 1);
                 },
                 removeSource: function() {
                     this.shooting.sources.pop()

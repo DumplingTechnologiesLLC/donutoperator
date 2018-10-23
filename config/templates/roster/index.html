@@ -473,6 +473,9 @@
                         else {
                             nav_app.shooting.video_url = this.shootings[x].unfiltered_video_url
                         }
+                        if (this.shootings[x].age == -1) {
+                            nav_app.shooting.age = "";
+                        }
                         nav_app.shooting.sources = this.shootings[x].sources
                         nav_app.shooting.description = this.shootings[x].description
                         nav_app.shooting.tags = tags
