@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'roster',
     'widget_tweaks',
     'blog',
+    'bodycams',
 ]
 
 MIDDLEWARE = [
