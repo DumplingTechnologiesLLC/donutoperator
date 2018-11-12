@@ -11,12 +11,49 @@ import json
 # Create your views here.
 
 
-def convert_format(url):
-    url = url.split("?")[1][2:]
-    pre_format = '<iframe width="100%" height="315" src="https://www.youtube.com/embed/'
-    post_format = ('" frameborder="0" allow="autoplay; encrypted-'
-                   'media" allowfullscreen></iframe>')
-    return pre_format + url + post_format
+def connect_sources_and_tags(shooting, data):
+    """Adds all sources and tags within data to given Shooting
+
+    {
+        "sources": [string, string,...],
+        "tags": [string, string,...]
+    }
+
+    Arguments:
+    :param shooting: a Shooting Django ORM object
+    :param data: a dictionary with an array of strings for sources, and array of strings
+        for tags as described above
+
+    Returns:
+    Nothing
+    """
+    for source in data["sources"]:
+        if Source.objects.filter(text=source, shooting=shooting).count() == 0:
+            Source.objects.create(
+                text=source,
+                shooting=shooting
+            )
+    for tag in data["tags"]:
+        if Tag.objects.filter(text=tag, shooting=shooting).count() == 0:
+            Tag.objects.create(
+                text=tag,
+                shooting=shooting
+            )
+
+
+def create_html_errors(form):  # pragma: no cover
+    """Creates an HTML string of the form's errors
+
+    Arguments:
+    :param form: an invalid Django form
+
+    Returns:
+    a string of the rrors concatenated together.
+    """
+    error_string = ""
+    for key, error in form.errors.items():
+        error_string += "{}: {}<br>".format(key, error)
+    return error_string
 
 
 class DeleteShootingView(LoginRequiredMixin, View):
@@ -32,121 +69,54 @@ class DeleteShootingView(LoginRequiredMixin, View):
 class EditShootingView(LoginRequiredMixin, View):
     def post(self, request):
         data = json.loads(request.POST.get("shooting"))
+        data["date"] = data["date"].split("T")[0]
+        if (isinstance(data["age"], str) and
+                len(data["age"]) == 0) or data["age"] is None:
+            data["age"] = -1
+        else:
+            data["age"] = int(data["age"])
+            if data["age"] < 0:
+                return HttpResponse(
+                    "Please provide a positive number for the age", status=400)
         try:
             shooting = Shooting.objects.get(pk=int(data["id"]))
         except Shooting.DoesNotExist as e:
             return HttpResponse(str(e), status=500, )
-        url = None
-        if (data["video_url"] is not None and len(data["video_url"]) > 0 and
-                data["video_url"].find("?") > -1):
-            url = convert_format(data["video_url"])
-            shooting.unfiltered_video_url = data["video_url"]
-        elif data["video_url"].find("?") < 0 and len(data["video_url"]) > 0:
-            return HttpResponse("Please provide a valid video url", status=400)
-        try:
-            name = data["name"]
-            if len(name) == 0:
-                name = "No Name"
-            city = data["city"]
-            if len(city) == 0:
-                city = "Unknown"
-            age = data["age"]
-            if (isinstance(age, str) and len(age) == 0) or age is None:
-                age = -1
-            else:
-                age = int(age)
-                if age < 0:
-                    return HttpResponse(
-                        "Please provide a positive number for the age", status=400)
-            shooting.state = int(data["state"])
-            shooting.city = city
-            shooting.description = data["description"]
-            shooting.video_url = url
-            shooting.name = name
-            shooting.age = age
-            shooting.race = int(data["race"])
-            shooting.gender = int(data["gender"])
-            shooting.date = data["date"].split("T")[0]
+        form = ShootingModelForm(data, instance=shooting)
+        if form.is_valid():
+            shooting = form.save()
             shooting.tags.all().delete()
             shooting.sources.all().delete()
+            shooting.unfiltered_video_url = data["video_url"]
             shooting.save()
-            for source in data["sources"]:
-                if Source.objects.filter(text=source, shooting=shooting).count() == 0:
-                    Source.objects.create(
-                        text=source,
-                        shooting=shooting
-                    )
-            for tag in data["tags"]:
-                if Tag.objects.filter(text=tag, shooting=shooting).count() == 0:
-                    Tag.objects.create(
-                        text=tag,
-                        shooting=shooting
-                    )
+            connect_sources_and_tags(shooting, data)
             return HttpResponse(status=200)
-        except Exception as e:
-            message = "<br><br>error: {}<br><br>data: {}".format(
-                str(e), json.dumps(data))
-            return HttpResponse(message, status=500)
+        return HttpResponse(create_html_errors(form), status=400)
 
 
 class SubmitShootingView(LoginRequiredMixin, View):
     def post(self, request):
         data = json.loads(request.POST.get("shooting"))
-        url = None
-        if (data["video_url"] is not None and len(data["video_url"]) > 0 and
-                data["video_url"].find("?") > -1):
-            url = convert_format(data["video_url"])
-        elif data["video_url"].find("?") < 0 and len(data["video_url"]) > 0:
-            return HttpResponse("Please provide a valid video URL", status=400, )
-        try:
-            name = data["name"]
-            if len(name) == 0:
-                name = "No Name"
-            city = data["city"]
-            if len(city) == 0:
-                city = "Unknown"
-            age = data["age"]
-            if (isinstance(age, str) and len(age) == 0) or age is None:
-                age = -1
-            else:
-                age = int(age)
-                if age < 0:
-                    return HttpResponse(
-                        "Please provide a positive number for the age", status=400)
-            date = data["date"].split("T")[0]
-            shooting = Shooting.objects.create(
-                state=int(data["state"]),
-                city=city,
-                description=data["description"],
-                video_url=url,
-                name=name,
-                age=age,
-                race=int(data["race"]),
-                gender=int(data["gender"]),
-                date=date,
-            )
-            for source in data["sources"]:
-                Source.objects.create(
-                    text=source,
-                    shooting=shooting
-                )
-            for tag in data["tags"]:
-                Tag.objects.create(
-                    text=tag,
-                    shooting=shooting
-                )
-            return HttpResponse(status=200)
-        except Exception as e:
-            message = "<br><br>error: {}<br><br>data: {}".format(
-                str(e), json.dumps(data))
-            return HttpResponse(message, status=500, )
+        data["date"] = data["date"].split("T")[0]
+        if (isinstance(data["age"], str) and
+                len(data["age"]) == 0) or data["age"] is None:
+            data["age"] = -1
+        else:
+            data["age"] = int(data["age"])
+            if data["age"] < 0:
+                return HttpResponse(
+                    "Please provide a positive number for the age", status=400)
+        form = ShootingModelForm(data)
+        if form.is_valid():
+            shooting = form.save()
+            shooting.unfiltered_video_url = data["video_url"]
+            shooting.save()
+            connect_sources_and_tags(shooting, data)
+            return HttpResponse(shooting.id, status=200)
+        return HttpResponse(create_html_errors(form), status=400)
 
 
 class RosterListView(View):
-    '''
-        This gets called when no year is passed through the url.
-    '''
-
     def get(self, request, date=datetime.datetime.now().year):
         display_date = datetime.datetime(int(date), 1, 1, 0, 0)
         shootings = Shooting.objects.filter(

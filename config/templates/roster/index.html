@@ -52,6 +52,7 @@
                                     <option></option>
                                     <option v-for="tag in all_tags" v-bind:value="tag.value">((tag.display))</option>
                                 </select>
+                                <small class="text-muted">Killings with 1 or more matches will be displayed</small>
                             </div>
                         </div>
                          <div class="form-group row">
@@ -259,23 +260,17 @@
 
 {% block js %}
 <script type="text/javascript">
-    setTimeout(function() {
-        // loader is on base.html. Blocks the user from doing anything until page loads
-        $("#loader_cover").addClass("toggled");
-        $("#body").removeAttr("style")
-    },2000);
     $(function() {
-        // $("#shootings_table").floatThead({
-        //     scrollContainer: function($table){
-        //         return $table.closest('.wrapper');
-        //     }
-        // });
+        setTimeout(function() {
+            // loader is on base.html. Blocks the user from doing anything until page loads
+            $("#loader_cover").addClass("toggled");
+            $("#body").removeAttr("style")
+        },2000);
         $("#state_select").select2({
             theme: "bootstrap",
             placeholder: "Select state or states"
         })
         $('#state_select').on("change", function(e) { 
-            // what you would like to happen
             vue_app.states_selected = $(this).val();
         });
         $("#race_select").select2({
@@ -283,7 +278,6 @@
             placeholder: "Select race or races"
         })
         $('#race_select').on("change", function(e) { 
-            // what you would like to happen
             vue_app.races_selected = $(this).val();
         });
         $("#tag_select").select2({
@@ -291,7 +285,6 @@
             placeholder: "Select tag or tags"
         })
         $('#tag_select').on("change", function(e) { 
-            // what you would like to happen
             vue_app.tags_selected = $(this).val();
         });
         $("#gender_select").select2({
@@ -299,7 +292,6 @@
             placeholder: "Select gender or genders"
         })
         $('#gender_select').on("change", function(e) { 
-            // what you would like to happen
             vue_app.genders_selected = $(this).val();
         });
         $('#start_date').datetimepicker({
@@ -317,15 +309,6 @@
             vue_app.end_date = $('#end_date').datetimepicker('viewDate');
         });
     })
-    // $.get("https://cors-anywhere.herokuapp.com/http://www.killedbypolice.net/kbp2018", function(data) {
-    //     raw_text = data;
-    //     start_point = raw_text.indexOf('<table border="1" Cellspacing="0" Cellpadding="0" Width="100%" background="">')
-    //     ripped_table = "";
-    //     while (ripped_table.indexOf("</table>") < 0) {
-    //         ripped_table += raw_text[start_point++]
-    //     }
-    //     console.log(ripped_table)
-    // })
     var vue_app = new Vue({
         el: '#app',
         delimiters: ["((","))"],
@@ -513,10 +496,10 @@
                 $.each(self.order, function(key, value) {
                     self.order[key] = 0;
                 });
-                $("#state_select").val("").trigger("change")
-                $("#race_select").val("").trigger("change")
-                $("#tag_select").val("").trigger("change")
-                $("#gender_select").val("").trigger("change");
+                $("#state_select").val([]).trigger("change")
+                $("#race_select").val([]).trigger("change")
+                $("#tag_select").val([]).trigger("change")
+                $("#gender_select").val([]).trigger("change");
                 this.name = "";
                 this.city = "";
                 this.states_selected = [];
@@ -579,21 +562,21 @@
                 }
                 if (this.states_selected.length > 0) {
                     displayed_shootings = displayed_shootings.filter(function(shooting) {
-                        if (self.states_selected.indexOf(shooting.state_value) > -1) {
+                        if (self.states_selected.indexOf("" + shooting.state_value) > -1) {
                             return true;
                         }
                     })
                 }
                 if (this.genders_selected.length > 0) {
                     displayed_shootings = displayed_shootings.filter(function(shooting) {
-                        if (self.genders_selected.indexOf(shooting.gender_value) > -1) {
+                        if (self.genders_selected.indexOf("" + shooting.gender_value) > -1) {
                             return true;
                         }
                     })
                 }
                 if (this.races_selected.length > 0) {
                     displayed_shootings = displayed_shootings.filter(function(shooting) {
-                        if (self.races_selected.indexOf(shooting.race_value) > -1) {
+                        if (self.races_selected.indexOf("" + shooting.race_value) > -1) {
                             return true;
                         }
                     })
@@ -601,7 +584,7 @@
                 if (this.tags_selected.length > 0) {
                     displayed_shootings = displayed_shootings.filter(function(shooting) {
                         for (var y = 0; y < shooting.tags.length; y++) {
-                            if (self.tags_selected.indexOf(shooting.tags[y].text) > -1) {
+                            if (self.tags_selected.indexOf("" + shooting.tags[y].text) > -1) {
                                 return true;
                             }
                         }
@@ -609,7 +592,7 @@
                 }
                 if (this.start_date.length != 0) {
                     displayed_shootings = displayed_shootings.filter(function(shooting) {
-                        var date = moment(shooting.date, "MMMM D, YYYY");
+                        var date = moment(shooting.date, "YYYY-MM-DD");
                         if (self.start_date < date) {
                             return true;
                         }
@@ -617,7 +600,7 @@
                 }
                 if (this.end_date.length != 0) {
                     displayed_shootings = displayed_shootings.filter(function(shooting) {
-                        var date = moment(shooting.date, "MMMM D, YYYY");
+                        var date = moment(shooting.date, "YYYY-MM-DD");
                         if (self.end_date > date) {
                             return true;
                         }
@@ -628,10 +611,10 @@
                     if (order_order == 1) {
                         displayed_shootings.sort(function(a , b) {
                             if (self.order_attribute == "date") {
-                                if (moment(a[self.order_attribute], "MMMM DD, YYYY").isBefore(moment(b[self.order_attribute], "MMMM DD, YYYY"))) {
+                                if (moment(a[self.order_attribute], "YYYY-MM-DD").isBefore(moment(b[self.order_attribute], "YYYY-MM-DD"))) {
                                     return 1;
                                 }
-                                else if (moment(b[self.order_attribute], "MMMM DD, YYYY").isBefore(moment(a[self.order_attribute], "MMMM DD, YYYY"))) {
+                                else if (moment(b[self.order_attribute], "YYYY-MM-DD").isBefore(moment(a[self.order_attribute], "YYYY-MM-DD"))) {
                                     return -1;
                                 }
                                 return 0
@@ -644,10 +627,10 @@
                     else {
                         displayed_shootings.sort(function(a , b) {
                             if (self.order_attribute == "date") {
-                                if (moment(a[self.order_attribute], "MMMM DD, YYYY").isBefore(moment(b[self.order_attribute], "MMMM DD, YYYY"))) {
+                                if (moment(a[self.order_attribute], "YYYY-MM-DD").isBefore(moment(b[self.order_attribute], "YYYY-MM-DD"))) {
                                     return -1;
                                 }
-                                else if (moment(b[self.order_attribute], "MMMM DD, YYYY").isBefore(moment(a[self.order_attribute], "MMMM DD, YYYY"))) {
+                                else if (moment(b[self.order_attribute], "YYYY-MM-DD").isBefore(moment(a[self.order_attribute], "YYYY-MM-DD"))) {
                                     return 1;
                                 }
                                 return 0
@@ -662,7 +645,5 @@
             }
         }
     })
-
-// console.log(ripped_table)
 </script>
 {% endblock %}

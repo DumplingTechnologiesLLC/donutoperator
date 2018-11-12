@@ -32,6 +32,7 @@ urlpatterns = [
     url("^grappelli/", include("grappelli.urls")),
     url(r'', include('roster.urls')),
     url(r'', include('blog.urls')),
+    url(r'', include('bodycams.urls')),
 ]
 
 if settings.DEBUG:

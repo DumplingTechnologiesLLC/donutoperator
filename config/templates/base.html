@@ -33,7 +33,7 @@
             <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Bodycam Database</a>
+                        <a class="nav-link" href="{% url 'bodycams:bodycams' %}">Bodycam Database</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'blog:blog-index' %}">News Blog</a>
@@ -41,6 +41,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'about-page' %}">About</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://donut-operator.myshopify.com/">Donut's Shop</a>
+                    </li>
+                    
                 </ul>
                 <ul class="navbar-nav navbar-right">
                     {% if user.is_superuser %}
@@ -50,7 +54,8 @@
                         </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <button class="dropdown-item" onclick="$('#add_killing').modal('toggle')">Submit New Killing</button>
-                    <a class="dropdown-item" href="#">Submit New Bodycam</a>
+                    <button class="dropdown-item" onclick="$('#add_bodycam').modal('toggle')">Submit New Bodycam</button>
+                    <a class="dropdown-item" href="{% url 'bodycams:dashboard' %}">Manage Bodycams</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{% url 'blog:create' %}">Submit News Story</a>
                     <a class="dropdown-item" href="{% url 'blog:dashboard' %}">Manage Articles</a>
@@ -76,7 +81,7 @@
                     <div class="modal-header">
                         <h5 v-if="creating" class="modal-title">Add New Killing</h5>
                         <h5 v-else class="modal-title">Edit Killing</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button v-on:click="clearModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -87,16 +92,11 @@
                                     <label for="new_tags_select">What tags would you like to associate to this killing?</label>
                                     <select id="new_tags_select" class="form-control" style="width:100%" multiple="multiple">
                                         <option></option>
-                                        <option v-for="tag in all_tags" v-bindvalue="((tag.value))">((tag.display))</option>
+                                        <option v-for="tag in all_tags" v-bind:value="((tag.value))">((tag.display))</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-4">
-                                    <label for="new_age">Add new tag</label>
-                                    <input type="text" class="form-control" v-model="tag_input">
-                                </div>
-                                <div class="col-lg-2">
-                                    <label style="color:white" for="new_age">Add new tag</label>
-                                    <button type="button" class="btn btn-secondary" v-on:click="addTag">Add</button>
+                                 <div class="col-lg-6">
+                                    <label style="" for="new_age">If you want to add a new tag, just type it in the dropdown and select it</label>
                                 </div>
                             </div>
                              <div class="form-group row">
@@ -197,6 +197,102 @@
                 </div>
             </div>
         </div>
+        <div id="add_bodycam" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="width:800px; margin-left:-25%">
+                    <div class="modal-header">
+                        <h5 v-if="creating_bodycam" class="modal-title">Add New Bodycam</h5>
+                        <h5 v-else class="modal-title">Edit Bodycam</h5>
+                        <button v-on:click="clearBodycamModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" >
+                        <form class="form" action="" method="post">
+                            <div class="form-group row">
+                                <div class="col-lg-6">
+                                    <label for="new_bodycam_tags_select">What tags would you like to associate to this bodycam?</label>
+                                    <select id="new_bodycam_tags_select" class="form-control" style="width:100%" multiple="multiple">
+                                        <option></option>
+                                        <option v-for="tag in all_tags" v-bind:value="((tag.value))">((tag.display))</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label style="" for="new_age">If you want to add a new tag, just type it in the dropdown and select it</label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-lg-6">
+                                    <label for="name_text">When did this bodycam take place?</label>
+                                    <div class="input-group date" id="bodycam_new_date" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#bodycam_new_date"/>
+                                        <div class="input-group-append" data-target="#bodycam_new_date" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>          
+                                 <div class="col-lg-6">
+                                    <label for="new_bodycam_state_select">In which state did this bodycam take place?</label>
+                                    <select id="new_bodycam_state_select" class="form-control" style="width:100%">
+                                        <option></option>
+                                        {% for state in states %}
+                                            <option value="{{state.0}}">{{state.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class='form-group row'>
+                               <div class="col-lg-6">
+                                    <label for="new_city">What city was the shooting in?</label>
+                                    <input type="text" class="form-control" v-model="bodycam.city">
+                                </div>                     
+                               <div class="col-lg-6">
+                                    <label for="new_age">What was the name of the department?</label>
+                                    <input type="text" class="form-control" v-model="bodycam.department">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <div class="col-lg-6">
+                                    <label for="new_race_select">Please input the embed code for the bodycam video.</label>
+                                    <input type="text" class="form-control" v-model="bodycam.video">
+                                     <small id="fileHelp" class="form-text text-muted">Look for the option that looks like this: <i style="font-size:15px" class="fa fa-share-alt fa-2" aria-hidden="true"></i> or this: <i style="font-size:15px" class="fa fa-share" aria-hidden="true"></i> and select the "embed" option, which often looks like this: <i style="font-size:15px" class="fa fa-code fa-2" aria-hidden="true"></i>.</small>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="new_name">What title would you like to give this bodycam entry?</label>
+                                    <input type="text" class="form-control" v-model="bodycam.title">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-lg-12">
+                                    <label for="new_race_select">Optional description / More details</label>
+                                    <textarea class="form-control" style="width:100%;" rows="4" v-model="bodycam.description"></textarea>
+                                </div>
+                            </div>
+                            <div class='form-group row'>
+                                <div class="col-lg-10">                               
+                                    <label for="select_shooting_for_bodycam">Do you want to add this to a pre-existing shooting?</label>
+                                    <select id="select_shooting_for_bodycam" class="form-control" style="width:100%">
+                                        <option></option>
+                                        {% for shooting in summarized_shootings %}
+                                            <option value="{{shooting.0}}">{{shooting.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-2" style="display: flex; justify-content: flex-end; align-items: flex-end;">
+                                    <button type="button" v-on:click="resetShootingSelection" class="btn btn-info" style="margin-bottom: 5px;">Reset Selection</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" v-on:click="submitBodycam" class="btn btn-primary">Submit Bodycam</button>
+                        <button type="button" v-if="creating" id="bodycam_shooting_duo" v-on:click="submitBodycamWithShooting" class="btn btn-outline-primary">Submit a New Shooting with This Bodycam</button>
+                        <button type="button" v-on:click="clearBodycamModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endif %}
     </div>
     {% if messages %}
@@ -221,30 +317,47 @@
     </script>
     <!-- main content here -->
     <div id="loader_cover" class="overlay" style="background: black; position: absolute; top: 54px; right: 0; bottom: 0; left: 0; opacity: 0.7; z-index: 999;">
-        <!-- <div style="position: absolute; left: 45%; top:25%; z-index:3;"> -->
             <i id="loader" class="fa fa-circle-o-notch fa-spin fa-5x fa-fw overlay-text" style="margin-left: 150px; margin-top: -15px;"></i>
             <span class="overlay-text">Now Loading</span>
-        <!-- </div> -->
     </div>
     <div class="container-fluid">
         {% block content %}
         {% endblock content %}
     </div>
+    <div id="announcement-footer" class="footer">
+        <div class="container" style="display: flex; flex-direction: column; justify-content:center;align-items:center;">
+            <span class="text-muted">
+                This website is kept ad-free through the kind patronage of Donut's supporters. If you'd like to contribute and keep this project ad-free, here are some great options: <button type="button" onclick="$('#announcement-footer').fadeOut()" class="btn btn-outline-secondary footer-hide-button">Hide</button>
+            </span>
+            <span class="text-muted">
+                <a href="donutoperator.com">Purchase some swag over at the shop <i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+            </span>
+            <span class="text-muted">
+                <a href="https://www.twitch.tv/donutoperator">Consider subscribing on Twitch <i class="fa fa-twitch" aria-hidden="true"></i></a>
+            </span>
+            <span class="text-muted">
+                <a href="https://www.youtube.com/channel/UCwkm_Wcyh0pc7UUmZZfL-6w">Consider subscribing and becoming a member on YouTube <i class="fa fa-youtube-play" aria-hidden="true"></i></a>
+            </span>
+            <span class="text-muted">
+                <a href="https://www.patreon.com/donutoperator">Consider becoming a Patron</a>
+            </span>
+        </div>
+    </div>
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-confirm.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.floatThead.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/jquery.floatThead.min.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/select2.full.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.form.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/moment.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/tempusdominus-bootstrap-4.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vuex.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/Sortable.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/sha256.jquery.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/fuzzyset.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/Sortable.min.js' %}"></script> -->
+    <!-- <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.js' %}"></script> -->
+    <!-- <script type="text/javascript" src="{% static 'js/sha256.jquery.js' %}"></script> -->
+    <!-- <script type="text/javascript" src="{% static 'js/fuzzyset.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'datatables.min.js' %}"></script>
     <!-- javascript will go here -->
     {% block js %}
@@ -252,7 +365,48 @@
     <script type="text/javascript">
         {% if user.is_authenticated %}
         $(function() {
-
+            // this initializes all DOM elements that rely on JS init, and creates
+            // event listeners to maintain Vue binding
+            $('#bodycam_new_date').datetimepicker({
+                format:"L",
+                useCurrent: false,
+            });
+            $('#bodycam_new_date').on("change.datetimepicker", function (e) {
+                nav_app.bodycam.date = $('#bodycam_new_date').datetimepicker('viewDate');
+            });
+            $("#select_shooting_for_bodycam").select2({
+                theme: "bootstrap",
+                placeholder: "Select shooting",
+                dropdownParent: $("#add_bodycam"),
+            })
+            $('#select_shooting_for_bodycam').on("change", function(e) { 
+                if ($(this).val() != "") {
+                    // if the user selects a shooting, then the duel submit
+                    // isn't allowed.
+                    $("#bodycam_shooting_duo").prop("disabled", true)
+                }
+                else {
+                    $("#bodycam_shooting_duo").prop("disabled", false)   
+                }
+                nav_app.bodycam.shooting = $(this).val();
+            });
+            
+            $("#new_bodycam_state_select").select2({
+                theme: "bootstrap",
+                placeholder: "Select state",
+                dropdownParent: $("#add_bodycam"),
+            })
+            $('#new_bodycam_state_select').on("change", function(e) { 
+                nav_app.bodycam.state = $(this).val();
+            });
+            $("#new_bodycam_tags_select").select2({
+                theme: "bootstrap",
+                tags: true,
+                placeholder: "Select tags"
+            });
+            $('#new_bodycam_tags_select').on("change", function(e) { 
+                nav_app.shooting.tags = $(this).val();
+            });
             $('#new_date').datetimepicker({
                 format:"L",
                 useCurrent: false,
@@ -266,10 +420,9 @@
                 dropdownParent: $("#add_killing"),
             })
             $('#new_state_select').on("change", function(e) { 
-                // what you would like to happen
                 nav_app.shooting.state = $(this).val();
             });
-
+            
             $("#new_race_select").select2({
                 theme: "bootstrap",
                 dropdownParent: $("#add_killing"),
@@ -277,24 +430,20 @@
             })
             $("#new_tags_select").select2({
                 theme: "bootstrap",
-                // dropdownParent: $("#add_killing"),
+                tags: true,
                 placeholder: "Select tags"
             });
             $('#new_tags_select').on("change", function(e) { 
-                // what you would like to happen
                 nav_app.shooting.tags = $(this).val();
             });
             $('#new_race_select').on("change", function(e) { 
-                // what you would like to happen
                 nav_app.shooting.race = $(this).val();
             });
             $("#new_gender_select").select2({
                 theme: "bootstrap",
-                // dropdownParent: $("#add_killing"),
                 placeholder: "Select gender"
             })
             $('#new_gender_select').on("change", function(e) { 
-                // what you would like to happen
                 nav_app.shooting.gender = $(this).val();
             });
         })
@@ -302,8 +451,33 @@
             el: '#nav_related',
             delimiters: ["((","))"],
             data: {
-                creating: true,
+                // if this is false, then the data is prepopulated and we post to edit instead of new, set DOM title to "edit"
+                creating: true, 
+                // we use this to decide whether we need to refresh the page on
+                // successful submission (since we need to subvmit first a bodycam, then a shooting)
+                submitting_duel: false, 
+                // if this is false, then the data is prepopulated and we post to edit instead of new, set DOM title to "edit"
+
+                creating_bodycam: true,
+                // we use these two to link the two together prior to refreshing
+                bodycam_id: "",
+                shooting_id: "",
+                // two way binding for adding new tags to dropdown
                 tag_input: "",
+                // two way binding for adding new tags to dropdown
+                bodycam_tag_input: "",
+                bodycam: {
+                    id: "",
+                    title: "",
+                    video: "",
+                    description: "",
+                    department: "",
+                    state: "",
+                    city: "",
+                    date: "",
+                    tags: [],
+                    shooting: "",
+                },
                 shooting: {
                     id: "",
                     name: "",
@@ -317,8 +491,6 @@
                     sources: [],
                     description: "",
                     tags: [
-                            //id:{{tag.pk}},
-                            //text: `{{tag.text}}`,
                     ]
                 },
                 genders: [
@@ -339,8 +511,56 @@
                 ], // used for filling select2
             },
             methods: {
-                clearModal: function() {
+                clearBodycamModal: function() {
+                    // this handles closing the modal and removing data present
+                    this.bodycam_id = ""
+                    this.shooting_id = ""
+                    this.bodycam.id = ""
+                    this.bodycam.title = ""
+                    this.bodycam.video = ""
+                    this.bodycam.description = ""
+                    this.bodycam.department = ""
+                    this.bodycam.state = ""
+                    this.bodycam.city = ""
+                    this.bodycam.date = ""
+                    this.bodycam.tags = []
+                    this.bodycam.shooting = ""
                     this.creating = true
+                    this.submitting_duel = false
+                    this.bodycam_tag_input = ""
+                    $("#select_shooting_for_bodycam").val([]).trigger("change")
+                    $("#new_bodycam_state_select").val([]).trigger("change");
+                    $("#new_bodycam_tags_select").val([]).trigger("change");
+                    $('#bodycam_new_date').datetimepicker('clear');
+                },
+                clearModal: function() {
+                    // this handles closing the modal and removing data present
+                    var cont = false;
+                    if (this.submitting_duel) {
+                        // lets make sure that they want to do this before we close
+                        $.confirm({
+                            title: 'Are you sure you want to do this?',
+                            content: "You'll have to manually connect the bodycam we just made to a new one later if you stop now. Are you sure you want to continue?",
+                            type: 'purple',
+                            typeAnimated: true,
+                            buttons: {
+                                Yes: function(){
+                                    cont = true;
+                                },
+                                No: function () {
+
+                                }
+                            }
+                        });
+                    }
+                    if (!cont) {
+                        return;
+                    }
+                    this.tag_input = ""
+                    this.bodycam_id = ""
+                    this.shooting_id = ""
+                    this.creating = true
+                    this.submitting_duel = false
                     this.tag_input = ""
                     this.shooting.id = ""
                     this.shooting.name = ""
@@ -354,117 +574,63 @@
                     this.shooting.sources = []
                     this.shooting.description = ""
                     this.shooting.tags = []
-                    $("#new_state_select").val("").trigger("change")
-                    $("#new_race_select").val("").trigger("change")
-                    $("#new_tags_select").val("").trigger("change")
-                    $("#new_gender_select").val("").trigger("change");
+                    $("#new_state_select").val([]).trigger("change")
+                    $("#new_race_select").val([]).trigger("change")
+                    $("#new_tags_select").val([]).trigger("change")
+                    $("#new_gender_select").val([]).trigger("change");
                     $('#new_date').datetimepicker('clear');
                 },
-                submitKilling: function() {
-                    if (this.shooting.video_url.length > 0 && this.shooting.video_url.search(/http[s]*:\/\/www\.youtube\.com\/watch\?v=/) < 0) {
-                        $.confirm({
-                            title: 'Please review your submission',
-                            content: "The video URL must be a valid, unshortened Youtube URL.",
-                            type: 'red',
-                            typeAnimated: true,
-                            backgroundDismiss: false,
-                            buttons: {
-                                close: function () {
-                                }
-                            }
-                        });
+                submitBodycamWithShooting: function() {
+                    this.submitting_duel = true
+                },
+                submitBodycam: function() {
+                    var self = this;
+                    // check data before submitting
+                    if (self.bodycam.title.length == 0) {
+                        showErrorMessage("Please review your submission", "The title cannot be blank.");
                         return;
                     }
-                    else if (this.shooting.video_url.length > 0 && this.shooting.video_url.search(/http[s]*:\/\/www\.youtube\.com\/watch\?v=/) > -1) {
-                        if (this.shooting.video_url.indexOf("&") > -1) {
-                            this.shooting.video_url = this.shooting.video_url.substring(0, this.shooting.video_url.indexOf("&"));
-                        }
-                    }
-
-                    if (this.shooting.date == "") {
-                        $.confirm({
-                            title: 'Please review your submission',
-                            content: "Date cannot be blank.",
-                            type: 'red',
-                            typeAnimated: true,
-                            backgroundDismiss: false,
-                            buttons: {
-                                close: function () {
-                                }
-                            }
-                        });
+                    if (self.bodycam.video.length == 0) {
+                        showErrorMessage("Please review your submission", "The video cannot be blank.");
                         return;
                     }
-                    if (this.shooting.state == "") {
-                        $.confirm({
-                            title: 'Please review your submission',
-                            content: "State cannot be blank.",
-                            type: 'red',
-                            typeAnimated: true,
-                            backgroundDismiss: false,
-                            buttons: {
-                                close: function () {
-                                }
-                            }
-                        });
+                    if (self.bodycam.state.length == 0) {
+                        showErrorMessage("Please review your submission", "The state cannot be blank.");
                         return;
                     }
-                    if (this.shooting.race == "") {
-                        $.confirm({
-                            title: 'Please review your submission',
-                            content: "Race cannot be blank.",
-                            type: 'red',
-                            typeAnimated: true,
-                            backgroundDismiss: false,
-                            buttons: {
-                                close: function () {
-                                }
-                            }
-                        });
-                        return;
-                    }
-                    if (this.shooting.gender == "") {
-                        $.confirm({
-                            title: 'Please review your submission',
-                            content: "Gender cannot be blank.",
-                            type: 'red',
-                            typeAnimated: true,
-                            backgroundDismiss: false,
-                            buttons: {
-                                close: function () {
-                                }
-                            }
-                        });
+                    if (self.bodycam.date == "") {
+                        showErrorMessage('Please review your submission', "Date cannot be blank.")
                         return;
                     }
                     data = {
                         csrfmiddlewaretoken: "{{csrf_token}}",
-                        shooting: JSON.stringify(this.shooting)
+                        bodycam: JSON.stringify(self.bodycam)
                     }
-                    date = this.shooting.date.format("YYYY-MM-DD")
-                    data.shooting.date = date;
-                    if (this.creating) {
+                    date = self.bodycam.date.format("YYYY-MM-DD")
+                    data.bodycam.date = date;
+                    
+                    if (self.creating) {
+                        // we are creating a new bodycam, so we post to bodycam creation
+                        // then we either refresh or prompt the user to create a shooting
                         $.ajax({
                             type: "POST",
-                            url: "{% url 'roster:submit-killing' %}",
+                            url: "{% url 'bodycams:bodycam-submit' %}",
                             data: data,
-                            success: function() {
-                                $.alert({
-                                    title: 'Success!',
-                                    content: 'Killing submitted. The page will now reload.',
-                                    type: 'green',
-                                    typeAnimated: true,
-                                    autoClose: 'close|4000',
-                                    buttons: {
-                                        close: function () {
-                                            window.location.reload()
-                                        }
-                                    }
-                                });
+                            success: function(data) {
+                                if (self.submitting_duel) {
+                                    self.bodycam_id = data.responseText;
+                                    showSuccessMessage("Bodycam submitted. Let's create the shooting now.", false)
+                                    $("#add_killing").modal("toggle")
+                                }
+                                else {
+                                    showSuccessMessage('Bodycam submitted. The page will now reload.', true)
+                                }
                             },
                             error: function(data) {
-                                console.log(data)
                                 if (data.status == 400) {
+                                    showErrorMessage('Please review your submission', data.responseText)
+                                }
+                                else if (data.status == 406) {
                                     $.confirm({
                                         title: 'Please review your submission',
                                         content: data.responseText,
@@ -472,23 +638,125 @@
                                         typeAnimated: true,
                                         backgroundDismiss: false,
                                         buttons: {
+                                            "Print Error": function() {
+                                                var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+                                                mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+                                                mywindow.document.write('</head><body >');
+                                                mywindow.document.write('<h1>' + document.title  + '</h1>');
+                                                mywindow.document.write($(".jconfirm-content")[0].innerHTML);
+                                                mywindow.document.write('</body></html>');
+
+                                                mywindow.document.close(); // necessary for IE >= 10
+                                                mywindow.focus(); // necessary for IE >= 10*/
+
+                                                mywindow.print();
+                                                mywindow.close();
+
+                                                return true;
+                                            },
                                             close: function () {
+                                                window.location.reload(true)
                                             }
                                         }
                                     });
                                 }
                                 else {
-                                    $.confirm({
-                                        title: 'Encountered an error!',
-                                        content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
-                                        type: 'red',
-                                        typeAnimated: true,
-                                        backgroundDismiss: false,
-                                        buttons: {
-                                            close: function () {
-                                            }
+                                    showErrorMessage('Encountered an error!', 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText)
+                                }
+                            },
+                        });
+                    }
+                    else {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'bodycams:bodycam-edit' %}",
+                            data: data,
+                            success: function() {
+                                showSuccessMessage('Bodycam edited succesfully. The page will now reload.', self.submitting_duel)
+                            },
+                            error: function(data) {
+                                if (data.status == 400) {
+                                    showErrorMessage('Please review your submission', data.responseText)
+                                }
+                                else {
+                                    showErrorMessage('Encountered an error!', 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText)
+                                }
+                            },
+                        });
+                    }
+                },
+                submitKilling: function() {
+                    var self = this;
+                    // the video has to be in the proper youtube format
+                    if (self.shooting.video_url.length > 0 && self.shooting.video_url.search(/http[s]*:\/\/www\.youtube\.com\/watch\?v=/) < 0) {
+                        showErrorMessage('Please review your submission', "The video URL must be a valid, unshortened Youtube URL.")
+                        return;
+                    }
+                    else if (self.shooting.video_url.length > 0 && self.shooting.video_url.search(/http[s]*:\/\/www\.youtube\.com\/watch\?v=/) > -1) {
+                        // lets strip away url params
+                        if (self.shooting.video_url.indexOf("&") > -1) {
+                            self.shooting.video_url = self.shooting.video_url.substring(0, self.shooting.video_url.indexOf("&"));
+                        }
+                    }
+                    // check data
+                    if (self.shooting.date == "") {
+                        showErrorMessage('Please review your submission', "Date cannot be blank.")
+                        return;
+                    }
+                    if (self.shooting.state == "") {
+                        showErrorMessage('Please review your submission', "State cannot be blank.")
+                        return;
+                    }
+                    if (self.shooting.race == "") {
+                        showErrorMessage('Please review your submission', "Race cannot be blank.")
+                        return;
+                    }
+                    if (self.shooting.gender == "") {
+                        showErrorMessage('Please review your submission', "Gender cannot be blank.")
+                        return;
+                    }
+                    data = {
+                        csrfmiddlewaretoken: "{{csrf_token}}",
+                        shooting: JSON.stringify(self.shooting)
+                    }
+                    date = self.shooting.date.format("YYYY-MM-DD")
+                    data.shooting.date = date;
+                    if (self.creating) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'roster:submit-killing' %}",
+                            data: data,
+                            success: function(data) {
+                                if (self.submitting_duel) {
+                                    self.shooting_id = data.responseText
+                                    // time to link the two together
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "{% url 'bodycams:link-bodycam-shooting' %}",
+                                        data: {
+                                            csrfmiddlewaretoken: "{{csrf_token}}",
+                                            bodycam_id:  parseInt(self.bodycam_id),
+                                            shooting_id: parseInt(data.responseText),
+                                        },
+                                        success: function() {
+                                            showSuccessMessage('Killing and bodycam submitted and linked. The page will now reload.', true)
+                                        },
+                                        error: function() {
+                                            showErrorMessage("Encountered an error!", "Something went wrong linking the killing and bodycam, but we've created both of them. Send Pedro a text and tell him to link: bodycam " + self.bodycam_id + " and killing " + self.shooting_id +", and that the error that caused this was: " + data.responseText)
                                         }
-                                    });
+                                    })
+                                }
+                                else {
+                                    showSuccessMessage('Killing submitted. The page will now reload.', true)
+                                }
+                            },
+                            error: function(data) {
+                                if (data.status == 400) {
+                                    showErrorMessage('Please review your submission', data.responseText)
+                                }
+                                else {
+                                    showErrorMessage('Encountered an error!', 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText)
                                 }
                             },
                         });
@@ -499,66 +767,52 @@
                             url: "{% url 'roster:edit-killing' %}",
                             data: data,
                             success: function() {
-                                $.alert({
-                                    title: 'Success!',
-                                    content: 'Killing edited succesfully. The page will now reload.',
-                                    type: 'green',
-                                    typeAnimated: true,
-                                    autoClose: 'close|4000',
-                                    buttons: {
-                                        close: function () {
-                                            window.location.reload()
-                                        }
-                                    }
-                                });
+                                showSuccessMessage('Killing edited succesfully. The page will now reload.', !self.submitting_duel)
                             },
                             error: function(data) {
-                                console.log(data)
                                 if (data.status == 400) {
-                                    $.confirm({
-                                        title: 'Please review your submission',
-                                        content: data.responseText,
-                                        type: 'red',
-                                        typeAnimated: true,
-                                        backgroundDismiss: false,
-                                        buttons: {
-                                            close: function () {
-                                            }
-                                        }
-                                    });
+                                    showErrorMessage('Please review your submission', data.responseText)
                                 }
                                 else {
-                                    $.confirm({
-                                        title: 'Encountered an error!',
-                                        content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
-                                        type: 'red',
-                                        typeAnimated: true,
-                                        backgroundDismiss: false,
-                                        buttons: {
-                                            close: function () {
-                                            }
-                                        }
-                                    });
+                                    showErrorMessage('Encountered an error!', 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText)
                                 }
                             },
                         });
                     }
                 },
-                addTag: function() {
-                    var self = this;
-                    $('#new_tags_select').append($("<option></option>").attr("value", self.tag_input.trim()).attr('selected', 'selected').text(self.tag_input));
-                    $("#new_tags_select").trigger("change")
-                },
                 spliceSource: function(index) {
+                    // in case the user wants to remove a source in the middle of the list added
                     this.shooting.sources.splice(index, 1);
                 },
                 removeSource: function() {
+                    // removes the most recently added source from the killing
                     this.shooting.sources.pop()
                 },
                 addSource: function() {
+                    // adds a new source to the killing
                     this.shooting.sources.push("")
                 },
+                resetShootingSelection: function() {
+                    // in case the user decides he actually wants to add a new killing to this bodycam
+                    var self = this;
+                    self.bodycam.shooting = "";
+                    $("#select_shooting_for_bodycam").val(self.bodycam.shooting).trigger("change");
+                    $("#bodycam_shooting_duo").prop("disabled", false)   
+                },
+                openBodycamModal: function() {
+                    // initializes the bodycam modal, with data if we are editing a bodycam since select2 and Tempus Domini doesn't have 2 way binding
+                    var self = this;
+                    $("#add_bodycam").modal("toggle")
+                    if (!self.creating ) {
+                        $("#bodycam_new_date").datetimepicker("date", moment(self.bodycam.date, "YYYY-MM-DD"))
+                        $("#new_bodycam_state_select").val(self.bodycam.state).trigger("change")
+                        $("#new_bodycam_tags_select").val(self.bodycam.tags).trigger("change")
+                        $("#new_bodycam_tags_select").val(self.bodycam.tags).trigger("change")
+                        $("#select_shooting_for_bodycam").val(self.bodycam.shooting).trigger("change")
+                    }
+                },
                 openKillingModal: function() {
+                    // initializes the killing modal, with data if we are editing a bodycam since select2 and Tempus Domini doesn't have 2 way binding
                     var self = this;
                     $("#add_killing").modal("toggle")
                     if (!self.creating ) {
@@ -567,61 +821,58 @@
                         $("#new_race_select").val(self.shooting.race).trigger("change")
                         $("#new_tags_select").val(self.shooting.tags).trigger("change")
                         $("#new_gender_select").val(self.shooting.gender).trigger("change");
+
                     }
-                    console.log("clicked")
                 }
             }
         });
         {% endif %}
-        function showSuccessMessage(message) {
-            /*
-                Shows success message DOM element for UX.
-            */
-            $.confirm({
+        function showSuccessMessage(message, reload_bool) {
+            $.alert({
                 title: 'Success!',
-                closeIcon: true, 
                 content: message,
                 type: 'green',
                 typeAnimated: true,
-                autoClose:'close|3000',
+                autoClose: 'close|4000',
                 buttons: {
-                    close: {
-                        text: 'Close',
-                        btnClass: 'btn-green',
-                        action: function () {
-                            // window.location.reload()
-                        },
-                    }
-                }
-            });
-        };
-        function processJS(data) {
-            data = data.substring(1, data.length - 1);
-            var split = data.split("\'").join("\"").split("\"\"").join("\"");
-            split = '[' + split + ']';
-            split = JSON.parse(split)
-            return split;
-        }
-        function showErrorMessage(message) {
-            $.confirm({
-                title: 'Error',
-                closeIcon: true, 
-                content: message,
-                type: 'red',
-                typeAnimated: true,
-                backgroundDismiss: true,
-                autoClose: 'close|3000',
-                buttons: {
-                    close: {
-                        text: 'Close',
-                        btnClass: 'btn-red',
-                        action: function(){
+                    close: function () {
+                        if (reload_bool) {
                             window.location.reload()
                         }
                     }
                 }
             });
         };
+        function showErrorMessage(title, content) {
+            $.confirm({
+                title: title,
+                content: content,
+                type: 'red',
+                typeAnimated: true,
+                backgroundDismiss: false,
+                buttons: {
+                    "Print Error": function() {
+                        var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+                        mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+                        mywindow.document.write('</head><body >');
+                        mywindow.document.write('<h1>' + document.title  + '</h1>');
+                        mywindow.document.write($(".jconfirm-content")[0].innerHTML);
+                        mywindow.document.write('</body></html>');
+
+                        mywindow.document.close(); // necessary for IE >= 10
+                        mywindow.focus(); // necessary for IE >= 10*/
+
+                        mywindow.print();
+                        mywindow.close();
+
+                        return true;
+                    },
+                    close: function () {
+                    }
+                }
+            });
+        }     
     </script>
 </body>
 </html>
