@@ -59,7 +59,7 @@ class Bodycam(models.Model):
         (52, "GU"),
     )
     title = models.CharField(max_length=120)
-    video = models.CharField(max_length=1000)
+    video = models.CharField(max_length=100000)
     description = models.CharField(
         "Description",
         max_length=10000,
