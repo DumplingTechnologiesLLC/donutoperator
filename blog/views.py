@@ -15,7 +15,7 @@ site.directory = "uploads/"
 class PostDashboard(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "blog/blog_dashboard.html", {
-            "posts": Post.objects.all()
+            "posts": Post.objects.all().order_by("created")
         })
 
     def post(self, request):
@@ -59,7 +59,7 @@ class PostDashboard(LoginRequiredMixin, View):
 class PostIndexView(View):
     def get(self, request):
         return render(request, "blog/blog_index.html", {
-            "posts": Post.objects.all().exclude(published=False)
+            "posts": Post.objects.all().exclude(published=False).order_by("publish_date")
         })
 
 
@@ -72,7 +72,6 @@ class PostCreateView(LoginRequiredMixin, View):
         })
 
     def post(self, request):
-        print(request.FILES)
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             form.save(commit=False)
@@ -98,7 +97,11 @@ class PostEditView(LoginRequiredMixin, View):
         })
 
     def post(self, request, pk):
-        post = Post.objects.get(pk=pk)
+        try:
+            post = Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            messages.error(request, ("We couldn't find that post."))
+            return HttpResponseRedirect(reverse("blog:dashboard"))
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save(commit=False)
@@ -118,6 +121,9 @@ class PostDisplayView(View):
     def get(self, request, pk):
         try:
             post = Post.objects.get(pk=pk)
+            if not post.published:
+                messages.error(request, "That article isn't published yet.")
+                return HttpResponseRedirect(reverse("blog:blog-index"))
             post.views += 1
             post.save()
             copied_post = deepcopy(post)
@@ -127,7 +133,7 @@ class PostDisplayView(View):
                 start = copied_post.content.index("```")
                 end = copied_post.content.index("```", start + 1)
                 quote = copied_post.content[start + 3: end]
-                while "<p>" in quote:
+                while "<p>" in quote:  # pragma: no cover
                     start_of_p = quote.index("<p>")
                     prior_to_p = quote[:start_of_p]
                     try:

@@ -16,7 +16,7 @@ image_storage = FileSystemStorage(
 )
 
 
-def image_directory_path(instance, filename):
+def image_directory_path(instance, filename):  # pragma: no cover
     # file will be uploaded to MEDIA_ROOT/my_sell/picture/<filename>
     return u'picture/{0}'.format(filename)
 

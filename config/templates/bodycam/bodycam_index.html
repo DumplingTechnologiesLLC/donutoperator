@@ -1,0 +1,463 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+<div id="app" v-cloak>
+	<div class="row" style="padding-top:15px; padding-bottom: 15px">
+	    <div class="col-lg-6" style="display:flex;align-items:center;">
+	        <a style="color:white" v-bind:href="calculatePreviousYear()" class="btn btn-secondary">View Previous Year's Data</a>
+	    </div>
+	    <div class="col-lg-6" style="display:flex;justify-content:flex-end;align-items:center;">
+	        <a style="color:white" v-if="year != currentYear" v-bind:href="calculateNextYear()" class="btn btn-secondary">View Following Year's Data</a>
+	    </div>
+	</div>
+	<div class="row">
+	    <div class="col-lg-8 offset-lg-2" style="display:flex;justify-content:center;align-items:center;  margin-top:40px">
+			<h1>{{year}} Bodycam Database</h1>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="col-lg-12">
+	        <div class="card border-dark" style="margin-bottom:20px;">
+		        <div class="card-header">Filters</div>
+		        <div class="card-body">
+		            <form>
+		                <div class="form-group row">
+		                	<div class="col-lg-4">
+		                        <label for="text_text">Filter by text</label>
+		                        <input id="text_text" type="text" class="form-control" placeholder="Matches to the title or to the description" v-model="text">
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="race_select">Filter by race of suspect</label>
+		                        <select id="race_select" class="form-control" style="width:100%" multiple="multiple">
+		                            <option></option>
+		                            <option v-for="race in races" v-bind:value="race.value">((race.display))</option>
+		                        </select>
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="tag_select">Filter by tag</label>
+		                        <select id="tag_select" class="form-control" style="width:100%" multiple="multiple">
+		                            <option></option>
+		                            <option v-for="tag in all_tags" v-bind:value="tag.value">((tag.display))</option>
+		                        </select>
+		                        <small class="text-muted">Bodycams with 1 or more matches will be displayed</small>
+		                    </div>
+		                </div>
+		                 <div class="form-group row">
+		                    <div class="col-lg-4">
+		                        <label for="state_select">Filter by state</label>
+		                        <select id="state_select" class="form-control" style="width:100%" multiple="multiple">
+		                            <option></option>
+		                            <option v-for="state in states" v-bind:value="state.value">((state.display))</option>
+		                        </select>
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="city_text">Filter by city</label>
+		                        <input id="city_text" type="text" class="form-control" placeholder="Partial and similar matches will be included." v-model="city">
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="department_select">Filter by department</label>
+		                        <select id="department_select" class="form-control" style="width:100%" multiple="multiple">
+		                            <option></option>
+		                            <option v-for="department in departments" v-bind:value="department.value">((department.display))</option>
+		                        </select>
+		                    </div>
+		                </div>
+		                <div class="form-group row">
+		                    <div class="col-lg-4">
+		                        <label for="text_text">Date on or after</label>
+		                        <div class="input-group date" id="start_date" data-target-input="nearest">
+		                            <input type="text" class="form-control datetimepicker-input" data-target="#start_date"/>
+		                            <div class="input-group-append" data-target="#start_date" data-toggle="datetimepicker">
+		                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+		                            </div>
+		                        </div>
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="text_text">Date on or before</label>
+		                        <div class="input-group date" id="end_date" data-target-input="nearest">
+		                            <input type="text" class="form-control datetimepicker-input" data-target="#end_date"/>
+		                            <div class="input-group-append" data-target="#end_date" data-toggle="datetimepicker">
+		                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+		                            </div>
+		                        </div>
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <button type="button" class="btn btn-warning" v-on:click="resetFilters" style="margin-top:30px;">Reset Filters</button>
+		                    </div>
+		                </div>
+
+		            </form>
+		        </div>
+	        </div>
+	    </div>
+	</div>
+	<div class="row" style="padding-bottom: 25px;">
+		<div class="col-lg-12">
+			<div class="container-fluid d-flex" style="flex-wrap: wrap; margin-top:40px; justify-content: center;">
+				<div v-for="bodycam in displayed_bodycams" class="card" style="width: 18rem; margin-right:5px">
+					<div class="card-header" style="display:flex; justify-content: center; align-items:center">
+					    ((bodycam.state)), ((bodycam.city))
+					  </div>
+					<div class="card-img-top" v-html="bodycam.video" style="height:100%">
+					</div>
+				  <div class="card-body">
+				    <h5 class="card-title">((bodycam.title))</h5>
+				    <p class="card-text">((bodycam.description))</p>
+				    <hr>
+				    <p class="card-text">Details:</p>
+				    <ul class="list-group list-group-flush">
+						<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center">Department: ((bodycam.department))</li>
+						<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center"><span style="padding: 5px; margin-right: 5px" v-for="tag in bodycam.tags" class="badge badge-primary">((tag.text))</span><span v-if="bodycam.tags.length == 0">No Tags Available</span></li>
+					  </ul>
+					  <br>
+					 <div style="display:flex; justify-content: space-between;">
+					    <a href="#" v-if="bodycam.shooting.id > -1" v-on:click="openDetails(bodycam.id)" class="card-link">Killing Details</a>					 	
+					 </div>
+				  </div>
+				  <div class="card-footer text-muted" style="display:flex; justify-content: center; align-items:center">
+				    ((bodycam.date))
+				  </div>
+				</div>
+				<div  v-show="bodycams.length == 0" class="jumbotron">
+					<h1 class="display-4">No Bodycams to display</h1>
+					<p class="lead">We will update this database with more bodycams as soon as more become available.</p>
+					<hr class="my-4">
+					<p class="lead">
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal" id="shooting_details" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">((displayed_shooting.name)), ((displayed_shooting.date))</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Donut's Take</h5>
+                            <div v-if="displayed_shooting.video_url != 'None'" v-html="displayed_shooting.video_url"> </div>
+                            <div v-else style="background-color:gray; width:100%; height:315px" class="d-flex flex-row    p-2 flex-column justify-content-center flex-fill">
+                                <div class="align-self-center p-2"><h1 style="color:white;">No Video Available</h1></div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Sources</h5>
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr v-for="source in displayed_shooting.sources">
+                                        <td style="max-width: 100px; word-wrap: break-word;"><a v-bind:href="source">((source))</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h5>Biological Information</h5>
+                            <table class="table table-striped">
+                                <tbody>
+                                	<tr>
+                                		<th>Age:</th>
+                                		<td>
+                                			((displayAge(displayed_shooting.age) ))
+                                		</td>
+                                	</tr>
+                                	<tr>
+                                		<th>Race:</th>
+                                		<td>((displayed_shooting.race))</td>
+                                	</tr>
+                                	<tr>
+                                		<th>Gender:</th>
+                                		<td>((displayed_shooting.gender))</td>
+                                	</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-6">
+                            <h5>Geographical Information</h5>
+                            <table class="table table-striped">
+                                <tbody>
+                                	<tr>
+                                		<th>State:</th>
+                                		<td>
+                                			(( displayed_shooting.state ))
+                                		</td>
+                                	</tr>
+                                	<tr>
+                                		<th>City:</th>
+                                		<td>((displayed_shooting.city))</td>
+                                	</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Further Details</h5>
+                            <div style="height: 200px; overflow-y: scroll" v-if="displayed_shooting.description !== undefined && displayed_shooting.description.length != 0"  v-html="displayed_shooting.description">
+                                
+                            </div>
+                            <p style="height:200px; overflow-y:scroll" v-else>No further details at this time.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+    $(function() {
+		setTimeout(function() {
+	        // loader is on base.html. Blocks the user from doing anything until page loads
+	        $("#loader_cover").addClass("toggled");
+	        $("#body").removeAttr("style")
+	    },2000);
+        $("#state_select").select2({
+            theme: "bootstrap",
+            placeholder: "Select state or states"
+        })
+        $('#state_select').on("change", function(e) { 
+            vue_app.states_selected = $(this).val();
+        });
+        $("#race_select").select2({
+            theme: "bootstrap",
+            placeholder: "Select race or races"
+        })
+        $('#race_select').on("change", function(e) { 
+            vue_app.races_selected = $(this).val();
+        });
+        $("#tag_select").select2({
+            theme: "bootstrap",
+            placeholder: "Select tag or tags"
+        })
+        $('#tag_select').on("change", function(e) { 
+            vue_app.tags_selected = $(this).val();
+        });
+        $("#department_select").select2({
+            theme: "bootstrap",
+            placeholder: "Select department or departments"
+        })
+        $('#department_select').on("change", function(e) { 
+            vue_app.departments_selected = $(this).val();
+        });
+        $('#start_date').datetimepicker({
+            format:"L",
+            useCurrent: false,
+        });
+        $('#end_date').datetimepicker({
+            format:"L",
+            useCurrent: false,
+        });
+        $('#start_date').on("change.datetimepicker", function (e) {
+            vue_app.start_date = $('#start_date').datetimepicker('viewDate');
+        });
+        $('#end_date').on("change.datetimepicker", function (e) {
+            vue_app.end_date = $('#end_date').datetimepicker('viewDate');
+        });
+    })
+        var vue_app = new Vue({
+        	el: '#app',
+	        delimiters: ["((","))"],
+	        data: {
+	        	city: "",
+	        	text: "",
+				states_selected: [],
+				departments_selected: [],
+				races_selected: [],
+				tags_selected: [],
+				start_date: "",
+				end_date: "",
+	        	races: [
+	                {% for race in races %}
+	                {
+	                    value: `{{race.0}}`,
+	                    display: `{{race.1}}`
+	                },
+	                {% endfor %}
+	            ], // used for filling select2
+	            states: [
+	                {% for state in states %}
+	                {
+	                    value: `{{state.0}}`,
+	                    display: `{{state.1}}`
+	                },
+	                {% endfor %}
+	            ], // used for filling select2
+	            departments: [
+	            	{% for department in departments %}
+	                {
+	                    value: `{{department.department}}`,
+	                    display: `{{department.department}}`
+	                },
+	                {% endfor %}
+	            ],
+	            all_tags: [
+	                {% for tag in all_tags %}
+	                {
+	                    value: `{{tag.text}}`,
+	                    display: `{{tag.text}}`
+	                },
+	                {% endfor %}
+	            ], // used for filling select2
+	            bodycams: {{bodycams|safe}},
+	            year: "{{year}}",
+	            displayed_video: "",
+            	displayed_shooting: {},
+	        },
+	        mounted: function() {
+	            var self = this;
+	            for (var x = 0; x < self.bodycams.length; x++) {
+	                self.bodycams[x].date = self.bodycams[x].date.replace("Jan.", "January");
+	                self.bodycams[x].date = self.bodycams[x].date.replace("Feb.", "February");
+	                self.bodycams[x].date = self.bodycams[x].date.replace("Aug.", "August");
+	                self.bodycams[x].date = self.bodycams[x].date.replace("Sept.", "September");
+	                self.bodycams[x].date = self.bodycams[x].date.replace("Sep.", "September");
+	                self.bodycams[x].date = self.bodycams[x].date.replace("Oct.", "October");
+	                self.bodycams[x].date = self.bodycams[x].date.replace("Nov.", "November");
+	                self.bodycams[x].date = self.bodycams[x].date.replace("Dec.", "December");
+	            }
+	        },
+	        methods: {
+	        	displayAge: function(age) {
+	                if (age > -1) {
+	                    return age
+	                }
+	                else {
+	                    return "No Age"
+	                }
+	            },
+	        	openDetails: function(id) {
+	                bodycam = this.bodycams.find(function(bodycam) {
+	                    return bodycam.id == id
+	                })
+	                this.displayed_shooting = bodycam.shooting
+	                $('#shooting_details').modal('toggle');
+	            },
+	        	resetFilters: function() {
+	                var self = this;
+	                $("#state_select").val([]).trigger("change")
+	                $("#race_select").val([]).trigger("change")
+	                $("#tag_select").val([]).trigger("change")
+	                $("#department_select").val([]).trigger("change");
+	                this.text = "";
+	                this.city = "";
+	                this.states_selected = [];
+	                this.departments_selected = [];
+	                this.races_selected = [];
+	                this.tags_selected = [];
+	                this.start_date = "";
+	                this.end_date = "";
+	                $('#start_date').datetimepicker('clear');
+	                $('#end_date').datetimepicker('clear');
+	            },
+	            calculateNextYear: function() {
+	                var year = moment("{{year}}", "YYYY").add(1, "y").format("YYYY")
+	                var url = "{% url 'bodycams:date-index' date=1234 %}";
+	                url = url.replace("1234", year);
+	                return url;
+	            },
+	            calculatePreviousYear: function() {
+	                var year = moment("{{year}}", "YYYY").subtract(1, "y").format("YYYY")  
+	                var url = "{% url 'bodycams:date-index' date=1234 %}";
+	                url = url.replace("1234", year);
+	                return url;
+	            },
+	        },
+	        computed: {
+	        	currentYear: function() {
+	                return moment().format("YYYY")
+	            },
+	        	displayed_bodycams: function() {
+	                var self = this;
+	                var displayed_bodycams = this.bodycams.slice();
+	                if (this.text.length > 0) {
+	                    displayed_bodycams = displayed_bodycams.filter(function(bodycam) {
+	                        if (bodycam.title.toUpperCase().indexOf(self.text.toUpperCase()) > -1) {
+	                            return true;
+	                        }
+	                        else if (bodycam.description.toUpperCase().indexOf(self.text.toUpperCase()) > -1) {
+	                            return true;
+	                        } 
+	                    })
+	                }
+	                if (this.city.length > 0) {
+	                    displayed_bodycams = displayed_bodycams.filter(function(bodycam) {
+	                        if (bodycam.city.toUpperCase().indexOf(self.city.toUpperCase()) > -1) {
+	                            return true;
+	                        } 
+	                    })
+	                }
+	                if (this.states_selected.length > 0) {
+	                    displayed_bodycams = displayed_bodycams.filter(function(bodycam) {
+	                        if (self.states_selected.indexOf("" + bodycam.state_value) > -1) {
+	                            return true;
+	                        }
+	                    })
+	                }
+	                if (this.departments_selected.length > 0) {
+	                    displayed_bodycams = displayed_bodycams.filter(function(bodycam) {
+	                        if (self.departments_selected.indexOf(bodycam.department) > -1) {
+	                            return true;
+	                        }
+	                    })
+	                }
+	                if (this.races_selected.length > 0) {
+	                    displayed_bodycams = displayed_bodycams.filter(function(bodycam) {
+	                    	if (typeof bodycam.shooting == "undefined") {
+	                    		return false;
+	                    	}
+	                        if (self.races_selected.indexOf("" + bodycam.shooting.race_value) > -1) {
+	                            return true;
+	                        }
+	                    })
+	                }
+	                if (this.tags_selected.length > 0) {
+	                    displayed_bodycams = displayed_bodycams.filter(function(bodycam) {
+	                        for (var y = 0; y < bodycam.tags.length; y++) {
+	                            if (self.tags_selected.indexOf(bodycam.tags[y].text) > -1) {
+	                                return true;
+	                            }
+	                        }
+	                    })
+	                }
+	                if (this.start_date.length != 0) {
+	                    displayed_bodycams = displayed_bodycams.filter(function(bodycam) {
+	                        var date = moment(bodycam.date, "YYYY-MM-DD");
+	                        if (self.start_date < date) {
+	                            return true;
+	                        }
+	                    })
+	                }
+	                if (this.end_date.length != 0) {
+	                    displayed_bodycams = displayed_bodycams.filter(function(bodycam) {
+	                        var date = moment(bodycam.date, "YYYY-MM-DD");
+	                        if (self.end_date > date) {
+	                            return true;
+	                        }
+	                    })
+	                }
+	                return displayed_bodycams
+	            }
+	        }
+    	})
+</script>
+{% endblock js%}

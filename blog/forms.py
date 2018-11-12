@@ -9,7 +9,7 @@ class ImageUploadForm(forms.Form):
 
 
 class TinyMCEWidget(TinyMCE):
-    def use_required_attribute(self, *args):
+    def use_required_attribute(self, *args):  # pragma: no cover
         return False
 
 
