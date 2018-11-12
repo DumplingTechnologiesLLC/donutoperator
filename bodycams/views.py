@@ -44,8 +44,12 @@ class BodycamLink(LoginRequiredMixin, View):
 		on success - HTTP Status 200,
 		on error - HTTP Status 500,  exception string
 		"""
-		bodycam_id = int(request.POST.get("bodycam_id"))
-		shooting_id = int(request.POST.get("shooting_id"))
+		try:
+			bodycam_id = int(request.POST.get("bodycam_id"))
+			shooting_id = int(request.POST.get("shooting_id"))
+		except ValueError as e:  # pragma: no cover
+			print(e)
+			return HttpResponse(str(e), status=500,)
 		try:
 			bodycam = Bodycam.objects.get(pk=bodycam_id)
 			shooting = Shooting.objects.get(pk=shooting_id)
@@ -65,16 +69,16 @@ class BodycamEdit(LoginRequiredMixin, View):
 		Expects:
 		a stringified bodycam JSON object in the following format:
 		bodycam: {
-						id: integer,
-						title: string,
-						video: string iframe embed code with a width and height specified,
-						description: string,
-						department: string,
-						state: string,
-						city: string,
-						date: string: "YYYY-MM-DDTH:mm:ss",
-						tags: [],
-						shooting: integer (pk),
+			id: integer,
+			title: string,
+			video: string iframe embed code with a width and height specified,
+			description: string,
+			department: string,
+			state: string,
+			city: string,
+			date: string: "YYYY-MM-DDTH:mm:ss",
+			tags: [],
+			shooting: integer (pk),
 		},
 		Arguments:
 		:param request: a Django WSGI request object with the data described above
@@ -113,16 +117,16 @@ class BodycamSubmit(LoginRequiredMixin, View):
 		Expects:
 		A stringified bodycam JSON object in the following format:
 		bodycam: {
-						id: integer,
-						title: string,
-						video: string iframe embed code with a width and height specified,
-						description: string,
-						department: string,
-						state: string,
-						city: string,
-						date: string: "YYYY-MM-DDTH:mm:ss",
-						tags: [],
-						shooting: integer (pk),
+			id: integer,
+			title: string,
+			video: string iframe embed code with a width and height specified,
+			description: string,
+			department: string,
+			state: string,
+			city: string,
+			date: string: "YYYY-MM-DDTH:mm:ss",
+			tags: [],
+			shooting: integer (pk),
 		},
 
 		Arguments:

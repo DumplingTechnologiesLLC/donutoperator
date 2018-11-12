@@ -75,7 +75,7 @@
             </div>
         </nav>
         {% if user.is_authenticated %}
-        <div id="add_killing" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div id="add_killing" class="modal" role="dialog" data-backdrop="static" data-keyboard="false" style="overflow-y:scroll">
             <div class="modal-dialog" role="document">
                 <div class="modal-content" style="width:800px; margin-left:-25%">
                     <div class="modal-header">
@@ -197,7 +197,7 @@
                 </div>
             </div>
         </div>
-        <div id="add_bodycam" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div id="add_bodycam" class="modal" role="dialog" data-backdrop="static" data-keyboard="false" style="overflow-y:scroll">
             <div class="modal-dialog" role="document">
                 <div class="modal-content" style="width:800px; margin-left:-25%">
                     <div class="modal-header">
@@ -405,7 +405,7 @@
                 placeholder: "Select tags"
             });
             $('#new_bodycam_tags_select').on("change", function(e) { 
-                nav_app.shooting.tags = $(this).val();
+                nav_app.bodycam.tags = $(this).val();
             });
             $('#new_date').datetimepicker({
                 format:"L",
@@ -619,8 +619,11 @@
                             data: data,
                             success: function(data) {
                                 if (self.submitting_duel) {
-                                    self.bodycam_id = data.responseText;
                                     showSuccessMessage("Bodycam submitted. Let's create the shooting now.", false)
+                                    self.clearBodycamModal()
+                                    self.bodycam_id = data; // gets reset in clearBodycamModal
+                                    self.submitting_duel = true; // gets reset in clearBodycamModal
+                                    $("#add_bodycam").modal("toggle")
                                     $("#add_killing").modal("toggle")
                                 }
                                 else {
@@ -633,7 +636,7 @@
                                 }
                                 else if (data.status == 406) {
                                     $.confirm({
-                                        title: 'Please review your submission',
+                                        title: 'Something went wrong.',
                                         content: data.responseText,
                                         type: 'red',
                                         typeAnimated: true,
@@ -730,7 +733,7 @@
                             data: data,
                             success: function(data) {
                                 if (self.submitting_duel) {
-                                    self.shooting_id = data.responseText
+                                    self.shooting_id = data
                                     // time to link the two together
                                     $.ajax({
                                         type: "POST",
@@ -738,13 +741,13 @@
                                         data: {
                                             csrfmiddlewaretoken: "{{csrf_token}}",
                                             bodycam_id:  parseInt(self.bodycam_id),
-                                            shooting_id: parseInt(data.responseText),
+                                            shooting_id: parseInt(self.shooting_id),
                                         },
                                         success: function() {
                                             showSuccessMessage('Killing and bodycam submitted and linked. The page will now reload.', true)
                                         },
                                         error: function() {
-                                            showErrorMessage("Encountered an error!", "Something went wrong linking the killing and bodycam, but we've created both of them. Send Pedro a text and tell him to link: bodycam " + self.bodycam_id + " and killing " + self.shooting_id +", and that the error that caused this was: " + data.responseText)
+                                            showErrorMessage("Encountered an error!", "Something went wrong linking the killing and bodycam, but we've created both of them. Send Pedro a text and tell him to link: bodycam " + self.bodycam_id + " and killing " + self.shooting_id +", and that the error that caused this was: " + data)
                                         }
                                     })
                                 }
