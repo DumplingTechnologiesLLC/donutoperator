@@ -14,11 +14,54 @@ site.directory = "uploads/"
 
 class PostDashboard(LoginRequiredMixin, View):
     def get(self, request):
+        """Returns the dashboard for admins to manage blog posts.
+
+        Arguments:
+        :param request: A WSGI Django request
+
+        Returns:
+        a render of blog_dashboard with all posts ordered by date of creation
+        """
         return render(request, "blog/blog_dashboard.html", {
             "posts": Post.objects.all().order_by("created")
         })
 
     def post(self, request):
+        """Performs multiple different actions based on the method chosen.
+
+        Each method includes a variety of parameters described below
+        method - delete
+            Arguments:
+            pk -  the primary key of an article to be deleted
+
+            Returns:
+                on success:
+                    a message stating "Article deleted successfully"
+
+                on failure:
+                    a message stating "We couldn't find that article in the database."
+
+        method - publish
+            Arguments:
+            pk - the primary key of an article to be published or unpublished
+            if the article already is published
+
+            Returns:
+                on success:
+                    a message stating "Article taken down from public view successfully."
+                    or "Article published successfully."
+
+                on failure:
+                    a message stating "We couldn't find that article in the database."
+
+        Arguments:
+        :param request: A WSGI Django request with different POST dictionaries, but
+        always will include a method with a string value that determines which action
+        will take place.
+
+        Returns:
+        An HttpResponseRedirect with an appropriate message as described above.
+        """
         method = request.POST.get("action")
         if method == "delete":
             pk = request.POST.get("pk")
@@ -58,20 +101,46 @@ class PostDashboard(LoginRequiredMixin, View):
 
 class PostIndexView(View):
     def get(self, request):
+        """Displays all published articles, ordered by publish date
+
+        Arguments:
+        :param request: a WSGI Django request object
+
+        Returns:
+        a render of blog_index with the data described
+        """
         return render(request, "blog/blog_index.html", {
-            "posts": Post.objects.all().exclude(published=False).order_by("publish_date")
+            "posts": Post.objects.all().exclude(
+                published=False).order_by("-publish_date")
         })
 
 
 class PostCreateView(LoginRequiredMixin, View):
 
     def get(self, request):
+        """Displays the form to create a new article
+
+        Arguments:
+        :param request: a WSGI Django request object
+
+        Returns:
+        a render of create_blog.html with the form for creating articles
+        """
         form = PostForm()
         return render(request, "blog/create_blog.html", {
             "form": form,
         })
 
     def post(self, request):
+        """Creates a new article on successful submission
+
+        Arguments:
+        :param request: a WSGI Django request object with a POST and FILES dictionary
+
+        Returns:
+        a Redirect on successful creation, a render with the form with errors on invalid
+        submission
+        """
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             form.save(commit=False)
@@ -90,6 +159,15 @@ class PostCreateView(LoginRequiredMixin, View):
 class PostEditView(LoginRequiredMixin, View):
 
     def get(self, request, pk):
+        """Returns the form for editing an article
+
+        Arguments:
+        :param request: a WSGI Django request object
+        :param pk: a primary key for the news article to be edited
+
+        Returns:
+        a render of blog_edit with the form prepopulated with the selected news article
+        """
         post = Post.objects.get(pk=pk)
         form = PostForm(instance=post)
         return render(request, "blog/edit_blog.html", {
@@ -97,6 +175,16 @@ class PostEditView(LoginRequiredMixin, View):
         })
 
     def post(self, request, pk):
+        """Edits the news article matching the pk
+
+        Arguments:
+        :param request: a WSGI Django request object
+        :param pk: a primary key for the news article to be edited
+
+        Returns:
+        a redirect to the dashboard on success, a render with the error with forms
+        on failure
+        """
         try:
             post = Post.objects.get(pk=pk)
         except Post.DoesNotExist:
@@ -119,6 +207,8 @@ class PostEditView(LoginRequiredMixin, View):
 
 class PostDisplayView(View):
     def get(self, request, pk):
+        """
+        """
         try:
             post = Post.objects.get(pk=pk)
             if not post.published:
