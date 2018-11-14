@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
@@ -54,6 +54,30 @@ def create_html_errors(form):  # pragma: no cover
     for key, error in form.errors.items():
         error_string += "{}: {}<br>".format(key, error)
     return error_string
+
+
+class AjaxSelect2Shootings(LoginRequiredMixin, View):
+    def get(self, request):  # pragma: no cover
+        """Ajax Only
+
+        Provides select2 with the results based on what the person searches. Keeps
+        Select2 from becoming sluggish.
+
+        Arguments:
+        :param request: a WSGI Django request object with a GET dictionary containing
+        a term to search by, keyed as term.
+
+        Returns:
+        a dictionary of Shootings matching that term, in a form Select2 expects.
+        """
+        parameter = request.GET.get("term")
+        if parameter is not None:
+            shootings = Shooting.objects.filter(
+                bodycam__isnull=True).filter(name__icontains=parameter).order_by('-date')
+            results = [{"id": shooting.id, "text": "{}, {}".format(
+                shooting.name, shooting.date.strftime("%Y-%m-%d"))} for shooting in shootings]
+            return JsonResponse({"results": results},
+                                safe=False)
 
 
 class DeleteShootingView(LoginRequiredMixin, View):

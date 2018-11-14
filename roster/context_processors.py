@@ -10,7 +10,4 @@ def supply_basic_data(request):
         "races": Shooting.RACE_CHOICES,
         "genders": Shooting.GENDER_CHOICES,
         "all_tags": distinct_tags,
-        "summarized_shootings": [
-            (shooting.id, shooting.name) for shooting in Shooting.objects.filter(
-            	bodycam__isnull=True)]
     }
