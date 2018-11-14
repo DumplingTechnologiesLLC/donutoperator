@@ -275,9 +275,7 @@
                                     <label v-else for="select_shooting_for_bodycam">Do you want to change the shooting attached to this bodycam?</label>
                                     <select id="select_shooting_for_bodycam" class="form-control" style="width:100%">
                                         <option></option>
-                                        {% for shooting in summarized_shootings %}
-                                            <option value="{{shooting.0}}">{{shooting.1}}</option>
-                                        {% endfor %}
+                                        
                                     </select>
                                 </div>
                                 <div v-bind:class="{'col-lg-2': creating, 'col-lg-4': !creating}" style="display: flex; justify-content: flex-end; align-items: flex-end;">
@@ -288,7 +286,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <small style="float:left">We don't allow you to submit a new shooting when editing a bodycam. Sorry.</small>
+                        <small v-if="!creating" style="float:left">We don't allow you to submit a new shooting when editing a bodycam. Sorry.</small>
                         <button type="button" v-on:click="submitBodycam" class="btn btn-primary">Submit Bodycam</button>
                         <button type="button" v-if="creating" id="bodycam_shooting_duo" v-on:click="submitBodycamWithShooting" class="btn btn-outline-primary">Submit a New Shooting with This Bodycam</button>
                         <button type="button" v-on:click="clearBodycamModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -363,6 +361,64 @@
     <!-- <script type="text/javascript" src="{% static 'js/fuzzyset.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'datatables.min.js' %}"></script>
     <!-- javascript will go here -->
+    <script type="text/javascript">
+        // Test browser
+        navigator.browserSpecs = (function(){
+            var ua = navigator.userAgent, tem, 
+                M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+            if(/trident/i.test(M[1])){
+                tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+                return {name:'IE',version:(tem[1] || '')};
+            }
+            if(M[1]=== 'Chrome'){
+                tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+                if(tem != null) return {name:tem[1].replace('OPR', 'Opera'),version:tem[2]};
+            }
+            M = M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+            if((tem = ua.match(/version\/(\d+)/i))!= null)
+                M.splice(1, 1, tem[1]);
+            return {name:M[0], version:M[1]};
+        })();
+        console.log("testing browser")
+        console.log(navigator.browserSpecs.name)
+        console.log(navigator.browserSpecs.version)
+        function alertBrowser(browser_name, version) {
+            content = "We've detected you're using " + browser_name + " version " + version + " which is incompatible with this website.<br><br> Please consider upgrading to the newest version of Microsoft Edge, Chrome, Firefox or Opera, as the website will not function on your current browser. <br><br> We've provided links below.<br><br> <a href='https://www.microsoft.com/en-us/windows/microsoft-edge?irgwc=1&OCID=AID681541_aff_7593_1239139&tduid=(ir__kdxqv1ge09u2oa0jv166ambmqm2xk9tn6hzo3fct00)(7593)(1239139)(DLButton)(microsoftedge)&irclickid=_kdxqv1ge09u2oa0jv166ambmqm2xk9tn6hzo3fct00'>Edge Update</a><br><a href='https://www.google.com/chrome/'>Chrome Update</a><br><a href='https://www.mozilla.org/en-US/firefox/'>Firefox Update</a><br><a href='https://www.opera.com/'>Opera Update</a>"
+             $.alert({
+                title: 'Browser Version Issue!',
+                content: content,
+                type: 'orange',
+                typeAnimated: true,
+                autoClose: '',
+                buttons: {
+                }
+            });
+        }
+        if (navigator.browserSpecs.name == 'IE') {
+            alertBrowser("Internet Explorer", navigator.browserSpecs.version)
+        }
+        else if (navigator.browserSpecs.name == "Firefox") {
+            // Do something for Firefox.
+            if (navigator.browserSpecs.version < 27) {
+                alertBrowser("Firefox", navigator.browserSpecs.version)
+            }
+        }
+        else if (navigator.browserSpecs.name == "Chrome") {
+            if (navigator.browserSpecs.version < 29) {
+                alertBrowser("Chrome", navigator.browserSpecs.version)
+            }
+        }
+        else if (navigator.browserSpecs.name == "Safari") {
+            if (navigator.browserSpecs.version < 9) {
+                alertBrowser("Safari", navigator.browserSpecs.version)
+            }
+        }
+        else if (navigator.browserSpecs.name == "Opera") {
+            if (navigator.browserSpecs.version < 17) {
+                alertBrowser("Opera", navigator.browserSpecs.version)
+            }
+        }
+    </script>
     {% block js %}
     {% endblock js %}
     <script type="text/javascript">
@@ -381,6 +437,15 @@
                 theme: "bootstrap",
                 placeholder: "Select shooting",
                 dropdownParent: $("#add_bodycam"),
+                minimumInputLength: 3,
+                ajax: {
+                    url: "{% url 'roster:ajax-shootings' %}",
+                    dataType: 'json',
+                    // processResults: function(data) {
+                    //     console.log(data)
+                    //     return data;
+                    // }
+                  }
             })
             $('#select_shooting_for_bodycam').on("change", function(e) { 
                 if ($(this).val() != "") {

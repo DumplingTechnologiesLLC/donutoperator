@@ -3,6 +3,7 @@ from roster import views
 app_name = "roster"
 
 urlpatterns = [
+	url(r'^ajax/ajax-shootings$', views.AjaxSelect2Shootings.as_view(), name="ajax-shootings"),
     url(r'^ajax/submit-killing$',
     	views.SubmitShootingView.as_view(), name="submit-killing"),
     url(r'^ajax/delete-killing$',
