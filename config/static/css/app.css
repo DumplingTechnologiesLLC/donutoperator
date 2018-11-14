@@ -264,6 +264,7 @@ textarea {
 .footer-hide-button {
   position: absolute;
   top: -35px;
+  left: 40px;
   background-color: #F5F5F5;
   border-color: #F5F5F5;
   border-top: 1px solid #373A3C;
