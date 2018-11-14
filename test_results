@@ -1,0 +1,85 @@
+============================= test session starts =============================
+platform win32 -- Python 3.6.1, pytest-3.10.0, py-1.7.0, pluggy-0.8.0
+Django settings: config.settings (from environment variable)
+rootdir: C:\Users\pedro\OneDrive\Documents\Heroku\DonutProject\DonutProject, inifile: pytest.ini
+plugins: django-3.4.3, cov-2.6.0
+
+======================== no tests ran in 0.00 seconds =========================
+============================= test session starts =============================
+platform win32 -- Python 3.6.1, pytest-3.10.0, py-1.7.0, pluggy-0.8.0
+Django settings: config.settings (from environment variable)
+rootdir: C:\Users\pedro\OneDrive\Documents\Heroku\DonutProject\DonutProject, inifile: pytest.ini
+plugins: django-3.4.3, cov-2.6.0
+collected 24 items
+
+roster\tests\test_forms.py ....                                          [ 16%]
+roster\tests\test_models.py .......                                      [ 45%]
+roster\tests\test_views.py ...........
+
+----------- coverage: platform win32, python 3.6.1-final-0 -----------
+Name                           Stmts   Miss  Cover   Missing
+------------------------------------------------------------
+roster\__init__.py                 0      0   100%
+roster\admin.py                   10      0   100%
+roster\context_processors.py       5      5     0%   1-8
+roster\forms.py                   35      0   100%
+roster\models.py                  43      0   100%
+roster\urls.py                     4      0   100%
+roster\views.py                   71      0   100%
+------------------------------------------------------------
+TOTAL                            168      5    97%
+
+
+============================== warnings summary ===============================
+roster/tests/test_forms.py::test_valid_submission
+  c:\users\pedro\onedrive\documents\heroku\donutproject\venv\lib\site-packages\django\db\models\fields\__init__.py:1451: RuntimeWarning: DateTimeField Post.created received a naive datetime (2018-10-08 22:33:01.519867) while time zone support is active.
+    RuntimeWarning)
+  c:\users\pedro\onedrive\documents\heroku\donutproject\venv\lib\site-packages\django\db\models\fields\__init__.py:1451: RuntimeWarning: DateTimeField Post.modified received a naive datetime (2018-10-08 22:33:11.279964) while time zone support is active.
+    RuntimeWarning)
+
+roster/tests/test_views.py::DeleteShootingViewTests::test_successful_submission
+  C:\Users\pedro\OneDrive\Documents\Heroku\DonutProject\DonutProject\config\urls.py:26: RemovedInDjango20Warning: Passing a 3-tuple to django.conf.urls.include() is deprecated. Pass a 2-tuple containing the list of patterns and app_name, and provide the namespace argument to include() instead.
+    url(r'^admin/filebrowser/', include(filebrowser_site.urls)),
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+<frozen importlib._bootstrap_external>:832: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --fulltrace)
+=================== 22 passed, 3 warnings in 16.60 seconds ====================
+============================= test session starts =============================
+platform win32 -- Python 3.6.1, pytest-3.10.0, py-1.7.0, pluggy-0.8.0
+Django settings: config.settings (from environment variable)
+rootdir: C:\Users\pedro\OneDrive\Documents\Heroku\DonutProject\DonutProject, inifile: pytest.ini
+plugins: django-3.4.3, cov-2.6.0
+collected 21 items
+
+blog\tests\test_forms.py .                                               [  4%]
+blog\tests\test_models.py .                                              [  9%]
+blog\tests\test_views.py ...................                             [100%]
+
+----------- coverage: platform win32, python 3.6.1-final-0 -----------
+Name               Stmts   Miss  Cover   Missing
+------------------------------------------------
+blog\__init__.py       0      0   100%
+blog\admin.py          3      0   100%
+blog\forms.py         15      0   100%
+blog\models.py        25      0   100%
+blog\urls.py           6      0   100%
+blog\views.py        107      0   100%
+------------------------------------------------
+TOTAL                156      0   100%
+
+
+============================== warnings summary ===============================
+blog/tests/test_forms.py::test_valid_form_submission
+  c:\users\pedro\onedrive\documents\heroku\donutproject\venv\lib\site-packages\django\db\models\fields\__init__.py:1451: RuntimeWarning: DateTimeField Post.created received a naive datetime (2018-10-08 22:33:01.519867) while time zone support is active.
+    RuntimeWarning)
+  c:\users\pedro\onedrive\documents\heroku\donutproject\venv\lib\site-packages\django\db\models\fields\__init__.py:1451: RuntimeWarning: DateTimeField Post.modified received a naive datetime (2018-10-08 22:33:11.279964) while time zone support is active.
+    RuntimeWarning)
+
+blog/tests/test_views.py::PostEditViewTests::test_access
+  C:\Users\pedro\OneDrive\Documents\Heroku\DonutProject\DonutProject\config\urls.py:26: RemovedInDjango20Warning: Passing a 3-tuple to django.conf.urls.include() is deprecated. Pass a 2-tuple containing the list of patterns and app_name, and provide the namespace argument to include() instead.
+    url(r'^admin/filebrowser/', include(filebrowser_site.urls)),
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+=================== 21 passed, 3 warnings in 24.85 seconds ====================
