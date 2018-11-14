@@ -270,8 +270,9 @@
                                 </div>
                             </div>
                             <div class='form-group row'>
-                                <div class="col-lg-10">                               
-                                    <label for="select_shooting_for_bodycam">Do you want to add this to a pre-existing shooting?</label>
+                                <div v-bind:class="{'col-lg-10': creating, 'col-lg-6': !creating}">                               
+                                    <label v-if="creating" for="select_shooting_for_bodycam">Do you want to add this to a pre-existing shooting?</label>
+                                    <label v-else for="select_shooting_for_bodycam">Do you want to change the shooting attached to this bodycam?</label>
                                     <select id="select_shooting_for_bodycam" class="form-control" style="width:100%">
                                         <option></option>
                                         {% for shooting in summarized_shootings %}
@@ -279,13 +280,15 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-lg-2" style="display: flex; justify-content: flex-end; align-items: flex-end;">
+                                <div v-bind:class="{'col-lg-2': creating, 'col-lg-4': !creating}" style="display: flex; justify-content: flex-end; align-items: flex-end;">
                                     <button type="button" v-on:click="resetShootingSelection" class="btn btn-info" style="margin-bottom: 5px;">Reset Selection</button>
+                                    <button type="button" v-if="!creating" v-on:click="unlinkShooting" class="btn btn-danger" style="margin-bottom: 5px; margin-left: 5px">Unlink Shooting</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
+                        <small style="float:left">We don't allow you to submit a new shooting when editing a bodycam. Sorry.</small>
                         <button type="button" v-on:click="submitBodycam" class="btn btn-primary">Submit Bodycam</button>
                         <button type="button" v-if="creating" id="bodycam_shooting_duo" v-on:click="submitBodycamWithShooting" class="btn btn-outline-primary">Submit a New Shooting with This Bodycam</button>
                         <button type="button" v-on:click="clearBodycamModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -677,7 +680,7 @@
                             url: "{% url 'bodycams:bodycam-edit' %}",
                             data: data,
                             success: function() {
-                                showSuccessMessage('Bodycam edited succesfully. The page will now reload.', self.submitting_duel)
+                                showSuccessMessage('Bodycam edited succesfully. The page will now reload.', true)
                             },
                             error: function(data) {
                                 if (data.status == 400) {
@@ -689,6 +692,11 @@
                             },
                         });
                     }
+                },
+                unlinkShooting: function() {
+                    var self = this;
+                    self.bodycam.shooting = -1;
+                    showSuccessMessage("Shooting has been unlinked. If you want to relink it, refresh the page without submitting the changes.", false)
                 },
                 submitKilling: function() {
                     var self = this;
@@ -806,13 +814,16 @@
                 openBodycamModal: function() {
                     // initializes the bodycam modal, with data if we are editing a bodycam since select2 and Tempus Domini doesn't have 2 way binding
                     var self = this;
+                    console.log(self.bodycam)
+                    console.log(self.bodycam.shooting)
+                    var shooting = self.bodycam.shooting;
+                    console.log(shooting)
                     $("#add_bodycam").modal("toggle")
                     if (!self.creating ) {
                         $("#bodycam_new_date").datetimepicker("date", moment(self.bodycam.date, "YYYY-MM-DD"))
                         $("#new_bodycam_state_select").val(self.bodycam.state).trigger("change")
                         $("#new_bodycam_tags_select").val(self.bodycam.tags).trigger("change")
-                        $("#new_bodycam_tags_select").val(self.bodycam.tags).trigger("change")
-                        $("#select_shooting_for_bodycam").val(self.bodycam.shooting).trigger("change")
+                        $("#select_shooting_for_bodycam").val(shooting).trigger("change")
                     }
                 },
                 openKillingModal: function() {

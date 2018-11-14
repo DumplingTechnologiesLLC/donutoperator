@@ -64,7 +64,11 @@ class BodycamEdit(LoginRequiredMixin, View):
 	def post(self, request):
 		"""AJAX only
 		Edits an existing bodycam, including tags, then returns the id of the
-		bodycam to the client
+		bodycam to the client.
+
+		If a shooting id is included in the bodycam, then the bodycam will be linked
+		to the shooting. If the shooting id is -1, then the bodycam will be unlinked
+		from its current shooting.
 
 		Expects:
 		a stringified bodycam JSON object in the following format:
@@ -104,6 +108,17 @@ class BodycamEdit(LoginRequiredMixin, View):
 					text=tag,
 					bodycam=bodycam
 				)
+			if data["shooting"] != "" and data["shooting"] is not None:
+				if int(data["shooting"]) == -1:
+					bodycam.shooting = None
+				else:
+					try:
+						shooting = Shooting.objects.get(pk=int(data["shooting"]))
+					except Exception as e:
+						return HttpResponse(
+							"We've created the bodycam but when we tried to link the bodycam to the shooting you requested, we couldn't find the shooting. Please refresh the page and try to link the bodycam manually.", status=406)
+					bodycam.shooting = shooting
+				bodycam.save()
 			return HttpResponse(bodycam.id, status=200)
 		return HttpResponse(create_html_errors(form), status=400)
 
@@ -113,6 +128,9 @@ class BodycamSubmit(LoginRequiredMixin, View):
 		'''AJAX only
 		Creates a new bodycam, with tags added to it, and then returns the id of the
 		bodycam to the client
+
+		If a shooting id is included in the bodycam, then the bodycam will be linked
+		to the shooting.
 
 		Expects:
 		A stringified bodycam JSON object in the following format:
@@ -159,28 +177,53 @@ class BodycamSubmit(LoginRequiredMixin, View):
 
 class BodycamDashboard(LoginRequiredMixin, View):
 	def get(self, request, date=datetime.datetime.now().year):
+		"""Return sthe admin page for managing bodycams
+
+		Arguments:
+		:param request: a Django WSGI request object
+		:param date: an optional parameter that defaults to the current year if not
+		provided
+
+		Returns:
+		a render of the bodycams, the number of bodycams, the year, and the departments
+		"""
 		display_date = datetime.datetime(int(date), 1, 1, 0, 0)
 		distinct_tags = Tag.objects.values('text').annotate(
 			text_count=Count('text')).values('text')
+		bodycams = Bodycam.objects.filter(
+			date__year=display_date.year).order_by("-date")
 		return render(request, "bodycam/bodycam_dashboard.html", {
-			"bodycams": [obj.as_dict() for obj in Bodycam.objects.all().order_by("-date")],
+			"bodycams": [obj.as_dict() for obj in bodycams],
 			"year": display_date.year,
 			"states": Shooting.STATE_CHOICES,
 			"races": Shooting.RACE_CHOICES,
 			"genders": Shooting.GENDER_CHOICES,
+			"departments": bodycams.order_by("department").values('department').distinct(),
 			"all_tags": distinct_tags,
+			"total": bodycams.count(),
 		})
 
 	def post(self, request):
+		"""AJAX only
+
+		Deletes the Bodycam that has a pk matching the one provided
+
+		Arguments:
+		:param request: a Django WSGI with a POST that must contain a pk integer
+
+		Returns:
+		On success - Redirect with successful message
+		On error - Redirect with failure message
+		"""
 		pk = request.POST.get("pk")
 		try:
 			article = Bodycam.objects.get(pk=pk)
 			article.delete()
-			messages.success(request, "Article deleted successfully")
-			return HttpResponseRedirect(reverse("bodycam:dashboard"))
+			messages.success(request, "Bodycam deleted successfully")
+			return HttpResponseRedirect(reverse("bodycams:dashboard"))
 		except Bodycam.DoesNotExist:
-			messages.error(request, "We couldn't find that article in the database.")
-			return HttpResponseRedirect(reverse("blog:dashboard"))
+			messages.error(request, "We couldn't find that bodycam in the database.")
+			return HttpResponseRedirect(reverse("bodycams:dashboard"))
 
 
 class BodycamIndexView(View):
@@ -194,7 +237,6 @@ class BodycamIndexView(View):
 
 		Returns:
 		a render of the bodycams, the number of bodycams, the year, and the departments
-		on error - HTTP Status 400,  form errors as HTML
 		'''
 		display_date = datetime.datetime(int(date), 1, 1, 0, 0)
 		bodycams = Bodycam.objects.filter(
@@ -203,5 +245,5 @@ class BodycamIndexView(View):
 			"bodycams": [obj.as_dict() for obj in bodycams],
 			"total": bodycams.count(),
 			"year": display_date.year,
-			"departments": bodycams.order_by("department").values('department'),
+			"departments": bodycams.order_by("department").values('department').distinct(),
 		})

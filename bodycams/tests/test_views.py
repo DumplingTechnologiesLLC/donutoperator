@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from bodycams.models import Bodycam
 from roster.models import Shooting, Tag
 import datetime
+from django.contrib.messages import get_messages
 
 video_iframe = "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/NkLb-0-L5OA\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"
 
@@ -111,6 +112,96 @@ class BodycamEditTests(TestCase):
 		self.client = Client()
 		self.client.login(username="testuser", password="12345")
 
+	def test_successful_edit_with_unlink(self):
+		shooting = Shooting.objects.create(
+			name="Test Name",
+			age=21,
+			race=1,
+			gender=1,
+			date="2018-11-10",
+			description="Test Description",
+			city="Test City",
+			state=1,
+		)
+		bodycam = Bodycam.objects.create(
+			title='TEST',
+			video=video_iframe,
+			state=1,
+			date="2018-01-01",
+			shooting=shooting
+		)
+		Tag.objects.create(
+			text="Test",
+			bodycam=bodycam
+		)
+		self.assertEqual(bodycam.tags.all().count(), 1)
+		self.assertEqual(bodycam.shooting, shooting)
+		bodycam_as_dict = {
+			"id": bodycam.id,
+			"title": "Changed Title",
+			"video": video_iframe,
+			"description": "Test Description",
+			"department": "Test Department",
+			"state": "1",
+			"city": "Test City",
+			"date": "2018-11-10T03:15:32.696Z",
+			"tags": ["TestTag", "TestTag2"],
+			"shooting": -1
+		}
+		data = {
+			"bodycam": json.dumps(bodycam_as_dict)
+		}
+		response = self.client.post(reverse("bodycams:bodycam-edit"), data)
+		bodycam.refresh_from_db()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(bodycam.tags.all().count(), 2)
+		self.assertEqual(bodycam.title, "Changed Title")
+		self.assertEqual(None, bodycam.shooting)
+
+	def test_successful_edit_with_shooting(self):
+		bodycam = Bodycam.objects.create(
+			title='TEST',
+			video=video_iframe,
+			state=1,
+			date="2018-01-01"
+		)
+		shooting = Shooting.objects.create(
+			name="Test Name",
+			age=21,
+			race=1,
+			gender=1,
+			date="2018-11-10",
+			description="Test Description",
+			city="Test City",
+			state=1,
+		)
+		Tag.objects.create(
+			text="Test",
+			bodycam=bodycam
+		)
+		self.assertEqual(bodycam.tags.all().count(), 1)
+		bodycam_as_dict = {
+			"id": bodycam.id,
+			"title": "Changed Title",
+			"video": video_iframe,
+			"description": "Test Description",
+			"department": "Test Department",
+			"state": "1",
+			"city": "Test City",
+			"date": "2018-11-10T03:15:32.696Z",
+			"tags": ["TestTag", "TestTag2"],
+			"shooting": shooting.id
+		}
+		data = {
+			"bodycam": json.dumps(bodycam_as_dict)
+		}
+		response = self.client.post(reverse("bodycams:bodycam-edit"), data)
+		bodycam.refresh_from_db()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(bodycam.tags.all().count(), 2)
+		self.assertEqual(bodycam.title, "Changed Title")
+		self.assertEqual(shooting, bodycam.shooting)
+
 	def test_successful_edit(self):
 		bodycam = Bodycam.objects.create(
 			title='TEST',
@@ -177,6 +268,50 @@ class BodycamEditTests(TestCase):
 		self.assertEqual(bodycam.tags.all().count(), 1)
 		self.assertEqual(bodycam.title, "TEST")
 
+	def test_link_race_condition(self):
+		bodycam = Bodycam.objects.create(
+			title='TEST',
+			video=video_iframe,
+			state=1,
+			date="2018-01-01"
+		)
+		shooting = Shooting.objects.create(
+			name="Test Name",
+			age=21,
+			race=1,
+			gender=1,
+			date="2018-11-10",
+			description="Test Description",
+			city="Test City",
+			state=1,
+		)
+		Tag.objects.create(
+			text="Test",
+			bodycam=bodycam
+		)
+		self.assertEqual(bodycam.tags.all().count(), 1)
+		id = shooting.id
+		bodycam_as_dict = {
+			"id": bodycam.id,
+			"title": "Changed Title",
+			"video": video_iframe,
+			"description": "Test Description",
+			"department": "Test Department",
+			"state": "1",
+			"city": "Test City",
+			"date": "2018-11-10T03:15:32.696Z",
+			"tags": ["TestTag", "TestTag2"],
+			"shooting": id
+		}
+		shooting.delete()
+		data = {
+			"bodycam": json.dumps(bodycam_as_dict)
+		}
+		response = self.client.post(reverse("bodycams:bodycam-edit"), data)
+		self.assertEqual(response.status_code, 406)
+		self.assertEqual(response.content.decode("utf-8"),
+						 "We've created the bodycam but when we tried to link the bodycam to the shooting you requested, we couldn't find the shooting. Please refresh the page and try to link the bodycam manually.")
+
 	def test_race_condition(self):
 		bodycam = Bodycam.objects.create(
 			title='TEST',
@@ -206,6 +341,57 @@ class BodycamEditTests(TestCase):
 		self.assertEqual(response.status_code, 400)
 		self.assertEqual(response.content.decode("utf-8"),
 						 "We couldn't find that bodycam in our database anymore.")
+
+
+class BodycamDashboardTests(TestCase):
+	def setUp(self):
+		user = User.objects.create(username="testuser")
+		user.set_password("12345")
+		user.save()
+		self.client = Client()
+		self.client.login(username="testuser", password="12345")
+
+	def test_success_get(self):
+		response = self.client.get(reverse("bodycams:dashboard"))
+		self.assertEqual(response.status_code, 200)
+
+	def test_delete_success(self):
+		bodycam = Bodycam.objects.create(
+			title='TEST',
+			video=video_iframe,
+			state=1,
+			date="2018-01-01"
+		)
+		data = {
+			"pk": bodycam.id
+		}
+		response = self.client.post(reverse("bodycams:dashboard"), data)
+		self.assertEqual(response.status_code, 302)
+		messages = list(get_messages(response.wsgi_request))
+		self.assertEqual(
+			str(messages[0]),
+			"Bodycam deleted successfully"
+		)
+
+	def test_delete_failure(self):
+		bodycam = Bodycam.objects.create(
+			title='TEST',
+			video=video_iframe,
+			state=1,
+			date="2018-01-01"
+		)
+		id = bodycam.id
+		bodycam.delete()
+		data = {
+			"pk": id
+		}
+		response = self.client.post(reverse("bodycams:dashboard"), data)
+		self.assertEqual(response.status_code, 302)
+		messages = list(get_messages(response.wsgi_request))
+		self.assertEqual(
+			str(messages[0]),
+			"We couldn't find that bodycam in the database."
+		)
 
 
 class BodycamIndexTests(TestCase):
@@ -321,4 +507,4 @@ class BodycamSubmitTests(TestCase):
 		response = self.client.post(reverse("bodycams:bodycam-submit"), data)
 		self.assertEqual(response.status_code, 406)
 		self.assertEqual(response.content.decode("utf-8"),
-			"We've created the bodycam but when we tried to link the bodycam to the shooting you requested, we couldn't find the shooting. Please refresh the page and try to link the bodycam manually.")
+						 "We've created the bodycam but when we tried to link the bodycam to the shooting you requested, we couldn't find the shooting. Please refresh the page and try to link the bodycam manually.")

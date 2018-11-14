@@ -105,7 +105,7 @@ class Bodycam(models.Model):
             "id": self.id,
             "title": self.title,
             "video": self.video,
-            "description": self.description,
+            "description": self.description if self.description is not None else "",
             "department": self.department if self.department is not None else "Unknown",
             "state": self.get_state_display(),
             "state_value": self.state,
