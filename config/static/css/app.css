@@ -274,3 +274,10 @@ textarea {
 .footer-hide-button:hover {
   background-color:#373A3C;
 }
+.adjust-buttons {
+}
+@media screen and (max-width: 991px) {
+    .adjust-buttons {
+        margin-top:5px;
+    }
+}
