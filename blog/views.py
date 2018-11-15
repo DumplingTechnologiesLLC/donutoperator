@@ -207,7 +207,22 @@ class PostEditView(LoginRequiredMixin, View):
 
 class PostDisplayView(View):
     def get(self, request, pk):
-        """
+        """Displays an article
+
+        Since we need to be able to format block quotes without modifying the original
+        version so that it can still be edited, we make a deepcopy of the object,
+        format the content on the copied object, and display the copied object instead
+        of the actual article.
+
+        Each newline is in <p>, so we iterate through all content that has a triple
+        backtick and create a p tag that correctly aligns the block quote instead.
+
+        Arguments:
+        :param request: a WSGI Django request object
+
+        Returns:
+        a render of blog.html with the article with formatted quotes on success,
+        a redirect on failure
         """
         try:
             post = Post.objects.get(pk=pk)
