@@ -207,9 +207,11 @@ class BodycamDashboard(LoginRequiredMixin, View):
 		"""AJAX only
 
 		Deletes the Bodycam that has a pk matching the one provided
-
+		
+		Expects:
+		pk - an integer id for a Bodycam
 		Arguments:
-		:param request: a Django WSGI with a POST that must contain a pk integer
+		:param request: a Django WSGI request object
 
 		Returns:
 		On success - Redirect with successful message
@@ -231,7 +233,7 @@ class BodycamIndexView(View):
 		'''Returns the bodycam index view
 
 		Arguments:
-		:param request: a Django WSGI request object with the data described above
+		:param request: a Django WSGI request object
 		:param date: an optional parameter that defaults to the current year if not
 		provided
 

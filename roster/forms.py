@@ -19,6 +19,13 @@ class ShootingModelForm(forms.ModelForm):
         ]
 
     def clean_name(self):
+        """
+        Cleans the name input.
+
+        If the name is blank, sets the name to "No Name"
+
+        returns cleaned name
+        """
         data = self.cleaned_data['name']
         if data is None:
             data = ""
@@ -27,6 +34,13 @@ class ShootingModelForm(forms.ModelForm):
         return data
 
     def clean_city(self):
+        """
+        Cleans the city input
+
+        If the city is blank, sets the city to "Unknown"
+
+        returns cleaned city
+        """
         data = self.cleaned_data["city"]
         if data is None:
             data = ""
@@ -35,8 +49,15 @@ class ShootingModelForm(forms.ModelForm):
         return data
 
     def clean_video_url(self):
+        """
+        Cleans the video_url
+
+        if data is None, sets to "", if data.length > 0 and it doesn't have a "?",
+        raises a validation error. Otherwise calls convert_format on the data
+
+        returns cleaned video_url
+        """
         data = self.cleaned_data.get("video_url", "")
-        print(data)
         if data is None:
             data = ""
         if len(data) > 0:
