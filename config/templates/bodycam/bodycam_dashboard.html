@@ -381,12 +381,13 @@
 	            bodycams: {{bodycams|safe}},
 	            year: "{{year}}",
 	            displayed_video: "",
-            	displayed_shooting: {},
+            	displayed_shooting: {}, // shooting to display in modal
             	displayed_bodycam: {
             		tags: [],
             	},
 	        },
 	        mounted: function() {
+		    // pretty sure this isn't needed anymore but haven't gotten around to testing it
 	            var self = this;
 	            for (var x = 0; x < self.bodycams.length; x++) {
 	                self.bodycams[x].date = self.bodycams[x].date.replace("Jan.", "January");
@@ -401,6 +402,15 @@
 	        },
 	        methods: {
 	        	displayAge: function(age) {
+					/*Handles displaying age to avoid displaying -1
+
+					Arguments:
+					:param age: integer from -1 - positive infinity
+
+					Returns:
+					If age < 0, returns "No Age"
+					else returns age
+					*/
 	                if (age > -1) {
 	                    return age
 	                }
@@ -409,6 +419,18 @@
 	                }
 	            },
 	            openBodycamDetails: function(id) {
+					/* Displays a bodycam's details attached to the bodycam in a modal.
+					
+					Arguments:
+					:param id: integer from 1 - positive infinity
+					
+					Searches for the bodycam that has an id matching the param id, selects that bodycam as
+					the displayed_bodycam which gets automatically populated in the modal via 2-way binding
+					then opens the modal
+					
+					Returns:
+					Nothing
+					*/
 	                bodycam = this.bodycams.find(function(bodycam) {
 	                    return bodycam.id == id
 	                })
@@ -416,17 +438,49 @@
 	                $('#bodycam_details').modal('toggle');
 	            },
 	        	openDetails: function(obj) {
+					/*Displays a shooting for a bodycam.
+					
+					Arguments:
+					:param obj: a shooting as JSON object
+					
+					Sets the displayed_shooting to the object passed, which gets automatically populated in the modal
+					via 2-way binding then opens the modal
+					
+					Returns:
+					Nothing
+					*/
 	                this.displayed_shooting = obj
 	                $('#shooting_details').modal('toggle');
 	            },
 	            editBodycam: function(id) {
+					/*Chooses the bodycam to be edited and passes the data to the nav_app
+					
+					The nav_app is in charge of all editing, so we just need to pass the data to the nav_app.
+					We start by iterating through the bodycams until we find the one who's id matches the argument
+					passed.
+					
+					We then begin populating an array with the tags since passing the tags directly for some reason
+					results in null (suspect it has something to do with variable lifespan and javascript passing by reference
+					and not by value for object as opposed to basic valuesbut this solves the problem so
+					not worth checking). TWe then assign the nav_app bodycam to match the details of the current bodycam
+					and set the creating flag to false, which means the nav_app will submit the details to the edit endpoint
+					instead of the creation endpoint.
+					
+					We then call the openBodycamModal function of nav_app, which will populate the modal's non-2-way-bound
+					form fields with jQuery and open the editing modal.
+					
+					Arguments:
+					:param id: an integer id
+					
+					Returns:
+					Nothing
+					*/
 	                for (var x = 0; x < this.bodycams.length; x++) {
 	                    if (this.bodycams[x].id == id) {
 	                        tags = []
 	                        for (var y = 0; y < this.bodycams[x].tags.length; y++) {
 	                            tags.push(this.bodycams[x].tags[y].text)
 	                        }
-	                        console.log(tags)
 	                        nav_app.bodycam.id = this.bodycams[x].id
 		                    nav_app.bodycam.title = this.bodycams[x].title
 		                    nav_app.bodycam.video = this.bodycams[x].video
@@ -446,6 +500,18 @@
 	                }
             	},
 	            deleteBodycam: function(id) {
+					/*Confirms user's decision then deletes a bodycam
+					
+					We confirm that they want to delete the bodycam, and on confirmation, send a
+					AJAX POST request to the delete endpoint, with a dictionary including the
+					csrfmiddlewaretoken and the pk. On success we then reload the page, on failure, we display an error
+					
+					Arguments:
+					:param id: an integer id of a bodycam to be deleted
+					
+					Returns:
+					Nothing
+					*/
 	                var data = {
 	                    "pk": parseInt(id),
 	                    "csrfmiddlewaretoken": "{{csrf_token}}",
@@ -497,6 +563,16 @@
 	                })
 	            },
 	        	resetFilters: function() {
+					/*Resets the filter choices
+					
+					Sets 2-way-bound variables to their default values, and uses jQuery to reset non-2-way-bound variables
+					
+					Arguments:
+					None
+					
+					Returns:
+					None
+					*/
 	                var self = this;
 	                $("#state_select").val([]).trigger("change")
 	                $("#race_select").val([]).trigger("change")
@@ -514,18 +590,48 @@
 	                $('#end_date').datetimepicker('clear');
 	            },
 	            calculateNextYear: function() {
+					/*Calculates the next year for setting the url of the Next Year button
+					
+					Uses the year passed from the server (which is the year currently being viewed) to
+					decide which year is next
+					
+					Arguments:
+					None
+					
+					Returns:
+					None
+					*/
 	                var year = moment("{{year}}", "YYYY").add(1, "y").format("YYYY")
 	                var url = "{% url 'bodycams:dashboard-date' date=1234 %}";
 	                url = url.replace("1234", year);
 	                return url;
 	            },
 	            calculatePreviousYear: function() {
+					/*Calculates the previous year for setting the url of the Previous Year button
+					
+					Uses the year passed from the server (which is the year currently being viewed) to
+					decide which year is past
+					
+					Arguments:
+					None
+					
+					Returns:
+					None
+					*/
 	                var year = moment("{{year}}", "YYYY").subtract(1, "y").format("YYYY")  
 	                var url = "{% url 'bodycams:dashboard-date' date=1234 %}";
 	                url = url.replace("1234", year);
 	                return url;
 	            },
 	            order_by: function(attribute) {
+					/*Sets the order object that is used in the computed function for displaying bodycams
+					
+					Given the attribute, we set that attribute to 1 if it is -1 or 0, or -1 if it is set to 1,
+					and sets all other attributes to 0.
+					
+					Arguments:
+					:param attribute: a string of a key
+					*/
 	                var self = this;
 	                this.order_attribute = attribute;
 	                $.each(self.order, function(key, value) {
@@ -548,9 +654,27 @@
 	        },
 	        computed: {
 	        	currentYear: function() {
+					/*Selects the current year
+					
+					This is used for deciding whether to display the "Next Year" button, which shouldn't be displayed for
+					accessing a future years
+					
+					Arguments:
+					None
+					
+					Returns:
+					current year as "YYYY"
+					
+					*/
 	                return moment().format("YYYY")
 	            },
 	        	displayed_bodycams: function() {
+					/*Calculates what bodycams should be displayed to the user and returns bodycams
+					
+					Copies the list of bodycams (so we don't affect the list)
+					Filters by text, then city, then states, then departments, then races of the shooting,
+					then tags, then start date, then end date
+					*/
 	                var self = this;
 	                var displayed_bodycams = this.bodycams.slice();
 	                if (this.text.length > 0) {
