@@ -106,6 +106,17 @@ class Shooting(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=False)
 
     def as_dict(self):
+        """
+        Serializes the shooting into JSON form.
+
+        Formats the date to YYYY-MM-DD
+
+        for race, gender and state, it provides the display as
+        race, gender and state, and the numerical value as
+        race_value, gender_value, state_value
+
+        returns serialized object
+        """
         tags = self.tags.all()
         tags = [obj.as_dict() for obj in tags]
         sources = self.sources.all()
@@ -147,6 +158,11 @@ class Source(models.Model):
     )
 
     def as_dict(self):
+        """
+        Serializes the tag into a JSON object
+
+        returns tag as JSON
+        """
         return {
             "id": self.id,
             "text": self.text,
@@ -174,6 +190,11 @@ class Tag(models.Model):
     )
 
     def as_dict(self):
+        """
+        Serializes the source into a JSON object
+
+        returns source as JSON
+        """
         return {
             "id": self.id,
             "text": self.text,

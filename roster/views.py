@@ -63,9 +63,13 @@ class AjaxSelect2Shootings(LoginRequiredMixin, View):
         Provides select2 with the results based on what the person searches. Keeps
         Select2 from becoming sluggish.
 
+        Expects:
+        {
+            "term": string to filter by
+        }
         Arguments:
-        :param request: a WSGI Django request object with a GET dictionary containing
-        a term to search by, keyed as term.
+        :param request: a WSGI Django request object with a GET dictionary described
+        above
 
         Returns:
         a dictionary of Shootings matching that term, in a form Select2 expects.
@@ -82,6 +86,23 @@ class AjaxSelect2Shootings(LoginRequiredMixin, View):
 
 class DeleteShootingView(LoginRequiredMixin, View):
     def post(self, request):
+        """Ajax Only
+
+        Deletes a Shooting object that matches the id provided
+
+        Expects:
+        {
+            "id": integer pk
+        }
+
+        Arguments:
+        :param request: a WSGI Django request object with a POST dictionary described
+        above
+
+        Returns:
+        200 On success
+        500 and error string on failure
+        """
         data = request.POST.get("id")
         try:
             Shooting.objects.get(pk=data).delete()
@@ -92,6 +113,34 @@ class DeleteShootingView(LoginRequiredMixin, View):
 
 class EditShootingView(LoginRequiredMixin, View):
     def post(self, request):
+        """Ajax Only
+
+        Edits a shooting based on data submitted
+
+        Expects:
+        {
+            id: integer pk,
+            "name": string,
+            "age": integer,
+            "date": datestring "YYYY-MM-DDThh:mm:ss,
+            "race": integer,
+            "gender": integer,
+            "state": integer,
+            "city": string,
+            "video_url": string,
+            "unfiltered_video_url": string
+            "description": string,
+            "tags": array of strings,
+            "sources": array of strings,
+        }
+
+        Arguments:
+        :param request: A WSGI Django request object with a POST dictionary as above
+
+        Returns:
+        200 on success
+        400 with error string on failure
+        """
         data = json.loads(request.POST.get("shooting"))
         data["date"] = data["date"].split("T")[0]
         if (isinstance(data["age"], str) and
@@ -120,6 +169,34 @@ class EditShootingView(LoginRequiredMixin, View):
 
 class SubmitShootingView(LoginRequiredMixin, View):
     def post(self, request):
+        """Ajax only
+
+        Creates a shooting based on the data submitted
+
+        Expects:
+        {
+            id: integer pk,
+            "name": string,
+            "age": integer,
+            "date": datestring "YYYY-MM-DDThh:mm:ss,
+            "race": integer,
+            "gender": integer,
+            "state": integer,
+            "city": string,
+            "video_url": string,
+            "unfiltered_video_url": string
+            "description": string,
+            "tags": array of strings,
+            "sources": array of strings,
+        }
+
+        Arguments:
+        :param request: A WSGI Django request object with a POST dictionary as above
+
+        Returns:
+        200 on success
+        400 with error string on failure
+        """
         data = json.loads(request.POST.get("shooting"))
         data["date"] = data["date"].split("T")[0]
         if (isinstance(data["age"], str) and
@@ -142,6 +219,17 @@ class SubmitShootingView(LoginRequiredMixin, View):
 
 class RosterListView(View):
     def get(self, request, date=datetime.datetime.now().year):
+        '''Returns the roster index view
+
+        Arguments:
+        :param request: a Django WSGI request object
+        :param date: an optional parameter that defaults to the current year if not
+        provided
+
+        Returns:
+        a render of index.html, a list of killings for the year selected
+        the number of killing, the year, and the departments
+        '''
         display_date = datetime.datetime(int(date), 1, 1, 0, 0)
         shootings = Shooting.objects.filter(
             date__year=display_date.year).order_by('-date')
@@ -155,5 +243,4 @@ class RosterListView(View):
             "races": Shooting.RACE_CHOICES,
             "genders": Shooting.GENDER_CHOICES,
             "all_tags": distinct_tags,
-
         })

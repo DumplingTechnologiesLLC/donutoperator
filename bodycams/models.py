@@ -78,6 +78,17 @@ class Bodycam(models.Model):
     )
 
     def as_dict(self):
+        """
+        Serializes the bodycam into a JSON object
+
+        if there is no shooting attached, it attaches a false shooting object with
+        id -1 and name "No shooting record attached to this bodycam yet" for display
+        purposes
+
+        Provides state display string as state, and state numerical value as state_value
+
+        returns serialized object
+        """
         tags = self.tags.all()
         tags = [obj.as_dict() for obj in tags]
         if self.shooting:

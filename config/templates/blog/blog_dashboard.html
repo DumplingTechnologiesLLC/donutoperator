@@ -35,11 +35,11 @@
 		    			<td>{{post.modified|date:"m-d-Y G:i"}}</td>
 		    			<td>{{post.publish_date|date:"m-d-Y"}}</td>
 		    			<td>
-		    				<form method="POST" id="deleteForm">
+		    				<form method="POST" id="deleteForm{{post.id}}">
 		    					{% csrf_token %}
 		    					<input type="hidden" name="action" value="delete">
 		    					<input type="hidden" name="pk" value="{{post.id}}">
-		    					<button class="btn btn-danger btn-sm" onclick="confirmDelete()" type="button">Delete</button>
+		    					<button class="btn btn-danger btn-sm" onclick="confirmDelete({{post.id}})" type="button">Delete</button>
 		    				</form>
 		    			</td>
 		    			<td>
@@ -81,17 +81,17 @@
 	        paging: false,
 	        
 	    } );
-	 
 	    new $.fn.dataTable.FixedHeader( table );
     })
-	function confirmDelete() {
+	function confirmDelete(id) {
 		$.confirm({
 	        type: "red",
 	        title: "Are you sure?",
 	        content: "This action cannot be undone. Are you sure you want to continue?",
 	        buttons: {
 	            Yes: function() {
-	                $('#deleteForm').submit()
+	            	var name = "#deleteForm" + id
+	                $(name).submit()
 	            },
 	            Cancel: function() {
 
