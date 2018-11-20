@@ -385,7 +385,16 @@
         methods: {
             {% if user.is_authenticated %}
             deleteShooting: function(id) {
-                console.log(id)
+                /*Confirms the user's choice then deletes a shooting through AJAX.
+                
+                Displays a success message and reloads on success, displays error on failure
+                
+                Expects:
+                :param id: the pk of a shooting that will be sent to the backend.
+                
+                Returns:
+                None
+                */
                 var data = {
                     "id": parseInt(id),
                     "csrfmiddlewaretoken": "{{csrf_token}}",
@@ -437,6 +446,28 @@
                 })
             },
             editShooting: function(id) {
+                /*Chooses the shooting to be edited and passes the data to the nav_app
+
+                The nav_app is in charge of all editing, so we just need to pass the data to the nav_app.
+                We start by iterating through the killings until we find the one who's id matches the argument
+                passed.
+
+                We then begin populating an array with the tags since passing the tags directly for some reason
+                results in null (suspect it has something to do with variable lifespan and javascript passing by reference
+                and not by value for object as opposed to basic valuesbut this solves the problem so
+                not worth checking). We then assign the nav_app shooting to match the details of the current shooting
+                and set the creating flag to false, which means the nav_app will submit the details to the edit endpoint
+                instead of the creation endpoint.
+
+                We then call the openKillingModal function of nav_app, which will populate the modal's non-2-way-bound
+                form fields with jQuery and open the editing modal.
+
+                Arguments:
+                :param id: an integer id
+
+                Returns:
+                Nothing
+                */
                 for (var x = 0; x < this.shootings.length; x++) {
                     if (this.shootings[x].id == id) {
                         tags = []
@@ -472,6 +503,14 @@
             },
             {% endif %}
             order_by: function(attribute) {
+                /*Sets the order object that is used in the computed function for displaying killings
+					
+                Given the attribute, we set that attribute to 1 if it is -1 or 0, or -1 if it is set to 1,
+                and sets all other attributes to 0.
+
+                Arguments:
+                :param attribute: a string of a key
+                */
                 var self = this;
                 this.order_attribute = attribute;
                 $.each(self.order, function(key, value) {
@@ -492,6 +531,16 @@
                 });
             },
             resetFilters: function() {
+                /*Resets the filter choices
+					
+                Sets 2-way-bound variables to their default values, and uses jQuery to reset non-2-way-bound variables
+
+                Arguments:
+                None
+
+                Returns:
+                None
+                */
                 var self = this;
                 self.order_attribute = "";
                 $.each(self.order, function(key, value) {
@@ -513,18 +562,52 @@
                 $('#end_date').datetimepicker('clear');
             },
             calculateNextYear: function() {
+                /*Calculates the next year for setting the url of the Next Year button
+					
+                Uses the year passed from the server (which is the year currently being viewed) to
+                decide which year is next
+
+                Arguments:
+                None
+
+                Returns:
+                None
+                */
                 var year = moment("{{year}}", "YYYY").add(1, "y").format("YYYY")
                 var url = "{% url 'roster:date-index' date=1234 %}";
                 url = url.replace("1234", year);
                 return url;
             },
             calculatePreviousYear: function() {
+                /*Calculates the previous year for setting the url of the Previous Year button
+					
+                Uses the year passed from the server (which is the year currently being viewed) to
+                decide which year is past
+
+                Arguments:
+                None
+
+                Returns:
+                None
+                */
                 var year = moment("{{year}}", "YYYY").subtract(1, "y").format("YYYY")  
                 var url = "{% url 'roster:date-index' date=1234 %}";
                 url = url.replace("1234", year);
                 return url;
             },
             openDetails: function(id) {
+                /*Opens the details modal for a killing who's id matches the passed argument
+                
+                Iterates through killings to find the killing with the id that matches, and sets the
+                displayed_shooting two way bound variable to that shooting so that it is autopopulated into the
+                details modal, then opens the details modal
+                
+                Argument:
+                :param id: the pk of a killing to be displayed
+                
+                Returns:
+                None
+                */
                 shooting = this.shootings.find(function(shooting) {
                     return shooting.id == id
                 })
@@ -532,6 +615,15 @@
                 $('#shooting_details').modal('toggle');
             },
             displayAge: function(age) {
+                /*Handles displaying age to avoid displaying -1
+                
+                Arguments:
+                :param age: integer from -1 - positive infinity
+                
+                Returns:
+                If age < 0, returns "No Age"
+                else returns age
+                */
                 if (age > -1) {
                     return age
                 }
@@ -542,9 +634,27 @@
         },
         computed: {
             currentYear: function() {
+                /*Selects the current year
+					
+                This is used for deciding whether to display the "Next Year" button, which shouldn't be displayed for
+                accessing a future years
+
+                Arguments:
+                None
+
+                Returns:
+                current year as "YYYY"
+
+                */
                 return moment().format("YYYY")
             },
             displayed_shootings: function() {
+                /*Calculates what shootings should be displayed to the user and returns the valid shootings
+					
+                Copies the list of shootings (so we don't affect the list)
+                Filters by text, then city, then states, then genders, then races of the shooting,
+                then tags, then start date, then end date, then orders them by the order attribute
+                */
                 var self = this;
                 var displayed_shootings = this.shootings.slice();
                 if (this.name.length > 0) {
@@ -608,7 +718,7 @@
                     })
                 }
                 if (self.order_attribute != "") {
-                    order_order = self.order[self.order_attribute];
+                    order_order = self.order[self.order_attribute]; // 1 for ascending, -1 for descending
                     if (order_order == 1) {
                         displayed_shootings.sort(function(a , b) {
                             if (self.order_attribute == "date") {
