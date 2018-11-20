@@ -358,22 +358,17 @@
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-confirm.min.js' %}"></script>
-    <!-- <script type="text/javascript" src="{% static 'js/jquery.floatThead.min.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/select2.full.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.form.js' %}"></script>
-    <!-- <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/moment.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/tempusdominus-bootstrap-4.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vuex.min.js' %}"></script>
-    <!-- <script type="text/javascript" src="{% static 'js/Sortable.min.js' %}"></script> -->
-    <!-- <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.js' %}"></script> -->
-    <!-- <script type="text/javascript" src="{% static 'js/sha256.jquery.js' %}"></script> -->
-    <!-- <script type="text/javascript" src="{% static 'js/fuzzyset.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'datatables.min.js' %}"></script>
     <!-- javascript will go here -->
     <script type="text/javascript">
         // Test browser
+        Vue.config.productionTip = false
         navigator.browserSpecs = (function(){
             var ua = navigator.userAgent, tem, 
                 M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
@@ -390,9 +385,6 @@
                 M.splice(1, 1, tem[1]);
             return {name:M[0], version:M[1]};
         })();
-        console.log("testing browser")
-        console.log(navigator.browserSpecs.name)
-        console.log(navigator.browserSpecs.version)
         function alertBrowser(browser_name, version) {
             content = "We've detected you're using " + browser_name + " version " + version + " which is incompatible with this website.<br><br> Please consider upgrading to the newest version of Microsoft Edge, Chrome, Firefox or Opera, as the website will not function on your current browser. <br><br> We've provided links below.<br><br> <a href='https://www.microsoft.com/en-us/windows/microsoft-edge?irgwc=1&OCID=AID681541_aff_7593_1239139&tduid=(ir__kdxqv1ge09u2oa0jv166ambmqm2xk9tn6hzo3fct00)(7593)(1239139)(DLButton)(microsoftedge)&irclickid=_kdxqv1ge09u2oa0jv166ambmqm2xk9tn6hzo3fct00'>Edge Update</a><br><a href='https://www.google.com/chrome/'>Chrome Update</a><br><a href='https://www.mozilla.org/en-US/firefox/'>Firefox Update</a><br><a href='https://www.opera.com/'>Opera Update</a>"
              $.alert({
