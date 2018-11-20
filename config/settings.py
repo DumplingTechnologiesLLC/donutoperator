@@ -169,14 +169,15 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 FILEBROWSER_DIRECTORY = ''
 DIRECTORY = ""
-
-SECURE_SSL_REDIRECT = True
-SECURE_REDIRECT_EXEMPT = [
-    r'^$',
-    r'^(?P<date>[0-9]+)$',
-    r'^news/$',
-    r'^bodycams$',
-    r'^bodycams/(?P<date>[0-9]+)$',
-]
+SECURE_SSL_REDIRECT = False
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_REDIRECT_EXEMPT = [
+        # r'^$',
+        # r'^(?P<date>[0-9]+)$',
+        # r'^news/$',
+        # r'^bodycams$',
+        # r'^bodycams/(?P<date>[0-9]+)$',
+    ]
 
 django_heroku.settings(locals())
