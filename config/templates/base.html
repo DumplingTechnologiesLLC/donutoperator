@@ -455,10 +455,6 @@
                 ajax: {
                     url: "{% url 'roster:ajax-shootings' %}",
                     dataType: 'json',
-                    // processResults: function(data) {
-                    //     console.log(data)
-                    //     return data;
-                    // }
                   }
             })
             $('#select_shooting_for_bodycam').on("change", function(e) { 
@@ -594,7 +590,14 @@
             },
             methods: {
                 clearBodycamModal: function() {
-                    // this handles closing the modal and removing data present
+                    /*Closes the bodycam creation/edit modal and resets the data in the 2 way binding to a blank slate
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     this.bodycam_id = ""
                     this.shooting_id = ""
                     this.bodycam.id = ""
@@ -616,10 +619,23 @@
                     $('#bodycam_new_date').datetimepicker('clear');
                 },
                 clearModal: function() {
-                    // this handles closing the modal and removing data present
+                    /*Closes the shooting creation/edit modal and resets the data in the 2 way binding to a blank slate
+                    
+                    If we are submitting a bodycam and shooting in tandem, we check to see whether they actually did intend to close the modal
+                    since they will no longer be able to link them automatically and will have to do so manually.
+                    
+                    If they confirm, or if they aren't submitting a tandem entry, then we reset the data and close the modal
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     var cont = false;
                     if (this.submitting_duel) {
-                        // lets make sure that they want to do this before we close
+                        // lets make sure that they want to do this before we close since this will stop a shooting from being
+                        // linked to the previously submitted bodycam
                         $.confirm({
                             title: 'Are you sure you want to do this?',
                             content: "You'll have to manually connect the bodycam we just made to a new one later if you stop now. Are you sure you want to continue?",
@@ -634,6 +650,9 @@
                                 }
                             }
                         });
+                    }
+                    else {
+                        cont = true;   
                     }
                     if (!cont) {
                         return;
@@ -663,10 +682,32 @@
                     $('#new_date').datetimepicker('clear');
                 },
                 submitBodycamWithShooting: function() {
+                    /*Sets the tandem submit flag to true so that the following submissions perform the appropriate linking AJAX calls
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     this.submitting_duel = true
                     this.submitBodycam();
                 },
                 submitBodycam: function() {
+                    /*Submits a bodycam.
+                    
+                    First does front end sanity checks for UX, then submits the data to the creation endpoint if creating is true
+                    otherwise submits to the editing endpoint.
+                    
+                    If the submitting_duel flag is true, then it saves the returned bodycam_id, and prompts the user to
+                    create a shooting now to link to the submitted bodycam. Otherwise it refreshes the page.
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     var self = this;
                     // check data before submitting
                     if (self.bodycam.title.length == 0) {
@@ -773,11 +814,36 @@
                     }
                 },
                 unlinkShooting: function() {
+                    /*Removes the shooting from the bodycam
+                    
+                    There is no way for the user to remove a shooting without adding a new one without this method
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     var self = this;
                     self.bodycam.shooting = -1;
                     showSuccessMessage("Shooting has been unlinked. If you want to relink it, refresh the page without submitting the changes.", false)
                 },
                 submitKilling: function() {
+                    /*Submits a shooting
+                    
+                    First does front end sanity checks for UX, then submits the data to the creation endpoint if creating is true
+                    otherwise submits to the editing endpoint.
+                    
+                    If the submitting_duel flag is true, then it saves the returned shooting_id, and sends another AJAX call to the
+                    linking endpoint with the two ids to be linked. On success, it alerts the user and refreshes the page. Otherwise
+                    displays an error
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     var self = this;
                     // the video has to be in the proper youtube format
                     if (self.shooting.video_url.length > 0 && self.shooting.video_url.search(/http[s]*:\/\/www\.youtube\.com\/watch\?v=/) < 0) {
@@ -872,18 +938,58 @@
                     }
                 },
                 spliceSource: function(index) {
-                    // in case the user wants to remove a source in the middle of the list added
+                    /*Removes a source from the shooting creation modal list.
+                    
+                    This is used if the user wants to remove a source that isn't the last source added.
+                    
+                    Arguments:
+                    :param index: the index of the source to be removed
+                    
+                    Returns:
+                    None
+                    */
                     this.shooting.sources.splice(index, 1);
                 },
                 removeSource: function() {
+                    /*Removes the last created source from the shooting creation modal list. 
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     // removes the most recently added source from the killing
                     this.shooting.sources.pop()
                 },
                 addSource: function() {
-                    // adds a new source to the killing
+                    /*Adds a new shooting input to the list
+                    
+                    Since the 2 way binding shows an input for each source added, and automatically sets up
+                    the 2 way binding from the input to the array element in the shooting.sources array, all
+                    we need to do here is add another empty element and allow them to type whatever they want.
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     this.shooting.sources.push("")
                 },
                 resetShootingSelection: function() {
+                    /*Resets the Shooting selection Select2 for linking a new bodycam to an existing shooting
+                    
+                    Select2 won't allow the user to reselect the empty value, so we provide this. If we didnt'
+                    then they wouldn't be able to change their mind and submit a new shooting, which means they'd have to
+                    exit out of the modal entirely
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     // in case the user decides he actually wants to add a new killing to this bodycam
                     var self = this;
                     self.bodycam.shooting = "";
@@ -891,12 +997,18 @@
                     $("#bodycam_shooting_duo").prop("disabled", false)   
                 },
                 openBodycamModal: function() {
-                    // initializes the bodycam modal, with data if we are editing a bodycam since select2 and Tempus Domini doesn't have 2 way binding
+                    /*Initializes the creation/editing modal for bodycams
+                    
+                    The data to be populated comes from the vue_app running on the page, which passes the data to the nav_app.
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     var self = this;
-                    console.log(self.bodycam)
-                    console.log(self.bodycam.shooting)
                     var shooting = self.bodycam.shooting;
-                    console.log(shooting)
                     $("#add_bodycam").modal("toggle")
                     if (!self.creating ) {
                         $("#bodycam_new_date").datetimepicker("date", moment(self.bodycam.date, "YYYY-MM-DD"))
@@ -906,7 +1018,16 @@
                     }
                 },
                 openKillingModal: function() {
-                    // initializes the killing modal, with data if we are editing a bodycam since select2 and Tempus Domini doesn't have 2 way binding
+                    /*Initializes the creation/editing modal for shootings
+                    
+                    The data to be populated comes from the vue_app running on the page, which passes the data to the nav_app.
+                    
+                    Arguments:
+                    None
+                    
+                    Returns:
+                    None
+                    */
                     var self = this;
                     $("#add_killing").modal("toggle")
                     if (!self.creating ) {
