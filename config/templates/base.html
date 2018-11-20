@@ -15,8 +15,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'datatables.min.css'  %}"/>
- 
-
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-9311105211394965",
+              enable_page_level_ads: true
+         });
+    </script>
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <!-- dynamic follows -->
     {% block custom_scripts %}
@@ -322,10 +327,15 @@
             <span class="overlay-text">Now Loading</span>
     </div>
     <div class="container-fluid">
+        <div class="row">
+            
+        </div>
+    </div>
+    <div class="container-fluid">
         {% block content %}
         {% endblock content %}
     </div>
-    <div id="announcement-footer" class="footer">
+    <!-- <div id="announcement-footer" class="footer">
         <div class="container" style="display: flex; flex-direction: column; justify-content:center;align-items:center;">
             <span class="text-muted">
                 This website is kept ad-free through the kind patronage of Donut's supporters. If you'd like to contribute and keep this project ad-free, here are some great options: <button type="button" onclick="$('#announcement-footer').fadeOut()" class="btn btn-outline-secondary footer-hide-button">Hide</button>
@@ -344,7 +354,7 @@
             </span>
         </div>
         <br>
-    </div>
+    </div> -->
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-confirm.min.js' %}"></script>
