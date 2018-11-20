@@ -24,7 +24,8 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = os.environ.get("SECRET", None)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", True) == "True"
+debug_val = os.environ.get("DEBUG", True)
+DEBUG = (type(debug_val) is str and debug_val == "True") or debug_val
 
 ALLOWED_HOSTS = []
 
