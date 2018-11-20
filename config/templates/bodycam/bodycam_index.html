@@ -338,6 +338,13 @@
 	        },
 	        methods: {
 	        	displayAge: function(age) {
+			/*Handles displaying age to avoid displaying -1
+			Arguments:
+			:param age: integer from -1 - positive infinity
+			Returns:
+			If age < 0, returns "No Age"
+			else returns age
+			*/
 	                if (age > -1) {
 	                    return age
 	                }
@@ -346,6 +353,17 @@
 	                }
 	            },
 	        	openDetails: function(id) {
+			/*Displays a shooting for a bodycam.
+
+			Arguments:
+			:param obj: a shooting as JSON object
+
+			Sets the displayed_shooting to the object passed, which gets automatically populated in the modal
+			via 2-way binding then opens the modal
+
+			Returns:
+			Nothing
+			*/
 	                bodycam = this.bodycams.find(function(bodycam) {
 	                    return bodycam.id == id
 	                })
@@ -353,6 +371,16 @@
 	                $('#shooting_details').modal('toggle');
 	            },
 	        	resetFilters: function() {
+			/*Resets the filter choices
+
+			Sets 2-way-bound variables to their default values, and uses jQuery to reset non-2-way-bound variables
+
+			Arguments:
+			None
+
+			Returns:
+			None
+			*/
 	                var self = this;
 	                $("#state_select").val([]).trigger("change")
 	                $("#race_select").val([]).trigger("change")
@@ -370,12 +398,34 @@
 	                $('#end_date').datetimepicker('clear');
 	            },
 	            calculateNextYear: function() {
+		    	/*Calculates the next year for setting the url of the Next Year button
+					
+			Uses the year passed from the server (which is the year currently being viewed) to
+			decide which year is next
+
+			Arguments:
+			None
+
+			Returns:
+			None
+			*/
 	                var year = moment("{{year}}", "YYYY").add(1, "y").format("YYYY")
 	                var url = "{% url 'bodycams:date-index' date=1234 %}";
 	                url = url.replace("1234", year);
 	                return url;
 	            },
 	            calculatePreviousYear: function() {
+		    	/*Calculates the previous year for setting the url of the Previous Year button
+					
+			Uses the year passed from the server (which is the year currently being viewed) to
+			decide which year is past
+
+			Arguments:
+			None
+
+			Returns:
+			None
+			*/
 	                var year = moment("{{year}}", "YYYY").subtract(1, "y").format("YYYY")  
 	                var url = "{% url 'bodycams:date-index' date=1234 %}";
 	                url = url.replace("1234", year);
@@ -384,9 +434,27 @@
 	        },
 	        computed: {
 	        	currentYear: function() {
+			/*Selects the current year
+					
+			This is used for deciding whether to display the "Next Year" button, which shouldn't be displayed for
+			accessing a future years
+
+			Arguments:
+			None
+
+			Returns:
+			current year as "YYYY"
+
+			*/
 	                return moment().format("YYYY")
 	            },
 	        	displayed_bodycams: function() {
+			/*Calculates what bodycams should be displayed to the user and returns bodycams
+
+			Copies the list of bodycams (so we don't affect the list)
+			Filters by text, then city, then states, then departments, then races of the shooting,
+			then tags, then start date, then end date
+			*/
 	                var self = this;
 	                var displayed_bodycams = this.bodycams.slice();
 	                if (this.text.length > 0) {
