@@ -144,11 +144,9 @@ class EditShootingView(LoginRequiredMixin, View):
         data = json.loads(request.POST.get("shooting"))
         data["date"] = data["date"].split("T")[0]
         if (isinstance(data["age"], str) and
-                len(data["age"]) == 0) or data["age"] is None:
+                len(data["age"]) == 0) or data["age"] is None or data["age"] == "No Age":
             data["age"] = -1
         else:
-            if data["age"] == "No Age":
-                data["age"] = -1
             data["age"] = int(data["age"])
             if data["age"] < 0:
                 return HttpResponse(
@@ -237,11 +235,9 @@ class SubmitShootingView(LoginRequiredMixin, View):
             return HttpResponse(str(e), status=500, )
         data["date"] = data["date"].split("T")[0]
         if (isinstance(data["age"], str) and
-                len(data["age"]) == 0) or data["age"] is None:
+                len(data["age"]) == 0) or data["age"] is None or data["age"] == "No Age":
             data["age"] = -1
         else:
-            if data["age"] == "No Age":
-                data["age"] = -1
             data["age"] = int(data["age"])
             if data["age"] < 0:
                 return HttpResponse(
