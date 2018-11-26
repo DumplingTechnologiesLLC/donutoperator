@@ -19,11 +19,12 @@ from django.contrib.auth import views as auth_views
 from filebrowser.sites import site as filebrowser_site
 from django.conf import settings
 from django.conf.urls.static import static
-
+from config.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^admin/filebrowser/', include(filebrowser_site.urls)),
+    url(r'^about/$', AboutPage.as_view(), name="about-page"),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout,
         {'next_page': '/'}, name='logout'),
@@ -31,6 +32,7 @@ urlpatterns = [
     url("^grappelli/", include("grappelli.urls")),
     url(r'', include('roster.urls')),
     url(r'', include('blog.urls')),
+    url(r'', include('bodycams.urls')),
 ]
 
 if settings.DEBUG:

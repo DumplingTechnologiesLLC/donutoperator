@@ -1,4 +1,5 @@
 from django.db import models
+from bodycams.models import Bodycam
 import time
 
 
@@ -105,24 +106,40 @@ class Shooting(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=False)
 
     def as_dict(self):
+        """
+        Serializes the shooting into JSON form.
+
+        Formats the date to YYYY-MM-DD
+
+        for race, gender and state, it provides the display as
+        race, gender and state, and the numerical value as
+        race_value, gender_value, state_value
+
+        returns serialized object
+        """
         tags = self.tags.all()
         tags = [obj.as_dict() for obj in tags]
         sources = self.sources.all()
         sources = [obj.as_dict()["text"] for obj in sources]
+        date = ""
+        if isinstance(self.date, str):
+            date = self.date
+        else:  # pragma: no cover
+            date = self.date.strftime("%Y-%m-%d")
         return {
             "id": self.id,
             "name": self.name,
-            "age": self.age if self.age is not None else "No Age",
-            "date": self.date.strftime("%Y-%m-%d"),
+            "age": self.age if self.age is not None and self.age > -1 else "No Age",
+            "date": date,
             "race": self.get_race_display(),
             "race_value": self.race,
             "gender": self.get_gender_display(),
             "gender_value": self.gender,
             "state": self.get_state_display(),
             "state_value": self.state,
-            "city": self.city if self.city is not None else "Unknown",
-            "video_url": self.video_url if self.video_url is not None else "None",
-            "unfiltered_video_url": self.unfiltered_video_url if self.unfiltered_video_url is not None else "None",
+            "city": self.city if self.city is not None and self.city != "" else "Unknown",
+            "video_url": self.video_url if self.video_url is not None and self.video_url != "" else "None",
+            "unfiltered_video_url": self.unfiltered_video_url if self.unfiltered_video_url is not None and self.unfiltered_video_url != "" else "None",
             "description": self.description if self.description is not None else "",
             "tags": tags,
             "sources": sources,
@@ -141,6 +158,11 @@ class Source(models.Model):
     )
 
     def as_dict(self):
+        """
+        Serializes the tag into a JSON object
+
+        returns tag as JSON
+        """
         return {
             "id": self.id,
             "text": self.text,
@@ -155,10 +177,24 @@ class Tag(models.Model):
     shooting = models.ForeignKey(
         Shooting,
         on_delete=models.CASCADE,
-        related_name="tags"
+        related_name="tags",
+        blank=True,
+        null=True
+    )
+    bodycam = models.ForeignKey(
+        Bodycam,
+        on_delete=models.CASCADE,
+        related_name="tags",
+        blank=True,
+        null=True
     )
 
     def as_dict(self):
+        """
+        Serializes the source into a JSON object
+
+        returns source as JSON
+        """
         return {
             "id": self.id,
             "text": self.text,
