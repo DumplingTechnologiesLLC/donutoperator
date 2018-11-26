@@ -199,6 +199,7 @@ class SubmitShootingView(LoginRequiredMixin, View):
         """
         data = json.loads(request.POST.get("shooting"))
 <<<<<<< HEAD
+<<<<<<< HEAD
         age = data["age"]
         if age == "No Age":
             age = -1
@@ -235,6 +236,8 @@ class SubmitShootingView(LoginRequiredMixin, View):
         except Exception as e:
             return HttpResponse(str(e), status=500, )
 =======
+=======
+>>>>>>> 02d8c241169975a0ca911fd35ccca6dba8f743a4
         data["date"] = data["date"].split("T")[0]
         if (isinstance(data["age"], str) and
                 len(data["age"]) == 0) or data["age"] is None:
@@ -252,6 +255,9 @@ class SubmitShootingView(LoginRequiredMixin, View):
             connect_sources_and_tags(shooting, data)
             return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
+<<<<<<< HEAD
+>>>>>>> 02d8c241169975a0ca911fd35ccca6dba8f743a4
+=======
 >>>>>>> 02d8c241169975a0ca911fd35ccca6dba8f743a4
 
 
