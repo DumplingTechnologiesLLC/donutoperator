@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+<div id="app" v-cloak>
+	<div class="row" style="padding-top:15px; padding-bottom: 15px">
+	    <div class="col-lg-6" style="display:flex; justify-content:center; align-items:center;">
+	        <a style="color:white" v-bind:href="calculatePreviousYear()" class="btn btn-secondary">View Previous Year's Data</a>
+	    </div>
+	    <div class="col-lg-6" style="display:flex;justify-content:center;align-items:center;">
+	        <a style="color:white" v-if="year != currentYear" v-bind:href="calculateNextYear()" class="btn btn-secondary adjust-buttons">View Following Year's Data</a>
+	    </div>
+	</div>
+	<div class="row">
+	    <div class="col-lg-8 offset-lg-2" style="display:flex;justify-content:center;align-items:center;  margin-top:40px">
+			<h1 style="text-align:center">{{year}} Bodycam Database</h1>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="col-lg-12">
+	        <div class="card border-dark" style="margin-bottom:20px;">
+		        <div class="card-header">Filters</div>
+		        <div class="card-body">
+		            <form>
+		                <div class="form-group row">
+		                	<div class="col-lg-4">
+		                        <label for="text_text">Filter by text</label>
+		                        <input id="text_text" type="text" class="form-control" placeholder="Matches to the title or to the description" v-model="text">
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="race_select">Filter by race of suspect</label>
+		                        <select id="race_select" class="form-control" style="width:100%" multiple="multiple">
+		                            <option></option>
+		                            <option v-for="race in races" v-bind:value="race.value">((race.display))</option>
+		                        </select>
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="tag_select">Filter by tag</label>
+		                        <select id="tag_select" class="form-control" style="width:100%" multiple="multiple">
+		                            <option></option>
+		                            <option v-for="tag in all_tags" v-bind:value="tag.value">((tag.display))</option>
+		                        </select>
+		                        <small class="text-muted">Bodycams with 1 or more matches will be displayed</small>
+		                    </div>
+		                </div>
+		                 <div class="form-group row">
+		                    <div class="col-lg-4">
+		                        <label for="state_select">Filter by state</label>
+		                        <select id="state_select" class="form-control" style="width:100%" multiple="multiple">
+		                            <option></option>
+		                            <option v-for="state in states" v-bind:value="state.value">((state.display))</option>
+		                        </select>
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="city_text">Filter by city</label>
+		                        <input id="city_text" type="text" class="form-control" placeholder="Partial and similar matches will be included." v-model="city">
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="department_select">Filter by department</label>
+		                        <select id="department_select" class="form-control" style="width:100%" multiple="multiple">
+		                            <option></option>
+		                            <option v-for="department in departments" v-bind:value="department.value">((department.display))</option>
+		                        </select>
+		                    </div>
+		                </div>
+		                <div class="form-group row">
+		                    <div class="col-lg-4">
+		                        <label for="text_text">Date on or after</label>
+		                        <div class="input-group date" id="start_date" data-target-input="nearest">
+		                            <input type="text" class="form-control datetimepicker-input" data-target="#start_date"/>
+		                            <div class="input-group-append" data-target="#start_date" data-toggle="datetimepicker">
+		                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+		                            </div>
+		                        </div>
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <label for="text_text">Date on or before</label>
+		                        <div class="input-group date" id="end_date" data-target-input="nearest">
+		                            <input type="text" class="form-control datetimepicker-input" data-target="#end_date"/>
+		                            <div class="input-group-append" data-target="#end_date" data-toggle="datetimepicker">
+		                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+		                            </div>
+		                        </div>
+		                    </div>
+		                    <div class="col-lg-4">
+		                        <button type="button" class="btn btn-warning" v-on:click="resetFilters" style="margin-top:30px;">Reset Filters</button>
+		                    </div>
+		                </div>
+
+		            </form>
+		        </div>
+	        </div>
+	    </div>
+	</div>
+	<div class="row" style="padding-bottom: 25px;">
+		<div class="col-lg-12">
+			<div class="container-fluid d-flex" style="flex-wrap: wrap; margin-top:40px; justify-content: center;">
+				<div v-for="bodycam in displayed_bodycams" class="card" style="width: 18rem; margin-right:5px">
+					<div class="card-header" style="display:flex; justify-content: center; align-items:center">
+					    ((bodycam.date))
+					  </div>
+					  <div class="card-body">
+					    <h5 class="card-title">((bodycam.title))</h5>
+					    <p class="card-text">((bodycam.description))</p>
+					    <ul class="list-group list-group-flush">
+							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center">Department: ((bodycam.department))</li>
+							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center"><span style="padding: 5px; margin-right: 5px" v-for="tag in bodycam.tags" class="badge badge-primary">((tag.text))</span><span v-if="bodycam.tags.length == 0">No Tags Available</span></li>
+						  </ul>
+						  <br>
+						 <div style="display:flex; justify-content: space-between;">
+						    <a href="#" v-if="bodycam.shooting.id > -1" v-on:click="openDetails(bodycam.id)" class="card-link">Killing Details</a>
+						    <a href="#"  v-on:click="showVideo(bodycam.id)" class="card-link">Watch Video</a>					 	
+						 </div>
+					  </div>
+					  <div class="card-footer text-muted" style="display:flex; justify-content: center; align-items:center">
+					    ((bodycam.state)), ((bodycam.city))
+					  </div>
+					</div>
+					<div  v-show="bodycams.length == 0" class="jumbotron">
+						<h1 class="display-4">No Bodycams to display</h1>
+						<p class="lead">We will update this database with more bodycams as soon as more become available.</p>
+						<hr class="my-4">
+						<p class="lead">
+						</p>
+					</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal" id="video_modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+            		<h5 class="modal-title">((displayed_bodycam.title))</h5>
+            		<button type="button" class="close" data-dismiss="modal" v-on:click="closeVideoModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </div>
+                <div class="modal-body">
+                	<div class="card-img-top" v-html="displayed_bodycam.video" style="height:500px">
+					</div>
+                </div>
+            </div>
+        </div>
+	</div>
+	<div class="modal" id="shooting_details" tabindex="-1" role="dialog" style="overflow-y:scroll">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">((displayed_shooting.name)), ((displayed_shooting.date))</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Donut's Take</h5>
+                            <div v-if="displayed_shooting.video_url != 'None'" v-html="displayed_shooting.video_url"> </div>
+                            <div v-else style="background-color:gray; width:100%; height:315px" class="d-flex flex-row    p-2 flex-column justify-content-center flex-fill">
+                                <div class="align-self-center p-2"><h1 style="color:white;">No Video Available</h1></div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Sources</h5>
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr v-for="source in displayed_shooting.sources">
+                                        <td style="max-width: 100px; word-wrap: break-word;"><a v-bind:href="source">((source))</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h5>Biological Information</h5>
+                            <table class="table table-striped">
+                                <tbody>
+                                	<tr>
+                                		<th>Age:</th>
+                                		<td>
+                                			((displayAge(displayed_shooting.age) ))
+                                		</td>
+                                	</tr>
+                                	<tr>
+                                		<th>Race:</th>
+                                		<td>((displayed_shooting.race))</td>
+                                	</tr>
+                                	<tr>
+                                		<th>Gender:</th>
+                                		<td>((displayed_shooting.gender))</td>
+                                	</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-6">
+                            <h5>Geographical Information</h5>
+                            <table class="table table-striped">
+                                <tbody>
+                                	<tr>
+                                		<th>State:</th>
+                                		<td>
+                                			(( displayed_shooting.state ))
+                                		</td>
+                                	</tr>
+                                	<tr>
+                                		<th>City:</th>
+                                		<td>((displayed_shooting.city))</td>
+                                	</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5>Further Details</h5>
+                            <div style="height: 200px; overflow-y: scroll" v-if="displayed_shooting.description !== undefined && displayed_shooting.description.length != 0"  v-html="displayed_shooting.description">
+                                
+                            </div>
+                            <p style="height:200px; overflow-y:scroll" v-else>No further details at this time.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+	// BODYCAM INDEX GLOBAL VARIABLES
+	var YEAR = "{{year}}";
+	var BODYCAMS = {{bodycams|safe}};
+	var DEPARTMENTS = [
+    	{% for department in departments %}
+        {
+            value: `{{department.department}}`,
+            display: `{{department.department}}`
+        },
+        {% endfor %}
+    ];
+    var BODYCAM_URLS = {
+    	date_index: "{% url 'bodycams:date-index' date=1234 %}",
+    }
+</script>
+<script type="text/javascript" src="{% static 'js/bodycam_index.js' %}"></script>
+{% endblock js%}

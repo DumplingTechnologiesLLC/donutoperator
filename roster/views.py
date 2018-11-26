@@ -68,6 +68,9 @@ class SubmitShootingView(LoginRequiredMixin, View):
     def post(self, request):
         # print(request.POST)
         data = json.loads(request.POST.get("shooting"))
+        age = data["age"]
+        if age == "No Age":
+            age = -1
         # print(data)
         url = None
         if (data["video_url"] is not None and len(data["video_url"]) > 0 and
@@ -82,7 +85,7 @@ class SubmitShootingView(LoginRequiredMixin, View):
                 description=data["description"],
                 video_url=url,
                 name=data["name"],
-                age=int(data["age"]),
+                age=int(age),
                 race=int(data["race"]),
                 gender=int(data["gender"]),
                 date=date,
