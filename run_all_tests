@@ -1,0 +1,14 @@
+#!/bin/bash
+echo "Test results can be found in the regular file test_results"
+if [ ! -f test_results ]; then
+		pass
+   	else
+		rm test_results
+fi
+echo "Testing bodycams"
+covtestreport bodycams >> test_results
+echo "Testing roster"
+covtestreport roster >> test_results
+echo "Testing blog"
+covtestreport blog >> test_results
+echo "Done"

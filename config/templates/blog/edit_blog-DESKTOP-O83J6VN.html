@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+
+    {{ form.media }}
+    <div class="row form-error">
+        <div class="col-lg-8 col-lg-offset-4" id="content" style="margin-left:auto;margin-right:auto; background-color: #e9eaeb; margin-top:20px;">
+            <div style="width:100%; height:50px; background-color: #373A3C; color: white; position:absolute; left: 0; right: 0; padding-left: 45px; padding-top: 5px;">
+                <h2 style="font-family:Segoe UI">Edit Article</h2>
+                
+            </div>
+            <form  method="post" action='' enctype="multipart/form-data" style="padding: 15px;  margin: 10px; margin-top:60px">
+                {% csrf_token %}
+                {% for hidden in form.hidden_fields %}
+                  {{ hidden }}
+                {% endfor %}
+
+                 {% for hidden in form.hidden_fields %}
+                  {{ hidden }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
+                  <div class="form-group">
+                    <label ></label>
+                    {% if forloop.last %}
+                        <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        </label>
+                        {% render_field field class+="btn btn-outline-primary" %}<br>
+                        <span class="text-muted">{{field.help_text}}</span>
+                    {% else %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field|add_class:'form-control ultimate_override' }}
+                        <span class="text-muted">{{field.help_text}}</span>
+                    {% endif %}
+                    
+                    {% for error in field.errors %}
+                      <span class="help-block text-danger">{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                {% endfor %}
+                
+                <input class="btn btn-secondary btn-block" type="submit" value="Save">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+    $(function() {
+        $(document).on('change', ':file', function() {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+        $('#id_cover_image').on('fileselect', function(event, numFiles, label) {
+            $("#file_uploaded").text(label)
+        });
+        setTimeout(function() {
+            // changed...
+            $("#mceu_30").css("width", "100%");
+        }, 2000)
+        setTimeout(function() {
+            
+            // loader is on base.html. Blocks the user from doing anything until page loads
+            $("#loader_cover").addClass("toggled");
+            $("#body").removeAttr("style");
+        },1500);
+    })
+</script>
+{% endblock js%}
