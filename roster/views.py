@@ -5,8 +5,8 @@ from django.views import View
 from django.db.models import Count
 from roster.models import Shooting, Tag, Source
 from roster.forms import ShootingModelForm
-from django.http import QueryDict
 import datetime
+import logging
 import json
 # Create your views here.
 
@@ -108,6 +108,8 @@ class DeleteShootingView(LoginRequiredMixin, View):
             Shooting.objects.get(pk=data).delete()
             return HttpResponse(status=200)
         except Shooting.DoesNotExist as e:
+            error_data = json.dumps(request.POST).replace("\\\"", "'")
+            logging.error("request data: {}".format(error_data))
             return HttpResponse(str(e), status=500, )
 
 
@@ -154,6 +156,8 @@ class EditShootingView(LoginRequiredMixin, View):
         try:
             shooting = Shooting.objects.get(pk=int(data["id"]))
         except Shooting.DoesNotExist as e:
+            error_data = json.dumps(request.POST).replace("\\\"", "'")
+            logging.error("request data: {}".format(error_data))
             return HttpResponse(str(e), status=500, )
         form = ShootingModelForm(data, instance=shooting)
         if form.is_valid():
@@ -198,41 +202,6 @@ class SubmitShootingView(LoginRequiredMixin, View):
         400 with error string on failure
         """
         data = json.loads(request.POST.get("shooting"))
-        age = data["age"]
-        if age == "No Age":
-            age = -1
-        # print(data)
-        url = None
-        if (data["video_url"] is not None and len(data["video_url"]) > 0 and
-                data["video_url"].find("?") > -1):
-            url = convert_format(data["video_url"])
-        try:
-            print(data["date"].split("T")[0])
-            date = data["date"].split("T")[0]
-            shooting = Shooting.objects.create(
-                state=int(data["state"]),
-                city=data["city"],
-                description=data["description"],
-                video_url=url,
-                name=data["name"],
-                age=int(age),
-                race=int(data["race"]),
-                gender=int(data["gender"]),
-                date=date,
-            )
-            for source in data["sources"]:
-                Source.objects.create(
-                    text=source,
-                    shooting=shooting
-                )
-            for tag in data["tags"]:
-                Tag.objects.create(
-                    text=tag,
-                    shooting=shooting
-                )
-            return HttpResponse(status=200)
-        except Exception as e:
-            return HttpResponse(str(e), status=500, )
         data["date"] = data["date"].split("T")[0]
         if (isinstance(data["age"], str) and
                 len(data["age"]) == 0) or data["age"] is None or data["age"] == "No Age":
@@ -245,10 +214,12 @@ class SubmitShootingView(LoginRequiredMixin, View):
         form = ShootingModelForm(data)
         if form.is_valid():
             shooting = form.save()
+            shooting.tags.all().delete()
+            shooting.sources.all().delete()
             shooting.unfiltered_video_url = data["video_url"]
             shooting.save()
             connect_sources_and_tags(shooting, data)
-            return HttpResponse(shooting.id, status=200)
+            return HttpResponse(status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
 

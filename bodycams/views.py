@@ -8,6 +8,7 @@ from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
 import datetime
 import json
+import logging
 from django.views import View
 from bodycams.forms import BodycamModelForm
 # Create your views here.
@@ -48,12 +49,16 @@ class BodycamLink(LoginRequiredMixin, View):
 			bodycam_id = int(request.POST.get("bodycam_id"))
 			shooting_id = int(request.POST.get("shooting_id"))
 		except ValueError as e:  # pragma: no cover
+			error_data = json.dumps(request.POST).replace("\\\"", "'")
+			logging.error("request data: {}".format(error_data))
 			print(e)
 			return HttpResponse(str(e), status=500,)
 		try:
 			bodycam = Bodycam.objects.get(pk=bodycam_id)
 			shooting = Shooting.objects.get(pk=shooting_id)
 		except (Bodycam.DoesNotExist, Shooting.DoesNotExist) as e:
+			error_data = json.dumps(request.POST).replace("\\\"", "'")
+			logging.error("request data: {}".format(error_data))
 			return HttpResponse(str(e), status=500, )
 		bodycam.shooting = shooting
 		bodycam.save()
@@ -96,6 +101,8 @@ class BodycamEdit(LoginRequiredMixin, View):
 		try:
 			bodycam = Bodycam.objects.get(pk=id)
 		except Bodycam.DoesNotExist:
+			error_data = json.dumps(request.POST).replace("\\\"", "'")
+			logging.error("request data: {}".format(error_data))
 			return HttpResponse(
 				"We couldn't find that bodycam in our database anymore.", status=400)
 		data["date"] = data["date"].split("T")[0]
@@ -115,6 +122,8 @@ class BodycamEdit(LoginRequiredMixin, View):
 					try:
 						shooting = Shooting.objects.get(pk=int(data["shooting"]))
 					except Exception as e:
+						error_data = json.dumps(request.POST).replace("\\\"", "'")
+						logging.error("request data: {}".format(error_data))
 						return HttpResponse(
 							"We've created the bodycam but when we tried to link the bodycam to the shooting you requested, we couldn't find the shooting. Please refresh the page and try to link the bodycam manually.", status=406)
 					bodycam.shooting = shooting
@@ -168,6 +177,8 @@ class BodycamSubmit(LoginRequiredMixin, View):
 				try:
 					shooting = Shooting.objects.get(pk=int(data["shooting"]))
 				except Exception as e:
+					error_data = json.dumps(request.POST).replace("\\\"", "'")
+					logging.error("request data: {}".format(error_data))
 					return HttpResponse("We've created the bodycam but when we tried to link the bodycam to the shooting you requested, we couldn't find the shooting. Please refresh the page and try to link the bodycam manually.", status=406)
 				bodycam.shooting = shooting
 				bodycam.save()
@@ -224,6 +235,8 @@ class BodycamDashboard(LoginRequiredMixin, View):
 			messages.success(request, "Bodycam deleted successfully")
 			return HttpResponseRedirect(reverse("bodycams:dashboard"))
 		except Bodycam.DoesNotExist:
+			error_data = json.dumps(request.POST).replace("\\\"", "'")
+			logging.error("request data: {}".format(error_data))
 			messages.error(request, "We couldn't find that bodycam in the database.")
 			return HttpResponseRedirect(reverse("bodycams:dashboard"))
 
