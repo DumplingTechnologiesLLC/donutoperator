@@ -4,9 +4,18 @@ from roster.forms import ShootingModelForm
 # Register your models here.
 
 
+class TagAdminInline(admin.TabularInline):
+    model = Tag
+
+
+class SourceAdminInline(admin.TabularInline):
+    model = Source
+
+
 class ShootingAdmin(admin.ModelAdmin):
-    list_display = ('date', 'name')
+    list_display = ('name', 'date')
     search_fields = ['name']
+    inlines = (TagAdminInline, SourceAdminInline)
     form = ShootingModelForm
 
 
