@@ -5,6 +5,9 @@ if [ ! -f test_results ]; then
    	else
 		rm test_results
 fi
+echo "collecting static to avoid static errors"
+python manage.py collectstatic
+echo "Statics collected"
 echo "Testing bodycams"
 covtestreport bodycams >> test_results
 echo "Testing roster"
