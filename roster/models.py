@@ -122,6 +122,11 @@ class Shooting(models.Model):
         sources = self.sources.all()
         sources = [obj.as_dict()["text"] for obj in sources]
         date = ""
+        bodycam_video = "None"
+        try:
+            bodycam_video = self.bodycam.video
+        except Bodycam.DoesNotExist:
+            pass
         if isinstance(self.date, str):
             date = self.date
         else:  # pragma: no cover
@@ -143,6 +148,7 @@ class Shooting(models.Model):
             "description": self.description if self.description is not None else "",
             "tags": tags,
             "sources": sources,
+            "bodycam_video": bodycam_video
         }
 
     def __str__(self):
