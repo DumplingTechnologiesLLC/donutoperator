@@ -167,7 +167,7 @@ class EditShootingView(LoginRequiredMixin, View):
             shooting.unfiltered_video_url = data["video_url"]
             shooting.save()
             connect_sources_and_tags(shooting, data)
-            return HttpResponse(status=200)
+            return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
 
@@ -219,7 +219,7 @@ class SubmitShootingView(LoginRequiredMixin, View):
             shooting.unfiltered_video_url = data["video_url"]
             shooting.save()
             connect_sources_and_tags(shooting, data)
-            return HttpResponse(status=200)
+            return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
 
