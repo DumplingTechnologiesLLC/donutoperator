@@ -60,9 +60,15 @@ class BodycamLink(LoginRequiredMixin, View):
 			error_data = json.dumps(request.POST).replace("\\\"", "'")
 			logging.error("request data: {}".format(error_data))
 			return HttpResponse(str(e), status=500, )
-		bodycam.shooting = shooting
-		bodycam.save()
-		return HttpResponse(status=200)
+		try:
+			shooting.bodycam
+			return HttpResponse(
+				"This shooting already has a bodycam. Perhaps you double submitted by mistake?",
+				status=406)
+		except Bodycam.DoesNotExist:
+			bodycam.shooting = shooting
+			bodycam.save()
+			return HttpResponse(status=200)
 
 
 class BodycamEdit(LoginRequiredMixin, View):

@@ -101,6 +101,7 @@ class EditShootingViewTests(TestCase):
 		}
 		response = self.client.post(reverse("roster:edit-killing"), data)
 		self.assertEqual(response.status_code, 200)
+		self.assertEqual(int(response.content.decode('utf-8')), shooting.id)
 		shooting.refresh_from_db()
 		self.assertEqual(shooting.name, "Changed Name")
 		self.assertEqual(shooting.age, 20)

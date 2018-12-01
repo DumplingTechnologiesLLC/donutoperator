@@ -1,6 +1,6 @@
 from django.db import models
 from bodycams.models import Bodycam
-import time
+from django.utils import timezone
 
 
 class Shooting(models.Model):
@@ -104,6 +104,20 @@ class Shooting(models.Model):
     race = models.IntegerField("Race", choices=RACE_CHOICES)
     gender = models.IntegerField("Gender", choices=GENDER_CHOICES)
     date = models.DateField(auto_now=False, auto_now_add=False)
+    created = models.DateTimeField("Creation Date", editable=False, null=True, blank=True)
+
+    def save(self, *args, **kwargs):  # pragma: no cover
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.created = timezone.now()
+        return super(Shooting, self).save(*args, **kwargs)
+
+    def has_bodycam(self):
+        try:
+            self.bodycam
+            return True
+        except Bodycam.DoesNotExist:
+            return False
 
     def as_dict(self):
         """

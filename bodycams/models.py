@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 # Create your models here.
 
 
@@ -76,6 +77,13 @@ class Bodycam(models.Model):
         blank=True,
         null=True,
     )
+    created = models.DateTimeField("Creation Date", editable=False, null=True, blank=True)
+
+    def save(self, *args, **kwargs):  # pragma: no cover
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.created = timezone.now()
+        return super(Bodycam, self).save(*args, **kwargs)
 
     def as_dict(self):
         """

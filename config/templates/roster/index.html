@@ -153,6 +153,9 @@
                             <th>
                                 Admin Actions
                             </th>
+                            <th>
+                                Has Bodycam
+                            </th>
                             {% endif %}
                         </tr>
                     </thead>
@@ -189,11 +192,14 @@
                                 <button v-on:click="editShooting(shooting.id)" type="button" class="btn btn-sm btn-primary">Edit</button>
                                 <button v-on:click="deleteShooting(shooting.id)" type="button" class="btn btn-sm btn-danger"><i style="font-size:16px" class="fa fa-trash fa-2" aria-hidden="true"></i></button>
                             </td>
+                            <td>
+                                <i v-if="shooting.bodycam_video != 'None'" class="fa fa-check" aria-hidden="true"></i>
+                            </td>
                             {% endif %}
                         </tr>
                         <tr v-show="shootings.length == 0">
                             {% if user.is_authenticated %}
-                            <td colspan="10" style="text-align:center">
+                            <td colspan="11" style="text-align:center">
                                 No shootings yet
                             </td>
                             {% else %}
