@@ -22,10 +22,10 @@
 						<p style="word-wrap: break-word; max-width:200px; overflow:hidden; max-height:50px; text-overflow: ellipsis" class="card-text mb-auto">{{post.description}}</p>
 						<a href="{% url 'blog:display' pk=post.id %}" class="btn btn-outline-primary" style='margin-top:5px'>Read article</a>
 					</div>
-					<img class="card-img-top news-image" src="{{post.cover_image.url}}" alt="Card image cap" style="width: auto; height: 250px; align-self:center">
+					<img class="card-img-top news-image" src="{{post.cover_image.url}}" alt="Card image cap" style="width: auto; height: 250px; align-self:center" onerror="this.src='https://i.imgur.com/4IZIbws.png'">
 				</div>
 				{% empty %}
-				<div class="jumbotron" style="margin-left: auto; margin-top: 30px;">
+				<div class="jumbotron" style="margin-top: 30px;">
 				<h1 class="display-4">Welcome to DonutOperator's News Blog!</h1>
 				<p class="lead">We don't have any articles for you yet, but we are hard at work bringing you the best law enforcement related content available online.</p>
 				<hr class="my-4">

@@ -445,7 +445,12 @@ $(function() {
                                             showSuccessMessage('Killing and bodycam submitted and linked. The page will now reload.', true)
                                         },
                                         error: function() {
-                                            showErrorMessage("Encountered an error!", "Something went wrong linking the killing and bodycam, but we've created both of them. Send Pedro a text and tell him to link: bodycam " + self.bodycam_id + " and killing " + self.shooting_id +", and that the error that caused this was: " + data)
+                                            if (data.status == 406) {
+                                                
+                                            }
+                                            else {
+                                                showErrorMessage("Encountered an error!", "Something went wrong linking the killing and bodycam, but we've created both of them. Send Pedro a text and tell him to link: bodycam " + self.bodycam_id + " and killing " + self.shooting_id +", and that the error that caused this was: " + data)
+                                            }
                                         }
                                     })
                                 }
