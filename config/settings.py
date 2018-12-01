@@ -168,7 +168,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'statusbar': True,
 }
-FILEBROWSER_DIRECTORY = ''
+FILEBROWSER_DIRECTORY = os.path.join(MEDIA_ROOT, "picture")
 DIRECTORY = ""
 SECURE_SSL_REDIRECT = False
 if not DEBUG:
