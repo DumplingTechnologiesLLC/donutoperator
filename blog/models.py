@@ -12,13 +12,13 @@ image_storage = FileSystemStorage(
     # Physical file location ROOT
     location=u'{0}/uploads/'.format(settings.MEDIA_ROOT),
     # Url for file
-    base_url=u'{0}uploads/'.format(settings.MEDIA_URL),
+    base_url=u'{0}uploads/'.format(settings.MEDIA_ROOT),
 )
 
 
 def image_directory_path(instance, filename):  # pragma: no cover
     # file will be uploaded to MEDIA_ROOT/my_sell/picture/<filename>
-    return u'picture/{0}'.format(filename)
+    return u'{}/picture/{}'.format(settings.MEDIA_ROOT, filename)
 
 
 class Post(models.Model):
