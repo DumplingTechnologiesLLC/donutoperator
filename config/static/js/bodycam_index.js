@@ -46,6 +46,10 @@ $(function() {
         $('#end_date').on("change.datetimepicker", function (e) {
             vue_app.end_date = $('#end_date').datetimepicker('viewDate');
         });
+        $('#video_modal').on('hidden.bs.modal', function () {
+                // do something…
+            vue_app.closeVideoModal();
+        })
     })
     var vue_app = new Vue({
     	el: '#app',
@@ -71,6 +75,7 @@ $(function() {
         },
         mounted: function() {
             var self = this;
+
         },
         methods: {
         	displayAge: function(age) {
