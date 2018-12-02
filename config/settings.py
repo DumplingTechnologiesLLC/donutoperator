@@ -25,9 +25,12 @@ SECRET_KEY = os.environ.get("SECRET", None)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 debug_val = os.environ.get("DEBUG", True)
-DEBUG = (type(debug_val) is str and debug_val == "True") or (type(debug_val) is bool and debug_val)
-
-ALLOWED_HOSTS =  ['localhost', '127.0.0.1', "www.peoplekilledbypolice.com"]
+DEBUG = (type(debug_val) is str and debug_val == "True") or (
+    type(debug_val) is bool and debug_val)
+local_val = os.environ.get("LOCAL", False)
+LOCAL = (type(local_val) is str and local_val == "True") or (
+    type(local_val) is bool and local_val)
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', "www.peoplekilledbypolice.com"]
 
 
 # Application definition
@@ -178,12 +181,15 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'statusbar': True,
 }
+# FILEBROWSER SETTINGS
+# DEFAULT_FILE_STORAGE = 'filebrowser_s3.storage.S3MediaStorage'
+FILEBROWSER_DIRECTORY = "media"
 # FILEBROWSER_DIRECTORY = ""
 # DIRECTORY = ""
 
 LOGIN_REDIRECT_URL = '/'
 SECURE_SSL_REDIRECT = False
-if not DEBUG:
+if not DEBUG and not LOCAL:
     SECURE_SSL_REDIRECT = True
     SECURE_REDIRECT_EXEMPT = [
         # r'^$',

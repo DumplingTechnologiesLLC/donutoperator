@@ -77,7 +77,8 @@ class Bodycam(models.Model):
         blank=True,
         null=True,
     )
-    created = models.DateTimeField("Creation Date", editable=False, null=True, blank=True)
+    created = models.DateTimeField(
+        "Creation Date", editable=False, null=True, blank=True)
 
     def save(self, *args, **kwargs):  # pragma: no cover
         ''' On save, update timestamps '''
