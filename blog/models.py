@@ -31,8 +31,7 @@ class Post(models.Model):
     publish_date = models.DateTimeField("Publish Date", null=True, blank=True)
     modified = models.DateTimeField("Last Modified", editable=False)
     authors = models.CharField("Authors", max_length=100, default="Donutoperator")
-    cover_image = models.ImageField(
-        default='DonutsDonut.png', upload_to=image_directory_path, storage=image_storage)
+    cover_image = models.ImageField(default='DonutsDonut.png',)
     views = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
