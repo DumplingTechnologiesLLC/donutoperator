@@ -1,14 +1,15 @@
 from copy import deepcopy
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views import View
-from blog.models import Post
+from blog.models import Post, AWSImage
 from filebrowser.sites import site
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from blog.forms import PostForm
+from blog.forms import PostForm, ImageFileUploadForm
 from django.shortcuts import render
+from bodycams.views import create_html_errors
 site.directory = "uploads/"
 
 
@@ -99,6 +100,88 @@ class PostDashboard(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse("blog:dashboard"))
 
 
+class PostImageDeleteView(View):
+    def post(self, request):
+        """Given an id, this view will delete the image with the
+        corresponding ID from the DB and from S3
+
+        Expects:
+        A POST Dict containing the following:
+        {
+            "id": integer,
+        }
+
+        Arguments:
+        :param request: a WSGI Django request object with the POST dictionary
+        described above
+
+        Returns:
+        200 on success
+        400 on error
+        """
+        id = request.POST.get("id")
+        try:
+            image = AWSImage.objects.get(pk=id)
+            image.delete()
+            return HttpResponse(status=200)
+        except Exception as e:
+            return HttpResponse(str(e), status=400)
+
+
+class PostImageCreateView(View):
+    def post(self, request):
+        """Creates an image and sends it to Amazon S3. Replaces Filebrowser
+
+        Since images could potentially be created prior to the first submission, if an
+        id is not included or is -1, then we will set the unassigned flag to True, and
+        upon Post create, we will attach all images unassigned.
+
+        The danger of this is that it could create a race condition if two people are
+        simultaneously creating articles, so we also store who created the image, so that
+        if two posts are submitted at the same time, we only associate images created by
+        the same person. This does leave a niche case where two blogs written at the
+        same time by the same person will have images mixed up, but this really shouldn't
+        happen based on customer description.
+
+        Expects:
+        A POST Dict created by submitting a form with an image attached
+
+        Arguments:
+        :param request: a WSGI Django request object with the POST dictionary
+        described above
+
+        Returns:
+        On success - status 200, a JSON representation of the image object created
+        on failure - status 400, with stringified HTML errors
+        """
+        form = ImageFileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = form.save()
+            id = request.POST.get("id", -1)
+            # try and find a post with an id to associate this image to (if editing)
+            try:
+                id = int(id)
+            except Exception as e:
+                # the id doesnt exist so this is for a new post. Lets leave it unassigned
+                image.unassigned = True
+            if id == -1:
+                image.unassigned = True
+            else:
+                # found the post, we are editing a post, lets add the image to the post
+                try:
+                    post = Post.objects.get(pk=id)
+                    image.post = post
+                except Post.DoesNotExist as e:
+                    return HttpResponse(str(e), status=400)
+            image.created_by = request.user
+            image.save()
+            return JsonResponse(
+                image.as_dict(),
+                safe=False,
+            )
+        return HttpResponse(create_html_errors(form), status=400)
+
+
 class PostIndexView(View):
     def get(self, request):
         """Displays all published articles, ordered by publish date
@@ -127,8 +210,11 @@ class PostCreateView(LoginRequiredMixin, View):
         a render of create_blog.html with the form for creating articles
         """
         form = PostForm()
+        image_form = ImageFileUploadForm()
         return render(request, "blog/create_blog.html", {
             "form": form,
+            "image_form": image_form,
+            "images": [],
         })
 
     def post(self, request):
@@ -145,7 +231,15 @@ class PostCreateView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save(commit=False)
             form.image = request.FILES.get("cover_image")
-            form.save()
+            post = form.save()
+            post.created_by = request.user
+            post.save()
+            # lets look for unassigned images to add to the post
+            unassigned_images = AWSImage.objects.filter(
+                unassigned=True, created_by=request.user)
+            for image in unassigned_images:
+                image.post = post
+                image.save()
             messages.success(request, ("Article successfully submitted. Click publish"
                                        " to make publically available"))
             return HttpResponseRedirect(reverse("blog:dashboard"))
@@ -170,8 +264,13 @@ class PostEditView(LoginRequiredMixin, View):
         """
         post = Post.objects.get(pk=pk)
         form = PostForm(instance=post)
+        image_form = ImageFileUploadForm()
+        images = post.images.all()
         return render(request, "blog/edit_blog.html", {
             "form": form,
+            "image_form": image_form,
+            "images": [obj.as_dict() for obj in images],
+            "post_id": pk,
         })
 
     def post(self, request, pk):
@@ -191,6 +290,8 @@ class PostEditView(LoginRequiredMixin, View):
             messages.error(request, ("We couldn't find that post."))
             return HttpResponseRedirect(reverse("blog:dashboard"))
         form = PostForm(request.POST, request.FILES, instance=post)
+        image_form = ImageFileUploadForm()
+        images = post.images.all()
         if form.is_valid():
             form.save(commit=False)
             form.image = request.FILES.get("cover_image")
@@ -200,8 +301,11 @@ class PostEditView(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse("blog:dashboard"))
         else:
             messages.error(request, ("Please check the form for errors and try again."))
-            return render(request, "blog/create_blog.html", {
+            return render(request, "blog/edit_blog.html", {
                 "form": form,
+                "image_form": image_form,
+                "images": [obj.as_dict() for obj in images],
+                "post_id": pk,
             })
 
 
