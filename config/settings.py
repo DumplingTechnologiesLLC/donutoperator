@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("SECRET", None)
 debug_val = os.environ.get("DEBUG", True)
 DEBUG = (type(debug_val) is str and debug_val == "True") or (type(debug_val) is bool and debug_val)
 
-ALLOWED_HOSTS =  ['localhost', '127.0.0.1']
+ALLOWED_HOSTS =  ['localhost', '127.0.0.1', "www.peoplekilledbypolice.com"]
 
 
 # Application definition
@@ -129,6 +129,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
+# AWS Static File Storage
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", None)
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", None)
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", None)
@@ -142,11 +143,6 @@ AWS_DEFAULT_ACL = None
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
-
-# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-# MEDIA_ROOT = os.path.join(PROJECT_ROOT, "mediafiles")
-# STATIC_URL = '/static/'
-# MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
@@ -187,15 +183,15 @@ TINYMCE_DEFAULT_CONFIG = {
 
 LOGIN_REDIRECT_URL = '/'
 SECURE_SSL_REDIRECT = False
-# if not DEBUG:
-#     SECURE_SSL_REDIRECT = True
-#     SECURE_REDIRECT_EXEMPT = [
-#         # r'^$',
-#         # r'^(?P<date>[0-9]+)$',
-#         # r'^news/$',
-#         # r'^bodycams$',
-#         # r'^bodycams/(?P<date>[0-9]+)$',
-#     ]
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_REDIRECT_EXEMPT = [
+        # r'^$',
+        # r'^(?P<date>[0-9]+)$',
+        # r'^news/$',
+        # r'^bodycams$',
+        # r'^bodycams/(?P<date>[0-9]+)$',
+    ]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
