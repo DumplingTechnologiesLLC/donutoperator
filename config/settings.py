@@ -101,10 +101,12 @@ else:
     database_url = os.environ.get(
         "DATABASE_URL",
         'postgres://fuxlzxrhqroyhs:9b04496286c843805d34761d132b6c59169a752e58128300805b5e343e25016b@ec2-54-204-36-249.compute-1.amazonaws.com:5432/ddcdsj4jk8g5k7')
-    DATABASES["default"] = dj_database_url.config(
-        default=database_url,
-        ssl_require=True
-    )
+    DATABASES["default"] = {
+        'default': dj_database_url.config(
+            default=database_url,
+            ssl_require=True
+        )
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
