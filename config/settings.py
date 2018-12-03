@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'tinymce',
+    'tinymce',
     'grappelli',
     'filebrowser',
     'roster',
@@ -197,4 +197,4 @@ if not DEBUG and not LOCAL:
     ]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
