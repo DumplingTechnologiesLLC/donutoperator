@@ -56,19 +56,16 @@ class BodycamLink(LoginRequiredMixin, View):
 		try:
 			bodycam = Bodycam.objects.get(pk=bodycam_id)
 			shooting = Shooting.objects.get(pk=shooting_id)
+			bodycam.shooting = shooting
+			bodycam.save()
+			print("test")
+			shooting.has_bodycam = True
+			shooting.save()
+			return HttpResponse(status=200)
 		except (Bodycam.DoesNotExist, Shooting.DoesNotExist) as e:
 			error_data = json.dumps(request.POST).replace("\\\"", "'")
 			logging.error("request data: {}".format(error_data))
 			return HttpResponse(str(e), status=500, )
-		try:
-			shooting.bodycam
-			return HttpResponse(
-				"This shooting already has a bodycam. Perhaps you double submitted by mistake?",
-				status=406)
-		except Bodycam.DoesNotExist:
-			bodycam.shooting = shooting
-			bodycam.save()
-			return HttpResponse(status=200)
 
 
 class BodycamEdit(LoginRequiredMixin, View):
@@ -187,6 +184,8 @@ class BodycamSubmit(LoginRequiredMixin, View):
 					logging.error("request data: {}".format(error_data))
 					return HttpResponse("We've created the bodycam but when we tried to link the bodycam to the shooting you requested, we couldn't find the shooting. Please refresh the page and try to link the bodycam manually.", status=406)
 				bodycam.shooting = shooting
+				shooting.has_bodycam = True
+				shooting.save()
 				bodycam.save()
 			return HttpResponse(bodycam.id, status=200)
 		return HttpResponse(create_html_errors(form), status=400)

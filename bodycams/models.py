@@ -71,8 +71,9 @@ class Bodycam(models.Model):
     state = models.IntegerField("State", choices=STATE_CHOICES)
     city = models.CharField("City", max_length=256, blank=True, null=True)
     date = models.DateField(auto_now=False, auto_now_add=False)
-    shooting = models.OneToOneField(
+    shooting = models.ForeignKey(
         'roster.Shooting',
+        related_name='bodycams',
         on_delete=models.SET_NULL,
         blank=True,
         null=True,

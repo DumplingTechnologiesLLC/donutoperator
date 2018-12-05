@@ -77,7 +77,7 @@ class AjaxSelect2Shootings(LoginRequiredMixin, View):
         parameter = request.GET.get("term")
         if parameter is not None:
             shootings = Shooting.objects.filter(
-                bodycam__isnull=True).filter(name__icontains=parameter).order_by('-date')
+                has_bodycam=False).filter(name__icontains=parameter).order_by('-date')
             results = [{"id": shooting.id, "text": "{}, {}".format(
                 shooting.name, shooting.date.strftime("%Y-%m-%d"))} for shooting in shootings]
             return JsonResponse({"results": results},
