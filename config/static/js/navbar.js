@@ -265,7 +265,7 @@ $(function() {
                         showErrorMessage("Please review your submission", "The video cannot be blank.");
                         return;
                     }
-                    if (self.bodycam.state.length == 0) {
+                    if (!self.bodycam.state || self.bodycam.state.length == 0) {
                         showErrorMessage("Please review your submission", "The state cannot be blank.");
                         return;
                     }

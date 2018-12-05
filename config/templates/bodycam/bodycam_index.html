@@ -102,7 +102,18 @@
 					  </div>
 					  <div class="card-body">
 					    <h5 class="card-title">((bodycam.title))</h5>
-					    <p class="card-text">((bodycam.description))</p>
+					    <p class="card-text">
+				    		<div class="container">
+							    <div  v-if="bodycam.description.length > 266" class="header" style="color: #2780E3;user-select: none;-webkit-user-select: none;-ms-user-select: none;-webkit-touch-callout: none;-o-user-select: none;-moz-user-select: none;"><span>Expand</span>
+							    </div>
+							    <div v-if="bodycam.description.length > 266" class="content collapsed-description bodycam-description">
+							        ((bodycam.description))
+							    </div>
+							    <div v-else>
+							    	((bodycam.description))
+							    </div>
+							</div>
+					    </p>
 					    <ul class="list-group list-group-flush">
 							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center">Department: ((bodycam.department))</li>
 							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center"><span style="padding: 5px; margin-right: 5px" v-for="tag in bodycam.tags" class="badge badge-primary">((tag.text))</span><span v-if="bodycam.tags.length == 0">No Tags Available</span></li>

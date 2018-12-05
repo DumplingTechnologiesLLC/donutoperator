@@ -74,6 +74,7 @@ class Shooting(models.Model):
         (6, "None Given"),
         (7, "Other"),
     )
+    has_bodycam = models.BooleanField("Has Bodycam", default=False)
     state = models.IntegerField("State", choices=STATE_CHOICES)
     city = models.CharField("City", max_length=256, blank=True, null=True)
     description = models.CharField(
@@ -106,18 +107,20 @@ class Shooting(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=False)
     created = models.DateTimeField("Creation Date", editable=False, null=True, blank=True)
 
+    def bodycam(self):  # pragma: no cover
+        try:
+            if self.bodycams.all().first() is not None:
+                return self.bodycams.all().first()
+            else:
+                return False
+        except:
+            return False
+
     def save(self, *args, **kwargs):  # pragma: no cover
         ''' On save, update timestamps '''
         if not self.id:
             self.created = timezone.now()
         return super(Shooting, self).save(*args, **kwargs)
-
-    def has_bodycam(self):
-        try:
-            self.bodycam
-            return True
-        except Bodycam.DoesNotExist:
-            return False
 
     def as_dict(self):
         """
@@ -137,10 +140,8 @@ class Shooting(models.Model):
         sources = [obj.as_dict()["text"] for obj in sources]
         date = ""
         bodycam_video = "None"
-        try:
-            bodycam_video = self.bodycam.video
-        except Bodycam.DoesNotExist:
-            pass
+        if self.has_bodycam:
+            bodycam_video = self.bodycam().video
         if isinstance(self.date, str):
             date = self.date
         else:  # pragma: no cover
