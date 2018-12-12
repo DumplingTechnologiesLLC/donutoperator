@@ -1,9 +1,4 @@
 $(function() {
-    setTimeout(function() {
-        // loader is on base.html. Blocks the user from doing anything until page loads
-        $("#loader_cover").addClass("toggled");
-        $("#body").removeAttr("style")
-    },2000);
     $("#state_select").select2({
         theme: "bootstrap",
         placeholder: "Select state or states"
@@ -75,8 +70,16 @@ var vue_app = new Vue({
         states: STATES, // used for filling select2
         genders: GENDERS, // used for filling select2
         all_tags: ALL_TAGS, // used for filling select2
-        shootings: SHOOTINGS,
+        shootings: [],
         year: YEAR,
+    },
+    mounted: function() {
+        var self = this;
+        $.getJSON(SHOOTING_DATA_URL, {"year": self.year}).done(function(data) {
+            self.shootings = data.shootings,
+            $("#loader_cover").addClass("toggled");
+            $("#body").removeAttr("style");
+        })
     },
     methods: {
         deleteShooting: DELETE_KILLING_FUNCTION,

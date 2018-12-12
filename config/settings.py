@@ -50,9 +50,11 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'blog',
     'bodycams',
-    'storages',
+    # 'storages',
     'corsheaders',
 ]
+if not DEBUG and not LOCAL:
+    INSTALLED_APPS += ['storages']
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -62,7 +64,6 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -141,6 +142,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # AWS Static File Storage
+
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", None)
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", None)
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", None)
@@ -149,18 +151,21 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 AWS_LOCATION = 'static'
-# AWS_DEFAULT_ACL = None
+AWS_DEFAULT_ACL = None
 
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 if DEBUG and LOCAL:
     STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
+
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+DEFAULT_FILE_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+if not DEBUG and not LOCAL:
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 TINYMCE_DEFAULT_CONFIG = {
