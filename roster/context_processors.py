@@ -1,10 +1,7 @@
 from roster.models import Shooting, Tag
-from django.db.models import Count
-
 
 def supply_basic_data(request):
-    distinct_tags = Tag.objects.values('text').annotate(
-        text_count=Count('text')).values('text')
+    distinct_tags = Tag.objects.all().distinct()
     return {
         "states": Shooting.STATE_CHOICES,
         "races": Shooting.RACE_CHOICES,
