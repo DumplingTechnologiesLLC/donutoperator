@@ -231,6 +231,21 @@ class SubmitShootingView(LoginRequiredMixin, View):
         return HttpResponse(create_html_errors(form), status=400)
 
 
+class RosterListData(View):
+    def get(self, request):
+        date = int(request.GET.get("year", datetime.datetime.now().year))
+        shootings = Shooting.objects.filter(
+            date__year=date).order_by('-date').prefetch_related(
+            "tags", "sources")
+        return JsonResponse(
+            {
+                "shootings": [obj.as_dict() for obj in shootings],
+                "total": shootings.count()
+            },
+            safe=False
+        )
+
+
 class RosterListView(View):
     def get(self, request, date=datetime.datetime.now().year):
         '''Returns the roster index view
@@ -245,11 +260,11 @@ class RosterListView(View):
         the number of killing, the year, and the departments
         '''
         display_date = datetime.datetime(int(date), 1, 1, 0, 0)
-        shootings = Shooting.objects.filter(
-            date__year=display_date.year).order_by('-date').prefetch_related(
-            "tags", "sources")
+        # shootings = Shooting.objects.filter(
+        #     date__year=display_date.year).order_by('-date').prefetch_related(
+        #     "tags", "sources")
         return render(request, "roster/index.html", {
-            "shootings": [obj.as_dict() for obj in shootings],
-            "total": shootings.count(),
+            # "shootings": [obj.as_dict() for obj in shootings],
+            # "total": shootings.count(),
             "year": display_date.year,
         })
