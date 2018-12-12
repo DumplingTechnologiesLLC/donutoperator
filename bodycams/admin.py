@@ -1,12 +1,11 @@
 from django.contrib import admin
 from . import models
 from roster.models import Tag
-from .forms import BodycamModelForm
 # Register your models here.
 
 
 class TagAdminInline(admin.TabularInline):
-    model = Tag
+    model = Tag.bodycams.through
 
 
 class BodycamAdmin(admin.ModelAdmin):

@@ -2,13 +2,11 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
-from django.db.models import Count
 from roster.models import Shooting, Tag, Source
 from roster.forms import ShootingModelForm
 import datetime
 import logging
 import json
-# Create your views here.
 
 
 def connect_sources_and_tags(shooting, data):
@@ -34,11 +32,8 @@ def connect_sources_and_tags(shooting, data):
                 shooting=shooting
             )
     for tag in data["tags"]:
-        if Tag.objects.filter(text=tag, shooting=shooting).count() == 0:
-            Tag.objects.create(
-                text=tag,
-                shooting=shooting
-            )
+        mmtag, created = Tag.objects.get_or_create(text=tag)
+        mmtag.shootings.add(shooting)
 
 
 def create_html_errors(form):  # pragma: no cover
@@ -54,6 +49,25 @@ def create_html_errors(form):  # pragma: no cover
     for key, error in form.errors.items():
         error_string += "{}: {}<br>".format(key, error)
     return error_string
+
+
+def submit_form(form, data):
+    """Submits a shooting and adds tags to the shooting
+
+    Arguments:
+    :param form: a validated ShootingModelForm
+    :param data: a dictionary containing a JSON array of tags
+
+    Returns:
+    a Shooting object with tags attached
+    """
+    shooting = form.save()
+    shooting.tags.clear()
+    shooting.sources.all().delete()
+    shooting.unfiltered_video_url = data["video_url"]
+    shooting.save()
+    connect_sources_and_tags(shooting, data)
+    return shooting
 
 
 class AjaxSelect2Shootings(LoginRequiredMixin, View):
@@ -78,8 +92,12 @@ class AjaxSelect2Shootings(LoginRequiredMixin, View):
         if parameter is not None:
             shootings = Shooting.objects.filter(
                 has_bodycam=False).filter(name__icontains=parameter).order_by('-date')
-            results = [{"id": shooting.id, "text": "{}, {}".format(
-                shooting.name, shooting.date.strftime("%Y-%m-%d"))} for shooting in shootings]
+            results = [
+                {
+                    "id": shooting.id, "text": "{}, {}".format(
+                        shooting.name,
+                        shooting.date.strftime("%Y-%m-%d")
+                    )} for shooting in shootings]
             return JsonResponse({"results": results},
                                 safe=False)
 
@@ -161,12 +179,7 @@ class EditShootingView(LoginRequiredMixin, View):
             return HttpResponse(str(e), status=500, )
         form = ShootingModelForm(data, instance=shooting)
         if form.is_valid():
-            shooting = form.save()
-            shooting.tags.all().delete()
-            shooting.sources.all().delete()
-            shooting.unfiltered_video_url = data["video_url"]
-            shooting.save()
-            connect_sources_and_tags(shooting, data)
+            shooting = submit_form(form, data)
             return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
@@ -213,12 +226,7 @@ class SubmitShootingView(LoginRequiredMixin, View):
                     "Please provide a positive number for the age", status=400)
         form = ShootingModelForm(data)
         if form.is_valid():
-            shooting = form.save()
-            shooting.tags.all().delete()
-            shooting.sources.all().delete()
-            shooting.unfiltered_video_url = data["video_url"]
-            shooting.save()
-            connect_sources_and_tags(shooting, data)
+            shooting = submit_form(form, data)
             return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
@@ -238,15 +246,10 @@ class RosterListView(View):
         '''
         display_date = datetime.datetime(int(date), 1, 1, 0, 0)
         shootings = Shooting.objects.filter(
-            date__year=display_date.year).order_by('-date')
-        distinct_tags = Tag.objects.values('text').annotate(
-            text_count=Count('text')).values('text')
+            date__year=display_date.year).order_by('-date').prefetch_related(
+            "tags", "sources")
         return render(request, "roster/index.html", {
             "shootings": [obj.as_dict() for obj in shootings],
             "total": shootings.count(),
             "year": display_date.year,
-            "states": Shooting.STATE_CHOICES,
-            "races": Shooting.RACE_CHOICES,
-            "genders": Shooting.GENDER_CHOICES,
-            "all_tags": distinct_tags,
         })

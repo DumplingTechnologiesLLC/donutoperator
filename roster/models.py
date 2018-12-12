@@ -194,42 +194,10 @@ class Source(models.Model):
         return self.text
 
 
-class MMMTag(models.Model):
-    text = models.CharField("Text", max_length=1000)
-    shootings = models.ManyToManyField(Shooting, related_name="mmtags")
-    bodycams = models.ManyToManyField(Bodycam, related_name='mmtags')
-
-    def as_dict(self):
-        """
-        Serializes the source into a JSON object
-
-        returns source as JSON
-        """
-        return {
-            "id": self.id,
-            "text": self.text,
-        }
-
-    def __str__(self):
-        return self.text
-
-
 class Tag(models.Model):
     text = models.CharField("Text", max_length=1000)
-    shooting = models.ForeignKey(
-        Shooting,
-        on_delete=models.CASCADE,
-        related_name="tags",
-        blank=True,
-        null=True
-    )
-    bodycam = models.ForeignKey(
-        Bodycam,
-        on_delete=models.CASCADE,
-        related_name="tags",
-        blank=True,
-        null=True
-    )
+    shootings = models.ManyToManyField(Shooting, related_name="tags")
+    bodycams = models.ManyToManyField(Bodycam, related_name='tags')
 
     def as_dict(self):
         """

@@ -76,10 +76,10 @@ class EditShootingViewTests(TestCase):
 			city="Test City",
 			state=1,
 		)
-		Tag.objects.create(
+		tag = Tag.objects.create(
 			text="tag1",
-			shooting=shooting
 		)
+		tag.shootings.add(shooting)
 		self.assertEqual(shooting.tags.all().count(), 1)
 		self.assertEqual(shooting.sources.all().count(), 0)
 		shooting_as_dict = {
@@ -126,10 +126,10 @@ class EditShootingViewTests(TestCase):
 			city="Test City",
 			state=1,
 		)
-		Tag.objects.create(
+		tag = Tag.objects.create(
 			text="tag1",
-			shooting=shooting
 		)
+		tag.shootings.add(shooting)
 		self.assertEqual(shooting.tags.all().count(), 1)
 		self.assertEqual(shooting.sources.all().count(), 0)
 		shooting_as_dict = {
@@ -165,10 +165,10 @@ class EditShootingViewTests(TestCase):
 			city="Test City",
 			state=1,
 		)
-		Tag.objects.create(
+		tag = Tag.objects.create(
 			text="tag1",
-			shooting=shooting
 		)
+		tag.shootings.add(shooting)
 		self.assertEqual(shooting.tags.all().count(), 1)
 		self.assertEqual(shooting.sources.all().count(), 0)
 		shooting_as_dict = {
@@ -239,10 +239,10 @@ class EditShootingViewTests(TestCase):
 			city="Test City",
 			state=1,
 		)
-		Tag.objects.create(
+		tag = Tag.objects.create(
 			text="tag1",
-			shooting=shooting
 		)
+		tag.shootings.add(shooting)
 		self.assertEqual(shooting.tags.all().count(), 1)
 		self.assertEqual(shooting.sources.all().count(), 0)
 		shooting_as_dict = {

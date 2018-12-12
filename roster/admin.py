@@ -5,7 +5,7 @@ from roster.forms import ShootingModelForm
 
 
 class TagAdminInline(admin.TabularInline):
-    model = Tag
+    model = Tag.shootings.through
 
 
 class SourceAdminInline(admin.TabularInline):

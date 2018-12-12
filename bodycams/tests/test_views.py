@@ -101,7 +101,7 @@ class BodycamLinkTests(TestCase):
 		shooting.refresh_from_db()
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(bodycam.shooting.id, shooting.id)
-		self.assertEqual(shooting.bodycam.id, bodycam.id)
+		self.assertEqual(shooting.bodycam().id, bodycam.id)
 
 
 class BodycamEditTests(TestCase):
@@ -130,10 +130,8 @@ class BodycamEditTests(TestCase):
 			date="2018-01-01",
 			shooting=shooting
 		)
-		Tag.objects.create(
-			text="Test",
-			bodycam=bodycam
-		)
+		tag = Tag.objects.create(text="Test")
+		tag.bodycams.add(bodycam)
 		self.assertEqual(bodycam.tags.all().count(), 1)
 		self.assertEqual(bodycam.shooting, shooting)
 		bodycam_as_dict = {
@@ -175,10 +173,8 @@ class BodycamEditTests(TestCase):
 			city="Test City",
 			state=1,
 		)
-		Tag.objects.create(
-			text="Test",
-			bodycam=bodycam
-		)
+		tag = Tag.objects.create(text="Test")
+		tag.bodycams.add(bodycam)
 		self.assertEqual(bodycam.tags.all().count(), 1)
 		bodycam_as_dict = {
 			"id": bodycam.id,
@@ -209,10 +205,8 @@ class BodycamEditTests(TestCase):
 			state=1,
 			date="2018-01-01"
 		)
-		Tag.objects.create(
-			text="Test",
-			bodycam=bodycam
-		)
+		tag = Tag.objects.create(text="Test")
+		tag.bodycams.add(bodycam)
 		self.assertEqual(bodycam.tags.all().count(), 1)
 		bodycam_as_dict = {
 			"id": bodycam.id,
@@ -242,10 +236,8 @@ class BodycamEditTests(TestCase):
 			state=1,
 			date="2018-01-01"
 		)
-		Tag.objects.create(
-			text="Test",
-			bodycam=bodycam
-		)
+		tag = Tag.objects.create(text="Test")
+		tag.bodycams.add(bodycam)
 		self.assertEqual(bodycam.tags.all().count(), 1)
 		bodycam_as_dict = {
 			"id": bodycam.id,
@@ -285,10 +277,8 @@ class BodycamEditTests(TestCase):
 			city="Test City",
 			state=1,
 		)
-		Tag.objects.create(
-			text="Test",
-			bodycam=bodycam
-		)
+		tag = Tag.objects.create(text="Test")
+		tag.bodycams.add(bodycam)
 		self.assertEqual(bodycam.tags.all().count(), 1)
 		id = shooting.id
 		bodycam_as_dict = {
@@ -309,8 +299,11 @@ class BodycamEditTests(TestCase):
 		}
 		response = self.client.post(reverse("bodycams:bodycam-edit"), data)
 		self.assertEqual(response.status_code, 406)
-		self.assertEqual(response.content.decode("utf-8"),
-						 "We've created the bodycam but when we tried to link the bodycam to the shooting you requested, we couldn't find the shooting. Please refresh the page and try to link the bodycam manually.")
+		self.assertEqual(
+			response.content.decode("utf-8"),
+			("We've created the bodycam but when we tried to link the bodycam"
+			" to the shooting you requested, we couldn't find the shooting. "
+			"Please refresh the page and try to link the bodycam manually."))
 
 	def test_race_condition(self):
 		bodycam = Bodycam.objects.create(
