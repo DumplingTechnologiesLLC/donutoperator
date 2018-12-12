@@ -105,7 +105,8 @@ class Shooting(models.Model):
     race = models.IntegerField("Race", choices=RACE_CHOICES)
     gender = models.IntegerField("Gender", choices=GENDER_CHOICES)
     date = models.DateField(auto_now=False, auto_now_add=False)
-    created = models.DateTimeField("Creation Date", editable=False, null=True, blank=True)
+    created = models.DateTimeField(
+        "Creation Date", editable=False, null=True, blank=True)
 
     def bodycam(self):  # pragma: no cover
         try:
@@ -183,6 +184,26 @@ class Source(models.Model):
         Serializes the tag into a JSON object
 
         returns tag as JSON
+        """
+        return {
+            "id": self.id,
+            "text": self.text,
+        }
+
+    def __str__(self):
+        return self.text
+
+
+class MMMTag(models.Model):
+    text = models.CharField("Text", max_length=1000)
+    shootings = models.ManyToManyField(Shooting, related_name="mmtags")
+    bodycams = models.ManyToManyField(Bodycam, related_name='mmtags')
+
+    def as_dict(self):
+        """
+        Serializes the source into a JSON object
+
+        returns source as JSON
         """
         return {
             "id": self.id,
