@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from bodycams.models import Bodycam
 from django.urls import reverse
 from django.contrib import messages
@@ -35,9 +35,9 @@ def link_bodycam_and_shooting(bodycam, data, request):
             error_data = json.dumps(request.POST).replace("\\\"", "'")
             logging.error("request data: {}".format(error_data))
             return HttpResponse(
-            	("We've created the bodycam but when we tried to link "
-            	"the bodycam to the shooting you requested, we couldn't find the shooting."
-            	" Please refresh the page and try to link the bodycam manually."),
+                ("We've created the bodycam but when we tried to link "
+                 "the bodycam to the shooting you requested, we couldn't find the shooting."
+                 " Please refresh the page and try to link the bodycam manually."),
                 status=406
             )
         bodycam.shooting = shooting
@@ -181,16 +181,16 @@ class BodycamSubmit(LoginRequiredMixin, View):
         Expects:
         A stringified bodycam JSON object in the following format:
         bodycam: {
-	        id: integer,
-	        title: string,
-	        video: string iframe embed code with a width and height specified,
-	        description: string,
-	        department: string,
-	        state: string,
-	        city: string,
-	        date: string: "YYYY-MM-DDTH:mm:ss",
-	        tags: [],
-	        shooting: integer (pk),
+                id: integer,
+                title: string,
+                video: string iframe embed code with a width and height specified,
+                description: string,
+                department: string,
+                state: string,
+                city: string,
+                date: string: "YYYY-MM-DDTH:mm:ss",
+                tags: [],
+                shooting: integer (pk),
         },
 
         Arguments:
@@ -225,14 +225,8 @@ class BodycamDashboard(LoginRequiredMixin, View):
         a render of the bodycams, the number of bodycams, the year, and the departments
         """
         display_date = datetime.datetime(int(date), 1, 1, 0, 0)
-        bodycams = Bodycam.objects.filter(
-            date__year=display_date.year).order_by("-date")
         return render(request, "bodycam/bodycam_dashboard.html", {
-            "bodycams": [obj.as_dict() for obj in bodycams],
             "year": display_date.year,
-            "departments": bodycams.order_by(
-            	"department").values('department').distinct(),
-            "total": bodycams.count(),
         })
 
     def post(self, request):
@@ -262,6 +256,21 @@ class BodycamDashboard(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse("bodycams:dashboard"))
 
 
+class BodycamData(View):
+    def get(self, request):
+        date = int(request.GET.get("year", datetime.datetime.now().year))
+        bodycams = Bodycam.objects.filter(
+            date__year=date).order_by("-date").prefetch_related("tags")
+        departments = bodycams.order_by(
+            "department").values('department').distinct(),
+        departments = [obj['department'] if obj['department'] is not None else "Unknown" for obj in departments[0]]
+        bodycams = [obj.as_dict() for obj in bodycams],
+        return JsonResponse({
+            "bodycams": bodycams,
+            "departments": departments
+        }, safe=False)
+
+
 class BodycamIndexView(View):
     def get(self, request, date=datetime.datetime.now().year):
         '''Returns the bodycam index view
@@ -275,12 +284,7 @@ class BodycamIndexView(View):
         a render of the bodycams, the number of bodycams, the year, and the departments
         '''
         display_date = datetime.datetime(int(date), 1, 1, 0, 0)
-        bodycams = Bodycam.objects.filter(
-            date__year=display_date.year).order_by("-date").prefetch_related("tags")
         return render(request, "bodycam/bodycam_index.html", {
-            "bodycams": [obj.as_dict() for obj in bodycams],
-            "total": bodycams.count(),
+
             "year": display_date.year,
-            "departments": bodycams.order_by(
-            	"department").values('department').distinct(),
         })
