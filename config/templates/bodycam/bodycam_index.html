@@ -60,7 +60,7 @@
 		                        <label for="department_select">Filter by department</label>
 		                        <select id="department_select" class="form-control" style="width:100%" multiple="multiple">
 		                            <option></option>
-		                            <option v-for="department in departments" v-bind:value="department.value">((department.display))</option>
+		                            <option v-for="department in departments" v-bind:value="department">((department))</option>
 		                        </select>
 		                    </div>
 		                </div>
@@ -104,7 +104,7 @@
 					    <h5 class="card-title">((bodycam.title))</h5>
 					    <p class="card-text">
 				    		<div class="container">
-							    <div  v-if="bodycam.description.length > 266" class="header" style="color: #2780E3;user-select: none;-webkit-user-select: none;-ms-user-select: none;-webkit-touch-callout: none;-o-user-select: none;-moz-user-select: none;"><span>Expand</span>
+							    <div  v-if="bodycam.description.length > 266" class="header" style="color: #2780E3;user-select: none;-webkit-user-select: none;-ms-user-select: none;-webkit-touch-callout: none;-o-user-select: none;-moz-user-select: none; cursor:pointer"><span>Double Click to Expand</span>
 							    </div>
 							    <div v-if="bodycam.description.length > 266" class="content collapsed-description bodycam-description">
 							        ((bodycam.description))

@@ -1,52 +1,4 @@
-$(function() {
-	setTimeout(function() {
-        // loader is on base.html. Blocks the user from doing anything until page loads
-        $("#loader_cover").addClass("toggled");
-        $("#body").removeAttr("style")
-    },2000);
-    $("#state_select").select2({
-        theme: "bootstrap",
-        placeholder: "Select state or states"
-    })
-    $('#state_select').on("change", function(e) { 
-        vue_app.states_selected = $(this).val();
-    });
-    $("#race_select").select2({
-        theme: "bootstrap",
-        placeholder: "Select race or races"
-    })
-    $('#race_select').on("change", function(e) { 
-        vue_app.races_selected = $(this).val();
-    });
-    $("#tag_select").select2({
-        theme: "bootstrap",
-        placeholder: "Select tag or tags"
-    })
-    $('#tag_select').on("change", function(e) { 
-        vue_app.tags_selected = $(this).val();
-    });
-    $("#department_select").select2({
-        theme: "bootstrap",
-        placeholder: "Select department or departments"
-    })
-    $('#department_select').on("change", function(e) { 
-        vue_app.departments_selected = $(this).val();
-    });
-    $('#start_date').datetimepicker({
-        format:"L",
-        useCurrent: false,
-    });
-    $('#end_date').datetimepicker({
-        format:"L",
-        useCurrent: false,
-    });
-    $('#start_date').on("change.datetimepicker", function (e) {
-        vue_app.start_date = $('#start_date').datetimepicker('viewDate');
-    });
-    $('#end_date').on("change.datetimepicker", function (e) {
-        vue_app.end_date = $('#end_date').datetimepicker('viewDate');
-    });
-})
+
 var vue_app = new Vue({
     	el: '#app',
         delimiters: ["((","))"],
@@ -82,10 +34,52 @@ var vue_app = new Vue({
         mounted: function() {
             var self = this;
             $.getJSON(BODYCAM_URLS["bodycam_data"], {"year": self.year}).done(function(data) {
-                self.bodycams = data.bodycams
+                self.bodycams = data.bodycams[0]
                 self.departments = data.departments
                 $("#loader_cover").addClass("toggled");
                 $("#body").removeAttr("style");
+                $("#state_select").select2({
+                    theme: "bootstrap",
+                    placeholder: "Select state or states"
+                })
+                $('#state_select').on("change", function(e) { 
+                    vue_app.states_selected = $(this).val();
+                });
+                $("#race_select").select2({
+                    theme: "bootstrap",
+                    placeholder: "Select race or races"
+                })
+                $('#race_select').on("change", function(e) { 
+                    vue_app.races_selected = $(this).val();
+                });
+                $("#tag_select").select2({
+                    theme: "bootstrap",
+                    placeholder: "Select tag or tags"
+                })
+                $('#tag_select').on("change", function(e) { 
+                    vue_app.tags_selected = $(this).val();
+                });
+                $("#department_select").select2({
+                    theme: "bootstrap",
+                    placeholder: "Select department or departments"
+                })
+                $('#department_select').on("change", function(e) { 
+                    vue_app.departments_selected = $(this).val();
+                });
+                $('#start_date').datetimepicker({
+                    format:"L",
+                    useCurrent: false,
+                });
+                $('#end_date').datetimepicker({
+                    format:"L",
+                    useCurrent: false,
+                });
+                $('#start_date').on("change.datetimepicker", function (e) {
+                    vue_app.start_date = $('#start_date').datetimepicker('viewDate');
+                });
+                $('#end_date').on("change.datetimepicker", function (e) {
+                    vue_app.end_date = $('#end_date').datetimepicker('viewDate');
+                });
             })
         },
         methods: {
