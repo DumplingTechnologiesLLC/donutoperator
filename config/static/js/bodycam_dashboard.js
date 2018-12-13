@@ -69,15 +69,24 @@ var vue_app = new Vue({
 			end_date: "",
         	races: RACES, // used for filling select2
             states: STATES, // used for filling select2
-            departments: DEPARTMENTS,
+            departments: [],
             all_tags: ALL_TAGS, // used for filling select2
-            bodycams: BODYCAMS,
+            bodycams: [],
             year: YEAR,
             displayed_video: "",
         	displayed_shooting: {}, // shooting to display in modal
         	displayed_bodycam: {
         		tags: [],
         	},
+        },
+        mounted: function() {
+            var self = this;
+            $.getJSON(BODYCAM_URLS["bodycam_data"], {"year": self.year}).done(function(data) {
+                self.bodycams = data.bodycams
+                self.departments = data.departments
+                $("#loader_cover").addClass("toggled");
+                $("#body").removeAttr("style");
+            })
         },
         methods: {
         	displayAge: function(age) {

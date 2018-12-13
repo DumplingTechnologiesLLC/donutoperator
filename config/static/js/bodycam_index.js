@@ -1,9 +1,4 @@
 $(function() {
-		setTimeout(function() {
-	        // loader is on base.html. Blocks the user from doing anything until page loads
-	        $("#loader_cover").addClass("toggled");
-	        $("#body").removeAttr("style")
-	    },2000);
         $("#state_select").select2({
             theme: "bootstrap",
             placeholder: "Select state or states"
@@ -65,9 +60,9 @@ $(function() {
 			end_date: "",
         	races: RACES, // used for filling select2
             states: STATES, // used for filling select2
-            departments: DEPARTMENTS,
+            departments: [],
             all_tags: ALL_TAGS, // used for filling select2
-            bodycams: BODYCAMS,
+            bodycams: [],
             year: YEAR,
             displayed_video: "",
             displayed_bodycam: {},
@@ -75,6 +70,12 @@ $(function() {
         },
         mounted: function() {
             var self = this;
+            $.getJSON(BODYCAM_URLS["bodycam_data"], {"year": self.year}).done(function(data) {
+                self.bodycams = data.bodycams
+                self.departments = data.departments
+                $("#loader_cover").addClass("toggled");
+                $("#body").removeAttr("style");
+            })
             $(".header").click(function () {
 
             $header = $(this);

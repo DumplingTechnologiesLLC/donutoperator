@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     # 'storages',
     'corsheaders',
 ]
+if LOCAL:
+    INSTALLED_APPS += ['django_extensions']
 if not DEBUG and not LOCAL:
     INSTALLED_APPS += ['storages']
 

@@ -250,17 +250,9 @@
 <script type="text/javascript">
 	// BODYCAM INDEX GLOBAL VARIABLES
 	var YEAR = "{{year}}";
-	var BODYCAMS = {{bodycams|safe}};
-	var DEPARTMENTS = [
-    	{% for department in departments %}
-        {
-            value: `{{department.department}}`,
-            display: `{{department.department}}`
-        },
-        {% endfor %}
-    ];
     var BODYCAM_URLS = {
     	date_index: "{% url 'bodycams:date-index' date=1234 %}",
+    	bodycam_data: "{% url 'bodycams:bodycam-data' %}"
     }
 </script>
 <script type="text/javascript" src="{% static 'js/bodycam_index.js' %}"></script>

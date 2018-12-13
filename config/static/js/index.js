@@ -156,7 +156,7 @@ var vue_app = new Vue({
             None
             */
             var year = moment(YEAR, "YYYY").add(1, "y").format("YYYY")
-            var url = "{% url 'roster:date-index' date=1234 %}";
+            var url = YEAR_URL;
             url = url.replace("1234", year);
             return url;
         },
@@ -173,7 +173,7 @@ var vue_app = new Vue({
             None
             */
             var year = moment(YEAR, "YYYY").subtract(1, "y").format("YYYY")  
-            var url = "{% url 'roster:date-index' date=1234 %}";
+            var url = YEAR_URL;
             url = url.replace("1234", year);
             return url;
         },
