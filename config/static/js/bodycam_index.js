@@ -20,13 +20,7 @@ $(function() {
         $('#tag_select').on("change", function(e) { 
             vue_app.tags_selected = $(this).val();
         });
-        $("#department_select").select2({
-            theme: "bootstrap",
-            placeholder: "Select department or departments"
-        })
-        $('#department_select').on("change", function(e) { 
-            vue_app.departments_selected = $(this).val();
-        });
+        
         $('#start_date').datetimepicker({
             format:"L",
             useCurrent: false,
@@ -71,46 +65,55 @@ $(function() {
         mounted: function() {
             var self = this;
             $.getJSON(BODYCAM_URLS["bodycam_data"], {"year": self.year}).done(function(data) {
-                self.bodycams = data.bodycams
+                self.bodycams = data.bodycams[0]
                 self.departments = data.departments
                 $("#loader_cover").addClass("toggled");
                 $("#body").removeAttr("style");
-            })
-            $(".header").click(function () {
-
-            $header = $(this);
-            expanded = $header.attr("expanded");
-            var height = "200px"
-            if (!expanded || expanded == "false") {
-                // not currently expanded
-                $header.attr("expanded", "true");
-                height = "auto"
-                expanded = true;
-            }
-            else {
-                // currently expanded
-                $header.attr("expanded", "false");
-                expanded = false;
-            }
-            //getting the next element
-            $content = $header.next();
-            //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
-            if (expanded) {
-                $content.addClass("collapsed-description")
-                $header.text(function () {
-                    //change text based on condition
-                    return "Expand";
+                $("#department_select").select2({
+                    theme: "bootstrap",
+                    placeholder: "Select department or departments"
+                })
+                $('#department_select').on("change", function(e) { 
+                    vue_app.departments_selected = $(this).val();
                 });
-            }
-            else {
-                $content.removeClass("collapsed-description")  
-                $header.text(function () {
-                    //change text based on condition
-                    return "Collapse" ;
-                }); 
-            }
+                setTimeout(function() {
+                    $(".header").click(function () {
+                        $header = $(this);
+                        expanded = $header.attr("expanded");
+                        var height = "200px"
+                        if (!expanded || expanded == "false") {
+                            // not currently expanded
+                            $header.attr("expanded", "true");
+                            height = "auto"
+                            expanded = true;
+                        }
+                        else {
+                            // currently expanded
+                            $header.attr("expanded", "false");
+                            expanded = false;
+                        }
+                        //getting the next element
+                        $content = $header.next();
+                        //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
+                        if (expanded) {
+                            $content.addClass("collapsed-description")
+                            $header.text(function () {
+                                //change text based on condition
+                                return "Expand";
+                            });
+                        }
+                        else {
+                            $content.removeClass("collapsed-description")  
+                            $header.text(function () {
+                                //change text based on condition
+                                return "Collapse" ;
+                            }); 
+                        }
+                    });
 
-        });
+                }, 10)
+            })
+
         },
         methods: {
             lengthCheck: function(bodycam) {
