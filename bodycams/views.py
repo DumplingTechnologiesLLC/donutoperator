@@ -260,7 +260,7 @@ class BodycamData(View):
     def get(self, request):
         date = int(request.GET.get("year", datetime.datetime.now().year))
         bodycams = Bodycam.objects.filter(
-            date__year=date).order_by("-date").prefetch_related("tags")
+            date__year=date).order_by("-date").prefetch_related("tags", "shooting")
         departments = bodycams.order_by(
             "department").values('department').distinct(),
         departments = [obj['department'] if obj['department'] is not None else "Unknown" for obj in departments[0]]

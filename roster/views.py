@@ -236,7 +236,7 @@ class RosterListData(View):
         date = int(request.GET.get("year", datetime.datetime.now().year))
         shootings = Shooting.objects.filter(
             date__year=date).order_by('-date').prefetch_related(
-            "tags", "sources")
+            "tags", "sources", "bodycams")
         return JsonResponse(
             {
                 "shootings": [obj.as_dict() for obj in shootings],
