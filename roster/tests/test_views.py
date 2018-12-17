@@ -367,6 +367,80 @@ class SubmitShootingViewTests(TestCase):
 		self.assertEqual(response.content.decode("utf-8"),
 						 "Please provide a positive number for the age")
 
+class RosterListDataViewTests(TestCase):
+	def setUp(self):
+		current_year = datetime.date.today().strftime("%Y-%m-%d")
+		Shooting.objects.bulk_create([
+			Shooting(
+				name="Test Name",
+				age=21,
+				race=1,
+				gender=1,
+				date=current_year,
+				description="Test Description",
+				city="Test City",
+				state=1,
+			),
+			Shooting(
+				name="Test Name1",
+				age=21,
+				race=1,
+				gender=1,
+				date=current_year,
+				description="Test Description",
+				city="Test City",
+				state=1,
+			),
+			Shooting(
+				name="Test Name2",
+				age=21,
+				race=1,
+				gender=1,
+				date=current_year,
+				description="Test Description",
+				city="Test City",
+				state=1,
+			),
+			Shooting(
+				name="Test Name3",
+				age=21,
+				race=1,
+				gender=1,
+				date="2017-11-10",
+				description="Test Description",
+				city="Test City",
+				state=1,
+			),
+			Shooting(
+				name="Test Name4",
+				age=21,
+				race=1,
+				gender=1,
+				date="2017-11-10",
+				description="Test Description",
+				city="Test City",
+				state=1,
+			),
+			Shooting(
+				name="Test Name5",
+				age=21,
+				race=1,
+				gender=1,
+				date="2017-11-10",
+				description="Test Description",
+				city="Test City",
+				state=1,
+			),
+		])
+		self.client = Client()
+
+	def test_success_get(self):
+		response = self.client.get(reverse("roster:shooting-data"))
+		self.assertEqual(response.status_code, 200)
+		print(json.loads(response.content))
+		content = json.loads(response.content)
+		print(content)
+		self.assertEqual(len(content["shootings"]), 3)
 
 class RosterListViewTests(TestCase):
 	def setUp(self):
