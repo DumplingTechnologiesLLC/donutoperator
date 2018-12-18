@@ -1,53 +1,56 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="{% url 'roster:index' %}">People Killed By Police</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarColor02">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'bodycams:bodycams' %}">Bodycam Database</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'blog:blog-index' %}">News Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about-page' %}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://donut-operator.myshopify.com/">Donut's Shop</a>
-                    </li>
-                    
-                </ul>
-                <ul class="navbar-nav navbar-right">
-                    {% if user.is_superuser %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Admin Actions
-                        </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <button class="dropdown-item" onclick="$('#add_killing').modal('toggle')">Submit New Killing</button>
-                    <button class="dropdown-item" onclick="$('#add_bodycam').modal('toggle')">Submit New Bodycam</button>
-                    <a class="dropdown-item" href="{% url 'bodycams:dashboard' %}">Manage Bodycams</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'blog:create' %}">Submit News Story</a>
-                    <a class="dropdown-item" href="{% url 'blog:dashboard' %}">Manage Articles</a>
-                    </div>
-                    </li>
-                    {% endif %}
-                    {% if user.is_authenticated %}
-                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Sign Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Sign In <i class="fa fa-sign-in" aria-hidden="true"></i></a>
-                    </li>
-                    {% endif %}
-                </ul>
+    <a class="navbar-brand" href="{% url 'roster:index' %}">People Killed By Police</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'bodycams:bodycams' %}">Bodycam Database</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'blog:blog-index' %}">News Blog</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'about-page' %}">About</a>
+            </li>
+            <li class="nav-item">
+                <button v-on:click="submitTip" class="btn btn-secondary" title="Have we missed a shooting? Let us know!">
+                    Submit a Tip
+                </button>    
+            </li>
+        </ul>
+        <ul class="navbar-nav navbar-right">
+            {% if user.is_superuser %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Admin Actions
+                </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <button class="dropdown-item" onclick="$('#add_killing').modal('toggle')">Submit New Killing</button>
+            <button class="dropdown-item" onclick="$('#add_bodycam').modal('toggle')">Submit New Bodycam</button>
+            <a class="dropdown-item" href="{% url 'bodycams:dashboard' %}">Manage Bodycams</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'blog:create' %}">Submit News Story</a>
+            <a class="dropdown-item" href="{% url 'blog:dashboard' %}">Manage Articles</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'roster:tip-list' %}">View Tips</a>
             </div>
-        </nav>
-        {% if user.is_authenticated %}
-        {% include 'partials/killing_modal.html' %}
-        {% include 'partials/bodycam_modal.html' %}
-        {% endif %}
+            </li>
+            {% endif %}
+            {% if user.is_authenticated %}
+             <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Sign Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Sign In <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+{% if user.is_authenticated %}
+{% include 'partials/killing_modal.html' %}
+{% include 'partials/bodycam_modal.html' %}
+{% endif %}

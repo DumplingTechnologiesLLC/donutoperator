@@ -8,6 +8,8 @@ urlpatterns = [
     	views.AjaxSelect2Shootings.as_view(),
     	name="ajax-shootings"
     ),
+    url(r'^submit-tip$', views.CreateTip.as_view(), name="submit-tip"),
+    url(r'^tips$', views.TipList.as_view(), name="tip-list"),
     url(r'^ajax/submit-killing$',
         views.SubmitShootingView.as_view(), name="submit-killing"),
     url(r'^ajax/delete-killing$',

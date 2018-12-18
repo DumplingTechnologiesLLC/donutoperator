@@ -22,3 +22,4 @@ class ShootingAdmin(admin.ModelAdmin):
 admin.site.register(Shooting, ShootingAdmin)
 admin.site.register(Tag)
 admin.site.register(Source)
+admin.site.register(Tip)
