@@ -1,8 +1,9 @@
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.views.generic.list import ListView
 from django.views import View
-from roster.models import Shooting, Tag, Source
+from roster.models import Shooting, Tag, Source, Tip
 from roster.forms import ShootingModelForm
 import datetime
 import logging
@@ -229,6 +230,25 @@ class SubmitShootingView(LoginRequiredMixin, View):
             shooting = submit_form(form, data)
             return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
+
+
+class TipList(LoginRequiredMixin, ListView):
+    model = Tip
+
+    def post(self, request):
+        ids = request.POST.getlist("tips[]")
+        print(ids)
+        for id in ids:
+            id = int(id)
+            Tip.objects.get(pk=id).delete()
+        return HttpResponse(status=200)
+
+
+class CreateTip(View):
+    def post(self, request):
+        text = request.POST.get("text")
+        Tip.objects.create(text=text)
+        return HttpResponse(status=200)
 
 
 class RosterListData(View):
