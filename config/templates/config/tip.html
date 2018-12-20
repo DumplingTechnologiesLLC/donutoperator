@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %}Donut - KBP{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content: center; align-items: center;flex-direction:column; margin-top:25px">
+                <div class="card border-primary " style="margin-bottom:20px;">
+	                <div class="card-header">Submit a Tip</div>
+	                <div class="card-body">
+						<form action="" class="formName">
+					    	<div class="form-group row">
+					    		<div class="col-lg-12">
+								    <label>Did we miss a shooting? Provide a tip here!</label>
+								    <textarea id="tip" style="height:500px; width: 500px" class="tag form-control" placeholder="Tell us about the shooting. Please provide sources if possible." required></textarea>
+							    </div>
+					    	</div>
+					    	<div class="form-group row">
+					    		
+					    	</div>
+							    <button onclick="submitTip()" type="button" class="btn btn-success">Submit Tip</button>
+					    </form>
+	                </div>
+                </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+	function submitTip() {
+		var tipText = $('#tip').val();
+		data = {
+	        csrfmiddlewaretoken: "{{csrf_token}}",
+	        text: JSON.stringify(tipText)
+	    }
+	    $.post("{% url 'roster:submit-tip' %}", data).done(function() {
+	        $.alert({
+	            title:"Success",
+	            content: "Thanks for letting us know, we'll get right to it.",
+	            type: "green",
+	            typeAnimated: true,
+	            autoClose: 'close|4000',
+	            buttons: {
+	                close: function() {
+	                	window.location = "{% url 'roster:index' %}"
+	                }
+	            }
+	        })
+	    }).fail(function() {
+	        $.alert({
+	            title: "Hmm, something went wrong.",
+	            content: "We've dispatched some folks to take care of this issue. Please try again later.",
+	            type: "red",
+	            typeAnimated: true,
+	            autoClose: 'close|4000',
+	            buttons: {
+	                close: function() {
+
+	                }
+	            }
+	        })
+	    })
+
+	}
+	$("#loader_cover").addClass("toggled");
+	$("#body").removeAttr("style")
+</script>
+{% endblock js %}

@@ -12,12 +12,10 @@
                 <a class="nav-link" href="{% url 'blog:blog-index' %}">News Blog</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'about-page' %}">About</a>
+                <a class="nav-link" href="{% url 'roster:tip-page' %}">Submit Tip</a>
             </li>
             <li class="nav-item">
-                <button v-on:click="submitTip" class="btn btn-secondary" title="Have we missed a shooting? Let us know!">
-                    Submit a Tip
-                </button>    
+                <a class="nav-link" href="{% url 'about-page' %}">About</a>
             </li>
         </ul>
         <ul class="navbar-nav navbar-right">
