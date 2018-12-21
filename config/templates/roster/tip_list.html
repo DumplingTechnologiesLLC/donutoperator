@@ -25,8 +25,8 @@
                         <td>
                             {{tip.created|date:"D d M Y" }}
                         </td>
-                        <td class="tiptext" style="white-space: pre; max-width:500px; overflow-x:scroll">
-                            {{tip.text}}
+                        <td class="tiptext" style="white-space: pre-wrap; max-width:500px; overflow-x:scroll">
+{{tip.text|safe}}
                         </td>
                         <td>
                             <input class="form-check-input" onclick="$(this).change(function() { if(this.checked) { array.push({{tip.id}}) } else { array = arrayRemove(array, {{tip.id}})} });" type="checkbox" value="" id="defaultCheck1">

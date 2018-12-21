@@ -273,6 +273,7 @@ var nav_app = new Vue({
                 showErrorMessage('Please review your submission', "Date cannot be blank.")
                 return;
             }
+            self.bodycam.description = self.bodycam.description.trim()
             data = {
                 csrfmiddlewaretoken: CSRFMIDDLEWARETOKEN,
                 bodycam: JSON.stringify(self.bodycam)
@@ -420,6 +421,7 @@ var nav_app = new Vue({
                 showErrorMessage('Please review your submission', "Gender cannot be blank.")
                 return;
             }
+            self.shooting.description = self.shooting.description.trim()
             data = {
                 csrfmiddlewaretoken: CSRFMIDDLEWARETOKEN,
                 shooting: JSON.stringify(self.shooting)

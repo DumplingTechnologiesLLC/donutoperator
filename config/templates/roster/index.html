@@ -254,8 +254,8 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <h5>Further Details</h5>
-                            <div style="height: 200px; overflow-y: scroll" v-if="displayed_shooting.description !== undefined && displayed_shooting.description.length != 0"  v-html="displayed_shooting.description">
-                                
+                            <div style="height: 200px; overflow-y: scroll; white-space: pre-wrap" v-if="displayed_shooting.description !== undefined && displayed_shooting.description.length != 0">
+((displayed_shooting.description))                                
                             </div>
                             <p style="height:200px; overflow-y:scroll" v-else>No further details at this time.</p>
                         </div>

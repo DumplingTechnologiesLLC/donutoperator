@@ -61,6 +61,7 @@ $(function() {
             displayed_video: "",
             displayed_bodycam: {},
         	displayed_shooting: {},
+            expanded_bodycams: [], // used for tracking which bodycams were expanded to update text of buttons
         },
         mounted: function() {
             var self = this;
@@ -76,48 +77,82 @@ $(function() {
                 $('#department_select').on("change", function(e) { 
                     vue_app.departments_selected = $(this).val();
                 });
-                setTimeout(function() {
-                    $(".header").click(function () {
-                        $header = $(this);
-                        expanded = $header.attr("expanded");
-                        var height = "200px"
-                        if (!expanded || expanded == "false") {
-                            // not currently expanded
-                            $header.attr("expanded", "true");
-                            height = "auto"
-                            expanded = true;
-                        }
-                        else {
-                            // currently expanded
-                            $header.attr("expanded", "false");
-                            expanded = false;
-                        }
-                        //getting the next element
-                        $content = $header.next();
-                        //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
-                        if (expanded) {
-                            $content.addClass("collapsed-description")
-                            $header.text(function () {
-                                //change text based on condition
-                                return "Expand";
-                            });
-                        }
-                        else {
-                            $content.removeClass("collapsed-description")  
-                            $header.text(function () {
-                                //change text based on condition
-                                return "Collapse" ;
-                            }); 
-                        }
-                    });
-
-                }, 10)
             })
 
         },
         methods: {
+            bodycamDescription: function(id) {
+                /*Returns a class object of CSS classes to be applied.
+                This is what actually toggles the expanded or collapsed text.
+
+                Arguments:
+                :param id: the id of a bodycam. Used to check whether it exists in the
+                expanded_bodycams array
+
+                Returns:
+                a json array of CSS classes with boolean flag on whether to apply or not
+                */
+                var self = this;
+                console.log(self.expanded_bodycams.indexOf(id) < 0)
+                return {
+                    "content": true, // this is always applied
+                    "bodycam-description": true, // this is always applied
+                    'collapsed-description': self.expanded_bodycams.indexOf(id) < 0
+                }
+            },
+            toggleText: function(id) {
+                /*This sets the "expand" button text to expand or collapse based on whether
+                the particular description is expanded or not.
+                
+                Arguments:
+                :param id: the id of a bodycam. will be checked in the array of opened
+                bodycams to decide whether to set text to expand or collapse.
+                If it exists in the array, will be set to collapse
+
+                Returns:
+                Collapse if the id exists in the array
+                Expand otherwise
+                */
+                var self = this;
+                if (self.expanded_bodycams.indexOf(id) > -1) {
+                    // already expanded. Time to contract
+                    return "Collapse"
+                }
+                else {
+                    // contracted. Please expand
+                    return "Expand"
+                }
+            },
+            toggleDescription: function(id) {
+                /*Adds or removes an id from the expanded_bodycams array, which in turn
+                triggers the classes to change via 2-way binding.
+
+                Arguments:
+                :param id: the id of a bodycam
+
+                Returns:
+                Nothing
+                */
+                var self = this;
+                if (self.expanded_bodycams.indexOf(id) > -1) {
+                    // already expanded. Time to contract
+                    self.expanded_bodycams.splice(self.expanded_bodycams.indexOf(id), 1);
+                }
+                else {
+                    // contracted. Time to expand
+                    self.expanded_bodycams.push(id);
+                }
+            },
             lengthCheck: function(bodycam) {
-                console.log(bodycam);
+                /*Is used to decide whether we need to truncate the description
+
+                Arguments:
+                :param bodycam: a bodycam JSON object
+
+                Returns:
+                true if the description length is greater than 266
+                false otherwise
+                */
                 return bodycam.description.length > 266
             },
         	displayAge: function(age) {
