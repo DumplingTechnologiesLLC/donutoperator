@@ -231,10 +231,12 @@ class SubmitShootingView(LoginRequiredMixin, View):
             return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
+
 class TipPage(View):
     def get(self, request):
         return render(request, "config/tip.html", {
         })
+
 
 class TipList(LoginRequiredMixin, ListView):
     model = Tip
