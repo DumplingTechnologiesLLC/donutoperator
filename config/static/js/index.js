@@ -64,6 +64,7 @@ var vue_app = new Vue({
         end_date: "", // populate by jQuery upon dp.change
         name: "", // two way binding for filter
         city: "", // two way binding for filter
+        age: "", //two way binding for filter
         displayed_video: "",
         displayed_shooting: {},
         races: RACES, // used for filling select2
@@ -140,6 +141,7 @@ var vue_app = new Vue({
             self.tags_selected = [];
             self.start_date = "";
             self.end_date = "";
+            self.age = "";
             $('#start_date').datetimepicker('clear');
             $('#end_date').datetimepicker('clear');
         },
@@ -298,6 +300,46 @@ var vue_app = new Vue({
                         return true;
                     }
                 })
+            }
+            if (self.age.length != 0) {
+                if (!isNaN(self.age)) {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        if (self.age == shooting.age) {
+                            return true;
+                        }
+                    })
+                }
+                else if (self.age.toUpperCase() == "NO AGE") {
+                    displayed_shootings = displayed_shootings.filter(function(shooting) {
+                        if ("No Age" == shooting.age) {
+                            return true;
+                        }
+                    })
+                }
+                else if (self.age.indexOf("-") > -1) {
+                    // 1-15
+                    var ages = self.age.split("-")
+                    if (ages.length == 2 && !isNaN(ages[0] && !isNaN(ages[1]))) {
+                        displayed_shootings = displayed_shootings.filter(function(shooting) {
+                            if (ages[0] <= shooting.age && ages[1] >= shooting.age) {
+                                return true;
+                            }
+                        })
+                    }
+                }
+                else if (self.age.toLowerCase().indexOf("between") > -1 && self.age.toLowerCase().indexOf("and") > -1) {
+                    // between 1 and 15
+                    var age_string = self.age.toLowerCase();
+                    age_string = age_string.replace('between','')
+                    var ages = age_string.split("and")
+                    if (ages.length == 2 && !isNaN(ages[0] && !isNaN(ages[1]))) {
+                        displayed_shootings = displayed_shootings.filter(function(shooting) {
+                            if (ages[0] <= shooting.age && ages[1] >= shooting.age) {
+                                return true;
+                            }
+                        })
+                    }
+                }
             }
             if (self.order_attribute != "") {
                 order_order = self.order[self.order_attribute]; // 1 for ascending, -1 for descending
