@@ -19,6 +19,9 @@
             </li>
         </ul>
         <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'roster:tip-list' %}">{{number_of_tips}} New Tips</a>
+            </li>
             {% if user.is_superuser %}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -31,8 +34,6 @@
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'blog:create' %}">Submit News Story</a>
             <a class="dropdown-item" href="{% url 'blog:dashboard' %}">Manage Articles</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'roster:tip-list' %}">View Tips</a>
             </div>
             </li>
             {% endif %}
