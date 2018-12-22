@@ -93,7 +93,6 @@ $(function() {
                 a json array of CSS classes with boolean flag on whether to apply or not
                 */
                 var self = this;
-                console.log(self.expanded_bodycams.indexOf(id) < 0)
                 return {
                     "content": true, // this is always applied
                     "bodycam-description": true, // this is always applied
