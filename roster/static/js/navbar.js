@@ -6,7 +6,7 @@ $(function() {
         useCurrent: false,
     });
     $('#bodycam_new_date').on("change.datetimepicker", function (e) {
-        nav_app.bodycam.date = $('#bodycam_new_date').datetimepicker('viewDate');
+        nav_app.bodycam.date = $('#bodycam_new_date').datetimepicker('date').format("Y-M-DT");
     });
     $("#select_shooting_for_bodycam").select2({
         theme: "bootstrap",
@@ -51,7 +51,7 @@ $(function() {
         useCurrent: false,
     });
     $('#new_date').on("change.datetimepicker", function (e) {
-        nav_app.shooting.date = $('#new_date').datetimepicker('viewDate');
+        nav_app.shooting.date = $('#new_date').datetimepicker('date').format("Y-M-DT");
     });
     $("#new_state_select").select2({
         theme: "bootstrap",
