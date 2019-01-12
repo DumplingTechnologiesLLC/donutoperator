@@ -277,10 +277,7 @@ var nav_app = new Vue({
             data = {
                 csrfmiddlewaretoken: CSRFMIDDLEWARETOKEN,
                 bodycam: JSON.stringify(self.bodycam)
-            }
-            date = self.bodycam.date.format("YYYY-MM-DD")
-            data.bodycam.date = date;
-            
+            }            
             if (self.creating) {
                 // we are creating a new bodycam, so we post to bodycam creation
                 // then we either refresh or prompt the user to create a shooting
