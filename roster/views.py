@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views import View
+from django.contrib import messages
 from roster.models import Shooting, Tag, Source, Tip
 from roster.forms import ShootingModelForm
 import datetime
@@ -285,7 +286,10 @@ class RosterListView(View):
         a render of index.html, a list of killings for the year selected
         the number of killing, the year, and the departments
         '''
-        display_date = datetime.datetime(int(date), 1, 1, 0, 0)
+        try:
+            display_date = datetime.datetime(int(date), 1, 1, 0, 0)
+        except ValueError as e:
+            messages.info(request, "We have no data for that year")
         # shootings = Shooting.objects.filter(
         #     date__year=display_date.year).order_by('-date').prefetch_related(
         #     "tags", "sources")
