@@ -1,6 +1,7 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views import View
 from django.contrib import messages
@@ -290,6 +291,7 @@ class RosterListView(View):
             display_date = datetime.datetime(int(date), 1, 1, 0, 0)
         except ValueError as e:
             messages.info(request, "We have no data for that year")
+            return HttpResponseRedirect(reverse("roster:index"))
         # shootings = Shooting.objects.filter(
         #     date__year=display_date.year).order_by('-date').prefetch_related(
         #     "tags", "sources")
