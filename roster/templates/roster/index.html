@@ -40,7 +40,7 @@
                            
                             <div class="col-lg-4">
                                 <label for="race_select">Filter by race</label>
-                                <select id="race_select" class="form-control" style="width:100%" multiple="multiple">
+                                <select id="race_select" autocomplete="askleiruyfklasjeyflaskje" class="form-control" style="width:100%" multiple="multiple">
                                     <option></option>
                                     <option v-for="race in races" v-bind:value="race.value">((race.display))</option>
                                 </select>
@@ -156,12 +156,12 @@
                             <th>
                                 Details 
                             </th>
+                            <th>
+                                Has Bodycam
+                            </th>
                             {% if user.is_authenticated %}
                             <th>
                                 Admin Actions
-                            </th>
-                            <th>
-                                Has Bodycam
                             </th>
                             {% endif %}
                         </tr>
@@ -184,7 +184,7 @@
                                 ((shooting.gender))
                             </td>
                             <td>
-                                ((shooting.state))
+                                ((shooting.state))  
                             </td>
                             <td>
                                 ((shooting.city))
@@ -194,13 +194,13 @@
                             <td>
                                 <button v-on:click="openDetails(shooting.id)" type="button" class="btn btn-sm btn-primary">Details</button>
                             </td>
+                            <td>
+                                <i v-if="shooting.bodycam_video != 'None'" class="fa fa-check" aria-hidden="true"></i>
+                            </td>
                             {% if user.is_authenticated %}
                             <td>
                                 <button v-on:click="editShooting(shooting.id)" type="button" class="btn btn-sm btn-primary">Edit</button>
                                 <button v-on:click="deleteShooting(shooting.id)" type="button" class="btn btn-sm btn-danger"><i style="font-size:16px" class="fa fa-trash fa-2" aria-hidden="true"></i></button>
-                            </td>
-                            <td>
-                                <i v-if="shooting.bodycam_video != 'None'" class="fa fa-check" aria-hidden="true"></i>
                             </td>
                             {% endif %}
                         </tr>

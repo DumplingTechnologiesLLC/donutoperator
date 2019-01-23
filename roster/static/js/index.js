@@ -41,6 +41,11 @@ $(function() {
     $('#end_date').on("change.datetimepicker", function (e) {
         vue_app.end_date = $('#end_date').datetimepicker('viewDate');
     });
+    setTimeout(function() {
+        // since modern browsers ignore autcomplete=off (thanks...) we need to set it to
+        // something they don't recognize to make it work properly
+        $(".select2-search__field").attr("autocomplete", "aklsjehrfklasjhclkajsehf");
+    }, 500)
 })
 var vue_app = new Vue({
     el: '#app',
