@@ -4,9 +4,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views import View
+from django.views.generic.edit import FormView
 from django.contrib import messages
 from roster.models import Shooting, Tag, Source, Tip
-from roster.forms import ShootingModelForm
+from roster.forms import ShootingModelForm, TipModelForm
 import datetime
 import logging
 import json
@@ -234,10 +235,15 @@ class SubmitShootingView(LoginRequiredMixin, View):
         return HttpResponse(create_html_errors(form), status=400)
 
 
-class TipPage(View):
-    def get(self, request):
-        return render(request, "config/tip.html", {
-        })
+class TipPage(FormView):
+    template_name = "config/tip.html"
+    form_class = TipModelForm
+    success_url = "/"
+
+    def form_valid(self, form):
+        messages.success(self.request, "Thank you for the input, we will look into it.")
+        form.save()
+        return super().form_valid(form)
 
 
 class TipList(LoginRequiredMixin, ListView):
@@ -249,13 +255,6 @@ class TipList(LoginRequiredMixin, ListView):
         for id in ids:
             id = int(id)
             Tip.objects.get(pk=id).delete()
-        return HttpResponse(status=200)
-
-
-class CreateTip(View):
-    def post(self, request):
-        text = request.POST.get("text")
-        Tip.objects.create(text=text)
         return HttpResponse(status=200)
 
 
