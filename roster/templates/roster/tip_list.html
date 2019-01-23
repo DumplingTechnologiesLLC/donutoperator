@@ -65,13 +65,13 @@
     }
     var array = [];
     $(document).ready( function () {
-        // $(".tiptext").each(function() {
-        //     var innerHTML = $(this).html().trim();
-        //     innerHTML = innerHTML.substring(1, innerHTML.length - 1).replaceAll("\\n", "<br>")
-        //     innerHTML = innerHTML.replaceAll("\\\"", "\"")
-        //     $(this).html(innerHTML);
-        //     console.log(innerHTML);
-        // })
+        $(".tiptext").each(function() {
+            var innerHTML = $(this).html().trim();
+            innerHTML = innerHTML.substring(1, innerHTML.length - 1).replaceAll("\\n", "<br>")
+            innerHTML = innerHTML.replaceAll("\\\"", "\"")
+            $(this).html(innerHTML);
+            console.log(innerHTML);
+        })
         $('#table').DataTable({
             buttons: [
                 {
