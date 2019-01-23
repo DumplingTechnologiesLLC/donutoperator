@@ -224,7 +224,11 @@ class BodycamDashboard(LoginRequiredMixin, View):
         Returns:
         a render of the bodycams, the number of bodycams, the year, and the departments
         """
-        display_date = datetime.datetime(int(date), 1, 1, 0, 0)
+        display_date = None
+        try:
+            display_date = datetime.datetime(int(date), 1, 1, 0, 0)
+        except ValueError:
+            return HttpResponseRedirect(reverse("bodycams:dashboard"))
         return render(request, "bodycam/bodycam_dashboard.html", {
             "year": display_date.year,
         })
@@ -283,8 +287,12 @@ class BodycamIndexView(View):
         Returns:
         a render of the bodycams, the number of bodycams, the year, and the departments
         '''
-        display_date = datetime.datetime(int(date), 1, 1, 0, 0)
+        display_date = None
+        try:
+            display_date = datetime.datetime(int(date), 1, 1, 0, 0)
+        except ValueError:
+            messages.warning(request, "No data exists for that year.")
+            return HttpResponseRedirect(reverse("bodycams:bodycams"))
         return render(request, "bodycam/bodycam_index.html", {
-
             "year": display_date.year,
         })
