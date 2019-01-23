@@ -251,7 +251,6 @@ class TipList(LoginRequiredMixin, ListView):
 
     def post(self, request):
         ids = request.POST.getlist("tips[]")
-        print(ids)
         for id in ids:
             id = int(id)
             Tip.objects.get(pk=id).delete()
