@@ -354,10 +354,30 @@ var vue_app = new Vue({
                             }
                             return 0
                         }
+                        else if (self.order_attribute == "age") {
+                            if (a[self.order_attribute] == "No Age" && b[self.order_attribute] != "No Age") {
+                                return -1;
+                            }
+                            else if (b[self.order_attribute] == "No Age" && a[self.order_attribute != "No Age"]) {
+                                return 1;
+                            }
+                             else if (a[self.order_attribute] < b[self.order_attribute]){
+                                return  -1;
+                            }
+                            else if (b[self.order_attribute] > a[self.order_attribute]) {
+                                return 1;
+                            }
+                            return 0;
+                        }
                         else {
                             return a[self.order_attribute].localeCompare(b[self.order_attribute])
                         }
-                    })
+                    });
+                    if (self.order_attribute == "age") {
+                        // not sure why, but age sorting doesn't work ascending, only descending.
+                        // so this is my workaround solution
+                        displayed_shootings = displayed_shootings.reverse()
+                    }
                 }
                 else {
                     displayed_shootings.sort(function(a , b) {
@@ -369,6 +389,21 @@ var vue_app = new Vue({
                                 return 1;
                             }
                             return 0
+                        }
+                        else if (self.order_attribute == "age") {
+                            if (a[self.order_attribute] == "No Age" && b[self.order_attribute] != "No Age") {
+                                return -1;
+                            }
+                            else if (b[self.order_attribute] == "No Age" && a[self.order_attribute != "No Age"]) {
+                                return 1;
+                            }
+                             else if (a[self.order_attribute] < b[self.order_attribute]){
+                                return  -1;
+                            }
+                            else if (b[self.order_attribute] > a[self.order_attribute]) {
+                                return 1;
+                            }
+                            return 0;
                         }
                         else {
                             return b[self.order_attribute].localeCompare(a[self.order_attribute])
