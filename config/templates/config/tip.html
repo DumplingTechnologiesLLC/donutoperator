@@ -9,17 +9,29 @@
                 <div class="card border-primary " style="margin-bottom:20px;">
 	                <div class="card-header">Submit a Tip</div>
 	                <div class="card-body">
-						<form action="" class="formName">
-					    	<div class="form-group row">
-					    		<div class="col-lg-12">
-								    <label>Did we miss a shooting? Provide a tip here!</label>
-								    <textarea id="tip" style="resize: both;" class="tag form-control" placeholder="Tell us about the shooting. Please provide sources if possible." required></textarea>
-							    </div>
-					    	</div>
-					    	<div class="form-group row">
-					    		
-					    	</div>
-							    <button onclick="submitTip()" type="button" class="btn btn-success">Submit Tip</button>
+						<form action="" method="post" class="formName">
+							{% csrf_token %}
+					    	{% for hidden in form.hidden_fields %}
+							  {{ hidden }}
+							{% endfor %}
+
+							{% for field in form.visible_fields %}
+							 	{% if forloop.first %}
+								<div class='form-group'>
+									<label for="">Tell us about the shooting. Provide sources if you can</label>
+									{% render_field form.text  style="resize: both;" class+="form-control" %}
+								</div>
+							 	{% else %}
+							  	<div class="form-group">
+								    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+								    {{ field|add_class:'form-control' }}
+								    {% for error in field.errors %}
+								      <span class="help-block" style="color:red">{{ error }}</span>
+								    {% endfor %}
+							  	</div>
+							 	{% endif %}
+							{% endfor %}
+							<button type="submit" class="btn btn-success">Submit Tip</button>
 					    </form>
 	                </div>
                 </div>
@@ -28,41 +40,6 @@
 
 {% block js %}
 <script type="text/javascript">
-	function submitTip() {
-		var tipText = $('#tip').val();
-		data = {
-	        csrfmiddlewaretoken: "{{csrf_token}}",
-	        text: JSON.stringify(tipText)
-	    }
-	    $.post("{% url 'roster:submit-tip' %}", data).done(function() {
-	        $.alert({
-	            title:"Success",
-	            content: "Thanks for letting us know, we'll get right to it.",
-	            type: "green",
-	            typeAnimated: true,
-	            autoClose: 'close|4000',
-	            buttons: {
-	                close: function() {
-	                	window.location = "{% url 'roster:index' %}"
-	                }
-	            }
-	        })
-	    }).fail(function() {
-	        $.alert({
-	            title: "Hmm, something went wrong.",
-	            content: "We've dispatched some folks to take care of this issue. Please try again later.",
-	            type: "red",
-	            typeAnimated: true,
-	            autoClose: 'close|4000',
-	            buttons: {
-	                close: function() {
-
-	                }
-	            }
-	        })
-	    })
-
-	}
 	$("#loader_cover").addClass("toggled");
 	$("#body").removeAttr("style")
 </script>

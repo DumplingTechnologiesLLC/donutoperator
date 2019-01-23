@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'blog',
     'bodycams',
     # 'storages',
+    "captcha",
     'corsheaders',
 ]
 if LOCAL:

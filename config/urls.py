@@ -17,8 +17,6 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from filebrowser.sites import site as filebrowser_site
-from django.conf import settings
-from django.conf.urls.static import static
 from config.views import *
 
 urlpatterns = [
@@ -30,6 +28,7 @@ urlpatterns = [
         {'next_page': '/'}, name='logout'),
     url(r'^tinymce/', include('tinymce.urls')),
     url("^grappelli/", include("grappelli.urls")),
+    url(r'^captcha/', include('captcha.urls')),
     url(r'', include('roster.urls')),
     url(r'', include('blog.urls')),
     url(r'', include('bodycams.urls')),
