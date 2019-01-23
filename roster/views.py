@@ -261,7 +261,10 @@ class CreateTip(View):
 
 class RosterListData(View):
     def get(self, request):
-        date = int(request.GET.get("year", datetime.datetime.now().year))
+        try:
+            date = int(request.GET.get("year", datetime.datetime.now().year))
+        except ValueError as e:
+            return HttpResponse("Invalid date", status=400,)
         shootings = Shooting.objects.filter(
             date__year=date).order_by('-date').prefetch_related(
             "tags", "sources", "bodycams")
@@ -287,16 +290,12 @@ class RosterListView(View):
         a render of index.html, a list of killings for the year selected
         the number of killing, the year, and the departments
         '''
+        display_date = None
         try:
             display_date = datetime.datetime(int(date), 1, 1, 0, 0)
         except ValueError as e:
-            messages.info(request, "We have no data for that year")
+            messages.warning(request, "No data exists for that year.")
             return HttpResponseRedirect(reverse("roster:index"))
-        # shootings = Shooting.objects.filter(
-        #     date__year=display_date.year).order_by('-date').prefetch_related(
-        #     "tags", "sources")
         return render(request, "roster/index.html", {
-            # "shootings": [obj.as_dict() for obj in shootings],
-            # "total": shootings.count(),
             "year": display_date.year,
         })

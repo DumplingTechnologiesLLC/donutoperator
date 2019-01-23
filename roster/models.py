@@ -141,7 +141,7 @@ class Shooting(models.Model):
         sources = [obj.as_dict()["text"] for obj in sources]
         date = ""
         bodycam_video = "None"
-        if self.has_bodycam:
+        if self.has_bodycam and type(self.bodycam()) is not bool:
             bodycam_video = self.bodycam().video
         if isinstance(self.date, str):
             date = self.date
