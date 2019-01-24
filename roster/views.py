@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from roster.models import Shooting, Tag, Source, Tip
-from roster.forms import ShootingModelForm, TipModelForm
+from roster.forms import ShootingModelForm, TipModelForm, FeedbackModelForm
 import datetime
 import logging
 import json
@@ -238,6 +238,17 @@ class SubmitShootingView(LoginRequiredMixin, View):
 class TipPage(FormView):
     template_name = "config/tip.html"
     form_class = TipModelForm
+    success_url = "/"
+
+    def form_valid(self, form):
+        messages.success(self.request, "Thank you for the input, we will look into it.")
+        form.save()
+        return super().form_valid(form)
+
+
+class FeedbackPage(FormView):
+    template_name = "config/feedback.html"
+    form_class = FeedbackModelForm
     success_url = "/"
 
     def form_valid(self, form):

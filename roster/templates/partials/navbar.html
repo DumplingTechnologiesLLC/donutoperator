@@ -19,6 +19,9 @@
             </li>
         </ul>
         <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'roster:feedback-page' %}">Submit Website Feedback / Bug Report</a>
+            </li>
             {% if user.is_superuser %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'roster:tip-list' %}">{{number_of_tips}} New Tips</a>
