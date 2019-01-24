@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^admin/filebrowser/', include(filebrowser_site.urls)),
     url(r'^about/$', AboutPage.as_view(), name="about-page"),
+    url(r'^changelog/$', ChangeLog.as_view(), name="changelog"),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout,
         {'next_page': '/'}, name='logout'),
