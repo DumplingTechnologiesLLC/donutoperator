@@ -9,6 +9,7 @@ urlpatterns = [
     	name="ajax-shootings"
     ),
     url(r'^tip$', views.TipPage.as_view(), name="tip-page"),
+    url(r'^feedback$', views.FeedbackPage.as_view(), name="feedback-page"),
     url(r'^tips$', views.TipList.as_view(), name="tip-list"),
     url(r'^ajax/submit-killing$',
         views.SubmitShootingView.as_view(), name="submit-killing"),

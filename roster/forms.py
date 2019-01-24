@@ -1,5 +1,5 @@
 from django import forms
-from roster.models import Shooting, Tip
+from roster.models import Shooting, Tip, Feedback
 from captcha.fields import CaptchaField
 
 
@@ -9,6 +9,14 @@ def convert_format(url):
     post_format = ('" frameborder="0" allow="autoplay; encrypted-'
                    'media" allowfullscreen></iframe>')
     return pre_format + url + post_format
+
+
+class FeedbackModelForm(forms.ModelForm):
+    captcha = CaptchaField()
+
+    class Meta:
+        model = Feedback
+        fields = "__all__"
 
 
 class TipModelForm(forms.ModelForm):
