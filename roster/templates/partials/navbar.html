@@ -19,9 +19,16 @@
             </li>
         </ul>
         <ul class="navbar-nav navbar-right">
+            {% if not user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'roster:feedback-page' %}">Submit Website Feedback / Bug Report</a>
             </li>
+            {% endif %}
+            {% if user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">{{number_of_feedbacks}} Feedback</a>
+            </li>
+            {% endif %}
             {% if user.is_superuser %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'roster:tip-list' %}">{{number_of_tips}} New Tips</a>
