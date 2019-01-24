@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %}Donut - KBP{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content: start; align-items: start; flex-direction:column; margin-top:25px">
+	<h1>Change Log</h1>
+	<div>
+		<h2>1.1.0 - 23 JAN 2019</h2>
+		<ul>
+			<li>Fixed bug where users were reporting bodycam video continues to play after modal closes</li>
+			<li>Fixed bug where users were reporting browser autofill menu was covering Select2 dropdowns</li>
+			<li>Fixed bug that was causing Vue app to crash when sorting by age</li>
+			<li style="font-weight: bold">Added feedback form so users don't need to use tips form to submit feedback on website</li>
+		</ul>
+	</div>
+	<div>
+		<h2>1.0.1 - 22 JAN 2019</h2>
+		<ul>
+			<li>Added captcha to tips and feedback forms (to the smart-alleck who spammed it, well played, no hard feelings)</li>
+		</ul>
+	</div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+	$("#loader_cover").addClass("toggled");
+	$("#body").removeAttr("style")
+</script>
+{% endblock js %}
