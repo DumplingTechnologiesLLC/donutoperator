@@ -1,4 +1,18 @@
+var stopVideo = function ( element ) {
+    var iframe = element.querySelector( 'iframe');
+    var video = element.querySelector( 'video' );
+    if ( iframe ) {
+        var iframeSrc = iframe.src;
+        iframe.src = iframeSrc;
+    }
+    if ( video ) {
+        video.pause();
+    }
+};
 $(function() {
+    $('#shooting_details').on('hidden.bs.modal', function () {
+        stopVideo(document.getElementById("bodycam_video"))
+    })
     $("#state_select").select2({
         theme: "bootstrap",
         placeholder: "Select state or states"
