@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url("^grappelli/", include("grappelli.urls")),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'^e1da49db34b0bdfdddaba2ad6552f848/$', Sitemap.as_view(), name="sitemap"),
     url(r'', include('roster.urls')),
     url(r'', include('blog.urls')),
     url(r'', include('bodycams.urls')),
