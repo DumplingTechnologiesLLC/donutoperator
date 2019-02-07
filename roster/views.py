@@ -8,6 +8,8 @@ from django.views.generic.edit import FormView
 from django.contrib import messages
 from roster.models import Shooting, Tag, Source, Tip
 from roster.forms import ShootingModelForm, TipModelForm, FeedbackModelForm
+from roster.serializers import ShootingSerializer
+from rest_framework.generics import ListAPIView
 import datetime
 import logging
 import json
@@ -72,6 +74,151 @@ def submit_form(form, data):
     shooting.save()
     connect_sources_and_tags(shooting, data)
     return shooting
+
+
+class ShootingsAPI(ListAPIView):
+    serializer_class = ShootingSerializer
+    model = Shooting
+
+    def validate(date_text):
+        try:
+            datetime.datetime.strptime(date_text, '%Y-%m-%d')
+            return True
+        except ValueError:
+            return False
+
+    def get_queryset(self):
+        print("test")
+        race_lookup_table = {
+            "NA": 0,
+            "A": 1,
+            "B": 2,
+            "PI": 3,
+            "W": 4,
+            "L": 5,
+            "None": 6,
+            "O": 7,
+        }
+        gender_lookup_table = {
+            "M": 0,
+            "F": 1,
+            "U": 2
+        }
+        state_lookup_table = {
+            "AL": 0,
+            "AK": 1,
+            "AZ": 2,
+            "AR": 3,
+            "CA": 4,
+            "CO": 5,
+            "CT": 6,
+            "DE": 7,
+            "FL": 8,
+            "GA": 9,
+            "HI": 10,
+            "ID": 11,
+            "IL": 12,
+            "IN": 13,
+            "IA": 14,
+            "KS": 15,
+            "KY": 16,
+            "LA": 17,
+            "ME": 18,
+            "MD": 19,
+            "MA": 20,
+            "MI": 21,
+            "MN": 22,
+            "MS": 23,
+            "MO": 24,
+            "MT": 25,
+            "NE": 26,
+            "NV": 27,
+            "NH": 28,
+            "NJ": 29,
+            "NM": 30,
+            "NY": 31,
+            "NC": 32,
+            "ND": 33,
+            "OH": 34,
+            "OK": 35,
+            "OR": 36,
+            "PA": 37,
+            "RI": 38,
+            "SC": 39,
+            "SD": 40,
+            "TN": 41,
+            "TX": 42,
+            "UT": 43,
+            "VT": 44,
+            "VA": 45,
+            "WA": 46,
+            "WV": 47,
+            "WI": 48,
+            "WY": 49,
+            "DC": 50,
+            "PR": 51,
+            "GU": 52,
+        }
+        name = self.request.GET.get("name", None)
+        dateBefore = self.request.GET.get("dateBefore", None)
+        dateAfter = self.request.GET.get("dateAfter", None)
+        date = self.request.GET.get("date", None)
+        tags = self.request.GET.get("tags", None)
+        race = self.request.GET.get("race", None)
+        gender = self.request.GET.get("gender", None)
+        state = self.request.GET.get("state", None)
+        youngerThan = self.request.GET.get("youngerThan", None)
+        olderThan = self.request.GET.get("olderThan", None)
+        age = self.request.GET.get("age", None)
+        text = self.request.GET.get("text", None)
+        city = self.request.GET.get("city", None)
+        year = self.request.GET.get("year", None)
+        queryset = None
+        if year is not None:
+            queryset = Shooting.objects.filter(date__year=year).prefetch_related(
+                "tags", "sources", "bodycams")
+        else:
+            queryset = Shooting.objects.filter(
+                date__year=datetime.datetime.now().year).prefetch_related(
+                "tags", "sources", "bodycams")
+        if tags is not None:
+            if "," in tags:
+                tags = tags.split(",")
+                tags = Tag.objects.filter(text__in=tags)
+                queryset = Shooting.objects.none()
+                for t in tags:
+                    queryset = queryset.union(queryset, t.shootings.all())
+                queryset = queryset.prefetch_related("tags", "sources", "bodycams")
+            else:
+                tags = Tag.objects.filter(text=tags)
+                queryset = tags.shootings.all().prefetch_related(
+                    "tags", "sources", "bodycams")
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name)
+        if dateBefore is not None and self.validate(dateBefore):
+            queryset = queryset.filter(date__lte=dateBefore)
+        if dateAfter is not None and self.validate(dateAfter):
+            queryset = queryset.filter(date__gte=dateAfter)
+        if date is not None and self.validate(date):
+            queryset = queryset.filter(date=date)
+        if race is not None and race_lookup_table.get(race) is not None:
+            queryset = queryset.filter(race=race_lookup_table.get(race))
+        if gender is not None and gender_lookup_table.get(gender) is not None:
+            queryset = queryset.filter(gender=gender_lookup_table.get(gender))
+        if state is not None and state_lookup_table.get(state) is not None:
+            queryset = queryset.filter(state=state_lookup_table.get(state))
+        if youngerThan is not None and isinstance(youngerThan, int):
+            queryset = queryset.filter(age__lte=youngerThan)
+        if olderThan is not None and isinstance(olderThan, int):
+            queryset = queryset.filter(age__gte=olderThan)
+        if age is not None and isinstance(age, int):
+            queryset = queryset.filter(age=age)
+        if text is not None:
+            queryset = queryset.filter(description__icontains=text)
+        if city is not None:
+            queryset = queryset.filter(city__icontains=city)
+        print("still alive")
+        return queryset
 
 
 class AjaxSelect2Shootings(LoginRequiredMixin, View):

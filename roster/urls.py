@@ -1,8 +1,11 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from roster import views
 app_name = "roster"
 
 urlpatterns = [
+    url("api/", include([
+        url("shootings", views.ShootingsAPI.as_view(), name="api-shootings")
+    ])),
     url(
     	r'^ajax/ajax-shootings$',
     	views.AjaxSelect2Shootings.as_view(),
