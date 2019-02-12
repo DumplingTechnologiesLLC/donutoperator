@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from bodycams.views import *
 from filebrowser.sites import site
 site.directory = "uploads/"
@@ -6,6 +6,9 @@ site.directory = "uploads/"
 app_name = "bodycams"
 
 urlpatterns = [
+    url("api/", include([
+        url("bodycams", BodycamsAPI.as_view(), name="api-bodycams"),
+    ])),
     url(r'^bodycams$', BodycamIndexView.as_view(), name="bodycams"),
     url(r'^bodycams/dashboard$', BodycamDashboard.as_view(), name="dashboard"),
     url(r'^bodycams/dashboard/(?P<date>[0-9]+)$',

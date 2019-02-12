@@ -4,7 +4,8 @@ app_name = "roster"
 
 urlpatterns = [
     url("api/", include([
-        url("shootings", views.ShootingsAPI.as_view(), name="api-shootings")
+        url("killings", views.ShootingsAPI.as_view(), name="api-shootings"),
+        url("tags", views.TagsAPI.as_view(), name="api-tags"),
     ])),
     url(
     	r'^ajax/ajax-shootings$',
