@@ -32,7 +32,7 @@ class ShootingSerializer(serializers.ModelSerializer):
 
 	def get_bodycam(self, obj):
 		if obj.has_bodycam:
-			return BodycamSerializer(obj.bodycams.all().first())
+			return BodycamSerializer(obj.bodycams.all().first()).data
 		else:
 			return None
 
@@ -57,5 +57,5 @@ class ShootingSerializer(serializers.ModelSerializer):
 		fields = (
 			"state", "city", "description", "name",
 			"race", "gender", "date", "age", "tags",
-			"bodycam", "sources",
+			"bodycam", "sources", "id",
 		)
