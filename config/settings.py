@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     # 'storages',
     "captcha",
     'corsheaders',
+    "rest_framework",
 ]
 if LOCAL:
     INSTALLED_APPS += ['django_extensions']

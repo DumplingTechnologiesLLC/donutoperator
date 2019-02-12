@@ -17,10 +17,13 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from filebrowser.sites import site as filebrowser_site
+from rest_framework.documentation import include_docs_urls
 from config.views import *
 
 urlpatterns = [
+    url(r'^api/documentation', APIList.as_view(), name="api-documentation"),
     url(r'^admin/', admin.site.urls),
+    url(r'^docs/', include_docs_urls(title='PKBP API')),
     url(r'^admin/filebrowser/', include(filebrowser_site.urls)),
     url(r'^about/$', AboutPage.as_view(), name="about-page"),
     url(r'^changelog/$', ChangeLog.as_view(), name="changelog"),
