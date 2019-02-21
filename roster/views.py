@@ -426,6 +426,10 @@ class ShootingsAPI(ListAPIView):
 
 class Graphs(View):
     def get(self, request, year=datetime.datetime.now().year):
+        if year < 2013:
+            year = 2013
+        elif year > datetime.datetime.now().year:
+            year = datetime.datetime.now().year
         tag_data = []
         tags = Tag.objects.all()
         for tag in tags:
