@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.functions import TruncMonth
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.list import ListView
@@ -87,6 +88,7 @@ class TagsAPI(ListAPIView):
     name = "Tags API"
     queryset = Tag.objects.all()
 
+
 class ShootingsAPI(ListAPIView):
     """
     Description:
@@ -115,7 +117,7 @@ class ShootingsAPI(ListAPIView):
 
 
     Comma-Separable Arguments: (These arguments can be delineated with commas, or left as single units)
-    
+
     :String race: Filters out killings where the race of the victim does not match the provided race(s)
         options=[NA=Native American, A=Asian, B=Black, PI=Pacific Islander, W=White, L=Latino, None=None, O=Other], 
 
@@ -420,6 +422,208 @@ class ShootingsAPI(ListAPIView):
 
         return queryset.prefetch_related(
             "tags", "sources", "bodycams")
+
+
+class Graphs(View):
+    def get(self, request, year=datetime.datetime.now().year):
+        tag_data = []
+        tags = Tag.objects.all()
+        for tag in tags:
+            tag_data.append({
+                "label": tag.text,
+                "data": tag.shootings.filter(date__year=year).count()
+            })
+        shootings = Shooting.objects.filter(date__year=year)
+        race_data = []
+        races = shootings.values(
+            "race").annotate(sum=Count("race")).order_by("sum")
+        for race in races:
+            race_data.append({
+                "label": Shooting.RACE_CHOICES[race["race"]][1],
+                "data": race["sum"]
+            })
+        gender_data = []
+        genders = shootings.values(
+            "gender").annotate(sum=Count("gender")).order_by("sum")
+        for gender in genders:
+            gender_data.append({
+                "label": Shooting.GENDER_CHOICES[gender["gender"]][1],
+                "data": gender["sum"]
+            })
+        states_data = []
+        states = shootings.values(
+            "state").annotate(sum=Count("state")).order_by("sum")
+        for state in states:
+            states_data.append({
+                "label": Shooting.STATE_CHOICES[state["state"]][1],
+                "data": state["sum"]
+            })
+        month_data = []
+        months = [
+            {
+                "month": "January",
+                "sum": shootings.filter(date__month=0).count()
+
+            },
+            {
+                "month": "February",
+                "sum": shootings.filter(date__month=1).count()
+
+            },
+            {
+                "month": "March",
+                "sum": shootings.filter(date__month=2).count()
+
+            },
+            {
+                "month": "April",
+                "sum": shootings.filter(date__month=3).count()
+
+            },
+            {
+                "month": "May",
+                "sum": shootings.filter(date__month=4).count()
+
+            },
+            {
+                "month": "June",
+                "sum": shootings.filter(date__month=5).count()
+
+            },
+            {
+                "month": "July",
+                "sum": shootings.filter(date__month=6).count()
+
+            },
+            {
+                "month": "August",
+                "sum": shootings.filter(date__month=7).count()
+
+            },
+            {
+                "month": "September",
+                "sum": shootings.filter(date__month=8).count()
+
+            },
+            {
+                "month": "October",
+                "sum": shootings.filter(date__month=9).count()
+
+            },
+            {
+                "month": "November",
+                "sum": shootings.filter(date__month=10).count()
+
+            },
+            {
+                "month": "December",
+                "sum": shootings.filter(date__month=11).count()
+
+            },
+        ]
+        for month in months:
+            month_data.append({
+                "label": month["month"],
+                "data": month["sum"]
+            })
+        year_data = []
+        years = [
+            {
+                "year": "January",
+                "sum": shootings.filter(date__month__lte=0).count()
+            },
+            {
+                "year": "February",
+                "sum": shootings.filter(date__month__lte=1).count()
+            },
+            {
+                "year": "March",
+                "sum": shootings.filter(date__month__lte=2).count()
+            },
+            {
+                "year": "April",
+                "sum": shootings.filter(date__month__lte=3).count()
+            },
+            {
+                "year": "May",
+                "sum": shootings.filter(date__month__lte=4).count()
+            },
+            {
+                "year": "June",
+                "sum": shootings.filter(date__month__lte=5).count()
+            },
+            {
+                "year": "July",
+                "sum": shootings.filter(date__month__lte=6).count()
+            },
+            {
+                "year": "August",
+                "sum": shootings.filter(date__month__lte=7).count()
+            },
+            {
+                "year": "September",
+                "sum": shootings.filter(date__month__lte=8).count()
+            },
+            {
+                "year": "October",
+                "sum": shootings.filter(date__month__lte=9).count()
+            },
+            {
+                "year": "November",
+                "sum": shootings.filter(date__month__lte=10).count()
+            },
+            {
+                "year": "December",
+                "sum": shootings.filter(date__month__lte=11).count()
+            },
+        ]
+        for y in years:
+            year_data.append({
+                "label": y["year"],
+                "data": y["sum"]
+            })
+        oldest_age = shootings.latest("age").age
+        ages = []
+        for x in range(0, oldest_age):
+            ages.append({
+                "label": x,
+                "data": shootings.filter(age=x).count()
+            })
+        shootings_w_bodycam = shootings.filter(has_bodycam=True).count()
+        shootings_wo_bodycam = shootings.filter(has_bodycam=False).count()
+        bodycam_data = [
+            {
+                "label": "Bodycam Available",
+                "data": shootings_w_bodycam,
+            },
+            {
+                "label": "No Bodycam Available",
+                "data": shootings_wo_bodycam,
+            }
+        ]
+        tag_data = sorted(tag_data, key=lambda k: k['label'])
+        race_data = sorted(race_data, key=lambda k: k['label'])
+        ages = sorted(ages, key=lambda k: k['label'])
+        states_data = sorted(states_data, key=lambda k: k['label'])
+        gender_data = sorted(gender_data, key=lambda k: k['label'])
+        bodycam_data = sorted(bodycam_data, key=lambda k: k['label'])
+        return render(request, "config/charts.html", {
+            "year": year,
+            "years": range(2013, datetime.datetime.now().year + 1),
+            "tag_data": tag_data,
+            "tag_range": range(len(tag_data)),
+            "race_data": race_data,
+            "race_range": range(len(race_data)),
+            "month_data": month_data,
+            "year_data": year_data,
+            "age_data": ages,
+            "state_data": states_data,
+            "state_range": range(len(states_data)),
+            "gender_data": gender_data,
+            "gender_range": range(len(gender_data)),
+            "bodycam_data": bodycam_data,
+            "bodycam_range": range(len(bodycam_data)),
+        })
 
 
 class AjaxSelect2Shootings(LoginRequiredMixin, View):

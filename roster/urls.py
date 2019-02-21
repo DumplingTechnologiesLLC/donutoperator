@@ -12,6 +12,8 @@ urlpatterns = [
     	views.AjaxSelect2Shootings.as_view(),
     	name="ajax-shootings"
     ),
+    url(r'^graphs/(?P<year>[0-9]+)/$', views.Graphs.as_view(), name="graphs-year"),
+    url(r'^graphs$', views.Graphs.as_view(), name="graphs"),
     url(r'^tip$', views.TipPage.as_view(), name="tip-page"),
     url(r'^feedback$', views.FeedbackPage.as_view(), name="feedback-page"),
     url(r'^tips$', views.TipList.as_view(), name="tip-list"),
