@@ -1,0 +1,361 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %}Donut - KBP{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid" style="text-align: center">
+	<div style="display:flex; align-items: center; justify-content: center; margin-top:15px">
+		<h1>Graphs for </h1>
+		<select id="yearSelect" class="form-control yearselect">
+			{% for x in years %}
+			<option value="{{x}}" {% if x == year %} selected="selected" {% endif %}>{{x}}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<hr>
+	<div class="row" style="margin-bottom: 15px;">
+		<div class="col-lg-12">
+		<h2>Killings by State</h2>
+			<canvas id="shootingsByState"></canvas>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 15px">
+		<div class="col-lg-6">
+			<h2>Killings By Category</h2>
+			<canvas id="tagChart"></canvas>
+		</div>
+		<div class="col-lg-6">
+			<h2>Killings by Race</h2>
+			<canvas id="raceChart"></canvas>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 15px">
+		<div class="col-lg-6">
+			<h2>Number of Killings per Month</h2>
+			<canvas id="monthTimeline"></canvas>
+		</div>
+		<div class="col-lg-6">
+			<h2>Number of Killings Through {{year}}</h2>
+			<canvas id="yearTimeline"></canvas>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<h2>Age Distribution of Killings</h2>
+			<small class="text-muted">Unknown ages excluded</small>
+			<canvas id="shootingsByAge"></canvas>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-lg-6">
+			<h2>Killings by Gender</h2>
+			<canvas id="shootingsByGender"></canvas>
+		</div>
+		<div class="col-lg-6">
+			<h2>Bodycam Availability</h2>
+			<canvas id="bodycam"></canvas>
+		</div>
+	</div>
+	<!-- <div class="row">
+		<div class="col-lg-4">
+		</div>
+		<div class="col-lg-4">
+		</div>
+	</div> -->
+</div>
+
+
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+<script>
+	$(function() {
+		$("#yearSelect").val({{year}})
+		$("#yearSelect").change(function() {
+			var url = "{% url 'roster:graphs-year' year=0 %}";
+			url = url.replace("0", $(this).val())
+			window.location.href = url
+		})
+	})
+	$("#loader_cover").addClass("toggled");
+	$("#body").removeAttr("style")
+	colors = [
+		"#DCECC9",
+		"#B3DDCC",
+		"#8ACDCE",
+		"#62BED2",
+		"#46AACE",
+		"#3D91BE",
+		"#3577AE",
+		"#2D5E9E",
+		"#24448E",
+		"#1C2B7F",
+		"#162065",
+		"#11174B"
+	]
+	warmColors = [
+		"#FDED86",
+		"#FDE86E",
+		"#F9D063",
+		"#F5B857",
+		"#F0A04B",
+		"#EB8A40",
+		"#E77235",
+		"#E35B2C",
+		"#C74E29",
+		"#9D4429",
+		"#753C2C",
+		"#4C3430",
+	]
+	alternateColors = [
+		"#F9CDAC",
+		"#F3ACA2",
+		"#EE8B97",
+		"#E96A8D",
+		"#DB5087",
+		"#B8428C",
+		"#973490",
+		"#742696",
+		"#5E1F88",
+		"#4D1970",
+		"#3D1459",
+		"#2B0C3F",
+	]
+	grayScale = [
+		"#E1F5FE",
+		"#B3E5FC",
+		"#81D4FA",
+		"#4FC3F7",
+		"#29B6F6",
+		"#03A9F4",
+		"#o39BE5",
+		"#0288D1",
+		"#0277BD",
+		"#01579B",
+	]
+	arbitraryColors = [
+		"#B51A62",
+		"#DE703C",
+		"#EFDDB2",
+		"#F8AA27",
+		"#BA69DE",
+		"#F3E96D",
+	]
+	fullColorRange = colors.concat(warmColors).concat(alternateColors).concat(grayScale).concat(arbitraryColors)
+	var tagChart = document.getElementById("tagChart").getContext('2d');
+	var raceChart = document.getElementById("raceChart").getContext('2d');
+	var monthTimeline = document.getElementById("monthTimeline").getContext('2d');
+	var yearTimeline = document.getElementById("yearTimeline").getContext('2d');
+	var shootingsByAge = document.getElementById("shootingsByAge").getContext('2d');
+	var shootingsByState = document.getElementById("shootingsByState").getContext('2d');
+	var shootingsByGender = document.getElementById("shootingsByGender").getContext('2d');
+	var bodycam = document.getElementById("bodycam").getContext('2d');
+	var tagChartChart = new Chart(tagChart, {
+	    type: 'doughnut',
+	    data: {
+	    	datasets: [
+	    		{
+	    			data: [
+	    				{% for data in tag_data %}
+	    					{{data.data}},
+	    				{% endfor %}
+	    			],
+	    			backgroundColor: [
+	    				{% for i in tag_range %}
+	    					colors[{{i}}],
+	    				{% endfor %}
+	    			]
+	    		}
+	    	],
+	    	labels: [
+	    		{% for data in tag_data %}
+					"{{data.label}}",
+				{% endfor %}
+	    	]
+	    },
+	});
+	var raceChartChart = new Chart(raceChart, {
+	    type: 'doughnut',
+	    data: {
+	    	datasets: [
+	    		{
+	    			data: [
+	    				{% for data in race_data %}
+	    					{{data.data}},
+	    				{% endfor %}
+	    			],
+	    			backgroundColor: [
+	    				{% for i in race_range %}
+	    					colors[{{i}}],
+	    				{% endfor %}
+	    			]
+	    		}
+	    	],
+	    	labels: [
+	    		{% for data in race_data %}
+					"{{data.label}}",
+				{% endfor %}
+	    	]
+	    },
+	});
+	var monthTimelineChart = new Chart(monthTimeline, {
+	    type: 'line',
+	    data: {
+	    	labels: [
+	    		{% for data in month_data %}
+					"{{data.label}}",
+				{% endfor %}
+	    	],
+	    	datasets:[
+	    		{
+	    			label: "Killings by Month",
+	    			data: [
+	    				{% for data in month_data %}
+	    					{{data.data}},
+	    				{% endfor %}
+	    			],
+	    			backgroundColor: warmColors[0],
+	    			borderColor: warmColors[6],
+	    		}
+	    	]
+	    },
+	    options: {
+	    	steppedLine: true,
+	    }
+	});
+	var yearTimelineChart = new Chart(yearTimeline, {
+	    type: 'line',
+	    data: {
+	    	labels: [
+	    		{% for data in year_data %}
+					"{{data.label}}",
+				{% endfor %}
+	    	],
+	    	datasets:[
+	    		{
+	    			label: "Killings over {{year}}",
+	    			data: [
+	    				{% for data in year_data %}
+	    					{{data.data}},
+	    				{% endfor %}
+	    			],
+	    			backgroundColor: warmColors[9],
+	    			borderColor: warmColors[0],
+	    		}
+	    	]
+	    },
+	    options: {
+	    	steppedLine: true,
+	    }
+	});
+	var shootingsByAgeChart = new Chart(shootingsByAge, {
+	    type: 'line',
+	    data: {
+	    	labels: [
+	    		{% for data in age_data %}
+					"{{data.label}}",
+				{% endfor %}
+	    	],
+	    	datasets:[
+	    		{
+	    			label: "Killings by Age",
+	    			data: [
+	    				{% for data in age_data %}
+	    					{{data.data}},
+	    				{% endfor %}
+	    			],
+	    			backgroundColor: warmColors[11],
+	    			borderColor: warmColors[3],
+	    		}
+	    	]
+	    },
+	    options: {
+	    	scales: {
+		    	xAxes: [{
+		    		ticks: {
+		    			autoSkip: true,
+		    			maxTicksLimit: 20
+		    		}
+		    	}],
+	    	}
+	    }
+	});
+	var shootingsByStateChart = new Chart(shootingsByState, {
+	    type: 'doughnut',
+	    data: {
+	    	datasets: [
+	    		{
+	    			data: [
+	    				{% for data in state_data %}
+	    					{{data.data}},
+	    				{% endfor %}
+	    			],
+	    			backgroundColor: [
+	    				{% for i in state_range %}
+	    					fullColorRange[{{i}}],
+	    				{% endfor %}
+	    			]
+	    		}
+	    	],
+	    	labels: [
+	    		{% for data in state_data %}
+					"{{data.label}}",
+				{% endfor %}
+	    	]
+	    },
+	});
+	var shootingsByGenderChart = new Chart(shootingsByGender, {
+	    type: 'doughnut',
+	    data: {
+	    	datasets: [
+	    		{
+	    			data: [
+	    				{% for data in gender_data %}
+	    					{{data.data}},
+	    				{% endfor %}
+	    			],
+	    			backgroundColor: [
+	    				{% for i in gender_range %}
+	    					fullColorRange[{{i}}],
+	    				{% endfor %}
+	    			]
+	    		}
+	    	],
+	    	labels: [
+	    		{% for data in gender_data %}
+					"{{data.label}}",
+				{% endfor %}
+	    	]
+	    },
+	});
+	var bodycamChart = new Chart(bodycam, {
+	    type: 'doughnut',
+	    data: {
+	    	datasets: [
+	    		{
+	    			data: [
+	    				{% for data in bodycam_data %}
+	    					{{data.data}},
+	    				{% endfor %}
+	    			],
+	    			backgroundColor: [
+	    				{% for i in bodycam_range %}
+	    					fullColorRange[{{i}}],
+	    				{% endfor %}
+	    			]
+	    		}
+	    	],
+	    	labels: [
+	    		{% for data in bodycam_data %}
+					"{{data.label}}",
+				{% endfor %}
+	    	]
+	    },
+	});
+</script>
+{% endblock js %}
