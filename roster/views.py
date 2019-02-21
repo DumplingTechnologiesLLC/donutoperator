@@ -426,10 +426,14 @@ class ShootingsAPI(ListAPIView):
 
 class Graphs(View):
     def get(self, request, year=datetime.datetime.now().year):
-        if year < 2013:
-            year = 2013
-        elif year > datetime.datetime.now().year:
-            year = datetime.datetime.now().year
+        if int(year) < 2013:
+            return HttpResponseRedirect(
+                reverse("roster:graphs-year", kwargs={"year": 2013}))
+        elif int(year) > datetime.datetime.now().year:
+            return HttpResponseRedirect(
+                reverse(
+                    "roster:graphs-year",
+                    kwargs={"year": datetime.datetime.now().year}))
         tag_data = []
         tags = Tag.objects.all()
         for tag in tags:
