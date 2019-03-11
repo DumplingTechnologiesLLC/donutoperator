@@ -693,7 +693,7 @@ class DeleteShootingView(LoginRequiredMixin, View):
         try:
             year = Shooting.objects.get(pk=data).date.year
             Shooting.objects.get(pk=data).delete()
-            cache.delete("{}-{}".format(QUERYSET_KEY, year))
+            cache.delete("{}{}".format(QUERYSET_KEY, year))
             return HttpResponse(status=200)
         except Shooting.DoesNotExist as e:
             error_data = json.dumps(request.POST).replace("\\\"", "'")
@@ -750,7 +750,7 @@ class EditShootingView(LoginRequiredMixin, View):
         form = ShootingModelForm(data, instance=shooting)
         if form.is_valid():
             shooting = submit_form(form, data)
-            cache.delete("{}-{}".format(QUERYSET_KEY, shooting.date.year))
+            cache.delete("{}{}".format(QUERYSET_KEY, shooting.date.year))
             return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
@@ -841,12 +841,12 @@ class RosterListData(View):
             date = int(request.GET.get("year", datetime.datetime.now().year))
         except ValueError as e:
             return HttpResponse("Invalid date", status=400,)
-        shootings = cache.get("{}-{}".format(QUERYSET_KEY, date))
+        shootings = cache.get("{}{}".format(QUERYSET_KEY, date))
         if not shootings:
             shootings = Shooting.objects.filter(
                 date__year=date).order_by('-date').prefetch_related(
                 "tags", "sources", "bodycams")
-            cache.set("{}-{}".format(QUERYSET_KEY, date), shootings)
+            cache.set("{}{}".format(QUERYSET_KEY, date), shootings)
         return JsonResponse(
             {
                 "shootings": [obj.as_dict() for obj in shootings],
