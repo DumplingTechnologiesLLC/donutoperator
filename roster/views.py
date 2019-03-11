@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import TruncMonth
+from django.core.cache import cache
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.list import ListView
@@ -15,6 +16,9 @@ from rest_framework.generics import ListAPIView
 import datetime
 import logging
 import json
+
+
+QUERYSET_KEY = "SHOOTINGS"
 
 
 def connect_sources_and_tags(shooting, data):
@@ -687,7 +691,9 @@ class DeleteShootingView(LoginRequiredMixin, View):
         """
         data = request.POST.get("id")
         try:
+            year = Shooting.objects.get(pk=data).date.year
             Shooting.objects.get(pk=data).delete()
+            cache.delete("{}-{}".format(QUERYSET_KEY, year))
             return HttpResponse(status=200)
         except Shooting.DoesNotExist as e:
             error_data = json.dumps(request.POST).replace("\\\"", "'")
@@ -744,6 +750,7 @@ class EditShootingView(LoginRequiredMixin, View):
         form = ShootingModelForm(data, instance=shooting)
         if form.is_valid():
             shooting = submit_form(form, data)
+            cache.delete("{}-{}".format(QUERYSET_KEY, shooting.date.year))
             return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
@@ -834,9 +841,12 @@ class RosterListData(View):
             date = int(request.GET.get("year", datetime.datetime.now().year))
         except ValueError as e:
             return HttpResponse("Invalid date", status=400,)
-        shootings = Shooting.objects.filter(
-            date__year=date).order_by('-date').prefetch_related(
-            "tags", "sources", "bodycams")
+        shootings = cache.get("{}-{}".format(QUERYSET_KEY, date))
+        if not shootings:
+            shootings = Shooting.objects.filter(
+                date__year=date).order_by('-date').prefetch_related(
+                "tags", "sources", "bodycams")
+            cache.set("{}-{}".format(QUERYSET_KEY, date), shootings)
         return JsonResponse(
             {
                 "shootings": [obj.as_dict() for obj in shootings],
