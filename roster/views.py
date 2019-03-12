@@ -837,11 +837,8 @@ class TipList(LoginRequiredMixin, ListView):
 
 
 class TestCaching(View):
-    def get(self, request):
-        try:
-            date = int(request.GET.get("year", datetime.datetime.now().year))
-        except ValueError as e:
-            return HttpResponse("Invalid date", status=400,)
+    def get(self, request, year=datetime.datetime.now().year):
+        date = year
         shootings1 = cache.get("{}{}1".format(QUERYSET_KEY, date))
         shootings2 = cache.get("{}{}2".format(QUERYSET_KEY, date))
         shootings3 = cache.get("{}{}3".format(QUERYSET_KEY, date))
