@@ -26,5 +26,4 @@ urlpatterns = [
     url(r'^ajax/shootings$', views.RosterListData.as_view(), name="shooting-data"),
     url(r'^(?P<date>[0-9]+)$', views.RosterListView.as_view(), name="date-index"),
     url(r'^$', views.RosterListView.as_view(), name="index"),
-    url(r'^test-caching/(?P<year>[0-9]+)/$', views.TestCaching.as_view(), name="cache-test")
 ]
