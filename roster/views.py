@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import TruncMonth
+from itertools import chain
 from django.core.cache import cache
 from django.shortcuts import render
 from django.urls import reverse
@@ -833,6 +834,41 @@ class TipList(LoginRequiredMixin, ListView):
             id = int(id)
             Tip.objects.get(pk=id).delete()
         return HttpResponse(status=200)
+
+
+class TestCaching(View):
+    def get(self, request):
+        try:
+            date = int(request.GET.get("year", datetime.datetime.now().year))
+        except ValueError as e:
+            return HttpResponse("Invalid date", status=400,)
+        shootings1 = cache.get("{}{}1".format(QUERYSET_KEY, date))
+        shootings2 = cache.get("{}{}2".format(QUERYSET_KEY, date))
+        shootings3 = cache.get("{}{}3".format(QUERYSET_KEY, date))
+        shootings4 = cache.get("{}{}4".format(QUERYSET_KEY, date))
+        if shootings1 is not None and shootings2 is not None and shootings3 is not None and shootings4 is not None:
+            shootings = list(chain(shootings1, shootings2, shootings3, shootings4))
+        else:
+            shootings = Shooting.objects.filter(
+                date__year=date).order_by('-date').prefetch_related(
+                "tags", "sources", "bodycams")
+            total = shootings.count()
+            if total % 4 == 0:
+                offset = total / 4
+            else:
+                offset = int(total / 4)
+            cache.get("{}{}1".format(QUERYSET_KEY, date), shootings[0:offset])
+            cache.get("{}{}2".format(QUERYSET_KEY, date), shootings[offset:(2 * offset)])
+            cache.get("{}{}3".format(QUERYSET_KEY, date), shootings[(offset * 2):(offset * 3)])
+            cache.get("{}{}4".format(QUERYSET_KEY, date), shootings[offset * 3:])
+            cache.set("{}{}".format(QUERYSET_KEY, date), shootings)
+        return JsonResponse(
+            {
+                "shootings": [obj.as_dict() for obj in shootings],
+                "total": shootings.count()
+            },
+            safe=False
+        )
 
 
 class RosterListData(View):
