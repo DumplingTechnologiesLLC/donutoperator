@@ -858,7 +858,7 @@ class TestCaching(View):
             cache.get("{}{}2".format(QUERYSET_KEY, date), shootings[offset:(2 * offset)])
             cache.get("{}{}3".format(QUERYSET_KEY, date), shootings[(offset * 2):(offset * 3)])
             cache.get("{}{}4".format(QUERYSET_KEY, date), shootings[offset * 3:])
-            cache.set("{}{}".format(QUERYSET_KEY, date), shootings)
+            # cache.set("{}{}".format(QUERYSET_KEY, date), shootings)
         return JsonResponse(
             {
                 "shootings": [obj.as_dict() for obj in shootings],
