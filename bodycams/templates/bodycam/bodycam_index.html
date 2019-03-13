@@ -103,25 +103,40 @@
 					  </div>
 					  <div class="card-body">
 					    <h5 class="card-title" style="text-align:center;">((bodycam.title))</h5>
-					    <p class="card-text">
-				    		<div class="container" >
-							    <button type="button" class='btn btn-info btn-block' v-if="bodycam.description.length > 266" v-on:click="toggleDescription(bodycam.id)">(( toggleText(bodycam.id) ))</button>
-							    <div v-if="bodycam.description.length > 266" v-bind:class="bodycamDescription(bodycam.id)" style="text-align:center;  white-space: pre-wrap;"> 
-((bodycam.description))
-							    </div>
-							    <div v-else style="text-align:center;  white-space: pre-wrap;">
-((bodycam.description))
-							    </div>
-							</div>
-					    </p>
+			    		<div v-html="generateThumbnail(bodycam.video)" @click="showVideo(bodycam.id)">							    
+						</div>
 					    <ul class="list-group list-group-flush">
 							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center">Department: ((bodycam.department))</li>
-							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center"><span style="padding: 5px; margin-right: 5px" v-for="tag in bodycam.tags" class="badge badge-primary">((tag.text))</span><span v-if="bodycam.tags.length == 0">No Tags Available</span></li>
-						  </ul>
+							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center">
+								<span style="padding: 5px; margin-right: 5px" v-for="tag in bodycam.tags" class="badge badge-primary">((tag.text))</span>
+								<span v-if="bodycam.tags.length == 0">No Tags Available</span>
+							</li>
+						</ul>
+						<div class="accordion" :id="'descriptionAccordion' + bodycam.id">
+                            <div class="card">
+                                <div class="card-header text-center" :id="'description' + bodycam.id">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" :data-target="'#descriptionList' + bodycam.id" aria-expanded="true" :aria-controls="'descriptionList' + bodycam.id">
+                                            Description
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div :id="'descriptionList' + bodycam.id"
+                                	class="collapse" 
+                                	:aria-labelledby="'description' + bodycam.id"
+                                	:data-parent="'#descriptionAccordion' + bodycam.id"
+                                	style="border-bottom: 1px solid lightgray;">
+                                    <div class="card-body">
+                                        <div style="text-align:left;  white-space: pre-wrap;"> 
+											(( bodycam.description ))
+										</div>
+							    	</div>
+                                </div>
+                            </div>
+                        </div>
 						  <br>
-						 <div style="display:flex; justify-content: space-between;">
+						 <div style="display:flex; justify-content: center;">
 						    <a href="#" v-if="bodycam.shooting.id > -1" v-on:click="openDetails(bodycam.id)" class="card-link">Killing Details</a>
-						    <a href="#"  v-on:click="showVideo(bodycam.id)" class="card-link">Watch Video</a>					 	
 						 </div>
 					  </div>
 					  <div class="card-footer text-muted" style="display:flex; justify-content: center; align-items:center">

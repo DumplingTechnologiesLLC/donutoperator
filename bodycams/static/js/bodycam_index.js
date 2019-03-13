@@ -81,6 +81,36 @@ $(function() {
 
         },
         methods: {
+            generateThumbnail: function(iframeCode) {
+                /* Generates a thumbnail based on HTML for an iframe
+
+                Arguments:
+                :param iframeCode: the iframe code necessary to generate the thumbnail
+
+                Returns:
+                the data url for the image
+                */
+                var $my_div = $('<div/>').html(iframeCode).contents()[0];  // $($.parseHTML(iframeCode));
+                var image = "";
+                var iframe_src = $($my_div).attr('src');
+                try {
+                    var youtube_video_id = iframe_src.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/).pop();
+                    if (youtube_video_id.length == 11) {
+                        return '<img style="cursor: pointer; width:100%; height:100%" src="//img.youtube.com/vi/'+youtube_video_id+'/0.jpg">';
+                    }
+                    else {
+                        return '<div style="background-color:gray; width:100%; height:183px" class="d-flex flex-row p-2 flex-column justify-content-center text-center flex-fill">' +
+                            '<div class="align-self-center p-2"><h5 style="color:white;">No Automatic Thumbnail Available</h5></div>' +
+                        '</div>'
+                        // return '<img style="cursor: pointer; width:100%; height:183px" src="//img.youtube.com/vi/0/0.jpg">';  
+                    }
+                } catch(error) {
+                    return '<div style="background-color:gray; width:100%; height:183px" class="d-flex flex-row p-2 flex-column justify-content-center text-center flex-fill">' +
+                            '<div class="align-self-center p-2"><h5 style="color:white;">No Automatic Thumbnail Available</h5></div>' +
+                        '</div>'
+                    // return '<img style="cursor: pointer; width:100%; height:100%" src="//img.youtube.com/vi/0/0.jpg">';  
+                }
+            },
             bodycamDescription: function(id) {
                 /*Returns a class object of CSS classes to be applied.
                 This is what actually toggles the expanded or collapsed text.
