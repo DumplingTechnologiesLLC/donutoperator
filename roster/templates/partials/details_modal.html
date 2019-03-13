@@ -19,6 +19,7 @@
                     <div class="col-lg-6 col-xs-12">
                         <div class="row">
                             <div class="col-lg-12">
+                                <h5>Killing Information</h5>
                                 <div class="accordion" id="sourceAccordion">
                                     <div class="card">
                                         <div class="card-header" id="sources">
@@ -41,11 +42,29 @@
                                 </div>
                             </div>
                             <div class="col-lg-12">
-                                <h5>Further Details</h5>
-                                <div style="height: 200px; overflow-y: scroll; white-space: pre-wrap" v-if="displayed_shooting.description !== undefined && displayed_shooting.description.length != 0">
-                                    ((displayed_shooting.description))                                
+                                <div class="accordion" id="detailsAccordion">
+                                    <div class="card">
+                                        <div class="card-header" id="description">
+                                            <h5 class="mb-0">
+                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#detailsList" aria-expanded="true" aria-controls="detailsList">
+                                                    Further Details
+                                                </button>
+                                            </h5>
+                                        </div>
+                                        <div id="detailsList" class="collapse" aria-labelledby="description" data-parent="#detailsAccordion" style="    border-bottom: 1px solid lightgray;">
+                                            <div class="card-body">
+                                                <ul>
+                                                    <li>
+                                                        <div style="height: 200px; overflow-y: scroll; white-space: pre-wrap" v-if="displayed_shooting.description !== undefined && displayed_shooting.description.length != 0">
+                                                            ((displayed_shooting.description))                                
+                                                        </div>
+                                                        <p style="height:200px; overflow-y:scroll" v-else>No further details at this time.</p>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p style="height:200px; overflow-y:scroll" v-else>No further details at this time.</p>
                             </div>
                         </div>
                     </div>

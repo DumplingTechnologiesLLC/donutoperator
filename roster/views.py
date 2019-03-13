@@ -844,11 +844,14 @@ class RosterListData(View):
             shootings = Shooting.objects.filter(
                 date__year=date).order_by('-date').prefetch_related(
                 "tags", "sources", "bodycams")
+            total = shootings.count()
             store_in_cache(shootings, date)
+        else:
+            total = len(shootings)
         return JsonResponse(
             {
                 "shootings": [obj.as_dict() for obj in shootings],
-                "total": shootings.count()
+                "total": total
             },
             safe=False
         )
