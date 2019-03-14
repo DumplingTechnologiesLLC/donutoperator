@@ -12,6 +12,10 @@ var stopVideo = function ( element ) {
     }
 };
 $(function() {
+    $('.timeline-container').mousewheel(function(e, delta) {
+        this.scrollLeft -= (delta * 40);
+        e.preventDefault();
+    });
     $(".timeline-container").scrollTo($("#timelineYear" + YEAR));
     $('#shooting_details').on('hidden.bs.modal', function () {
         stopVideo(document.getElementById("bodycam_video"))

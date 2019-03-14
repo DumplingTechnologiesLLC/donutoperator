@@ -1,4 +1,8 @@
 $(function() {
+    $('.timeline-container').mousewheel(function(e, delta) {
+        this.scrollLeft -= (delta * 40);
+        e.preventDefault();
+    });
     $(".timeline-container").scrollTo($("#timelineYear" + YEAR));;
     $("#state_select").select2({
         theme: "bootstrap",
