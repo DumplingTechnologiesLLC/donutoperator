@@ -92,4 +92,34 @@
 }
 .timeline li a:hover {
   color: gray;
+
+}
+.timeline-light {
+  color:white !important;
+}
+.timeline-light a {
+  color: white !important;
+}
+.timeline-light li a {
+  color: white !important;
+}
+.timeline-light li a:hover {
+  color: gray;
+}
+.timeline-container::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+.timeline-container::-webkit-scrollbar
+{
+  /*width: 2px;*/
+  height:6px;
+  background-color: #F5F5F5;
+}
+
+.timeline-container::-webkit-scrollbar-thumb
+{
+  background-color: #373a3c;
 }
