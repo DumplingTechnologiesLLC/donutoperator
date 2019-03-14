@@ -1,3 +1,5 @@
+
+
 var stopVideo = function ( element ) {
     var iframe = element.querySelector( 'iframe');
     var video = element.querySelector( 'video' );
@@ -10,6 +12,7 @@ var stopVideo = function ( element ) {
     }
 };
 $(function() {
+    $(".timeline-container").scrollTo($("#timelineYear" + YEAR));
     $('#shooting_details').on('hidden.bs.modal', function () {
         stopVideo(document.getElementById("bodycam_video"))
     })

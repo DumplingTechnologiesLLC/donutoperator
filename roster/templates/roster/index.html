@@ -3,29 +3,18 @@
 {% load static %}
 
 {% block title %}Donut - KBP{% endblock %}
-
+{% block css %}
+{% endblock css %}
 
 {% block content %}
 <div class="row" id="app" v-cloak>
     <div class="col-lg-12">
-        <div class="row" style="padding-top:15px; padding-bottom: 15px">
-            <div class="col-lg-6" style="display:flex;align-items:center; justify-content: center">
-                <a v-bind:href="calculatePreviousYear()" class="btn btn-secondary">View Previous Year's Data</a>
-            </div>
-            <div class="col-lg-6" style="display:flex;justify-content:center;align-items:center;">
-                <a v-if="year != currentYear" v-bind:href="calculateNextYear()" class="btn btn-secondary adjust-buttons">View Following Year's Data</a>
-            </div>
-        </div>
-        <div class="row">
+        <div class="row" style="margin-top:25px">
             <div class="col-lg-12" style="display:flex;justify-content:center;align-items:center;">
-                <h1 style="text-align:center">{{year}} Officer Involved Killings</h1>
+                <h1 style="text-align:center">((shootings.length)) Officer Involved Killings in {{year}}</h1>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12" style="display:flex;justify-content:center;align-items:center;">
-                <h4 style="text-align:center">((shootings.length)) Killed This Year</h4>
-            </div>
-        </div>
+        {% include 'partials/timeline.html' %}
         <div class="row">
             <div class="col-lg-12">
                 <div class="card border-dark" style="margin-bottom:20px;">
@@ -362,7 +351,6 @@
     }
     {% endif %}
 </script>
-<script type="text/javascript" src="{% static 'js/index.js' %}">
-    
-</script>
+<script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
 {% endblock %}

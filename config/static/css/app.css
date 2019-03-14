@@ -15,6 +15,11 @@
   left: 50%;
   margin-left: -60px;
 }
+.justify-items-center {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
 .tooltip .tooltiptext::after {
   content: " ";
   position: absolute;
@@ -36,4 +41,55 @@
   height:58px;
   margin-left: 5px;
   padding-top: 0;
+}
+.timeline {
+  display: flex;
+  flex-direction:row;
+}
+.timeline li {
+  display:inline;
+  padding-left:30px;
+}
+.timeline-container {
+  max-width: 280px;
+  overflow-x: scroll;
+  white-space: nowrap;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.timeline-selected-year {
+  font-size:18px !important;
+  font-weight: bolder !important;
+}
+.timeline ul {
+  margin-top: -5px;
+  padding-right:40px;
+}
+.timeline ul > li:nth-child(1) {
+  padding-left:0px;
+}
+.timeline-arrow {
+  cursor:pointer;
+  text-decoration: none;
+  color: #373a3c;
+}
+.timeline-arrow:hover {
+  cursor:pointer;
+  text-decoration: none;
+  color: gray;
+}
+.timeline li a{
+  text-decoration: none;
+  color: #373a3c;
+  font-size: 14px;
+  font-weight: bold;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -o-user-select: none;
+  -moz-user-select: none;
+}
+.timeline li a:hover {
+  color: gray;
 }

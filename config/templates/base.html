@@ -20,7 +20,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'datatables.min.css'  %}"/>
     <link rel="shortcut icon" type="image/png" href="{% static 'css/new_favicon.ico' %}"/>
-
+    {% block css %}
+    {% endblock css %}
 <!--     <PageMap>
      <DataObject type="document">
         <Attribute name="title">People Killed By Police Database</Attribute>

@@ -1,45 +1,46 @@
 $(function() {
-        $("#state_select").select2({
-            theme: "bootstrap",
-            placeholder: "Select state or states"
-        })
-        $('#state_select').on("change", function(e) { 
-            vue_app.states_selected = $(this).val();
-        });
-        $("#race_select").select2({
-            theme: "bootstrap",
-            placeholder: "Select race or races"
-        })
-        $('#race_select').on("change", function(e) { 
-            vue_app.races_selected = $(this).val();
-        });
-        $("#tag_select").select2({
-            theme: "bootstrap",
-            placeholder: "Select tag or tags"
-        })
-        $('#tag_select').on("change", function(e) { 
-            vue_app.tags_selected = $(this).val();
-        });
-        
-        $('#start_date').datetimepicker({
-            format:"L",
-            useCurrent: false,
-        });
-        $('#end_date').datetimepicker({
-            format:"L",
-            useCurrent: false,
-        });
-        $('#start_date').on("change.datetimepicker", function (e) {
-            vue_app.start_date = $('#start_date').datetimepicker('viewDate');
-        });
-        $('#end_date').on("change.datetimepicker", function (e) {
-            vue_app.end_date = $('#end_date').datetimepicker('viewDate');
-        });
-        $('#video_modal').on('hidden.bs.modal', function () {
-                // do something…
-            vue_app.closeVideoModal();
-        })
+    $(".timeline-container").scrollTo($("#timelineYear" + YEAR));;
+    $("#state_select").select2({
+        theme: "bootstrap",
+        placeholder: "Select state or states"
     })
+    $('#state_select').on("change", function(e) { 
+        vue_app.states_selected = $(this).val();
+    });
+    $("#race_select").select2({
+        theme: "bootstrap",
+        placeholder: "Select race or races"
+    })
+    $('#race_select').on("change", function(e) { 
+        vue_app.races_selected = $(this).val();
+    });
+    $("#tag_select").select2({
+        theme: "bootstrap",
+        placeholder: "Select tag or tags"
+    })
+    $('#tag_select').on("change", function(e) { 
+        vue_app.tags_selected = $(this).val();
+    });
+    
+    $('#start_date').datetimepicker({
+        format:"L",
+        useCurrent: false,
+    });
+    $('#end_date').datetimepicker({
+        format:"L",
+        useCurrent: false,
+    });
+    $('#start_date').on("change.datetimepicker", function (e) {
+        vue_app.start_date = $('#start_date').datetimepicker('viewDate');
+    });
+    $('#end_date').on("change.datetimepicker", function (e) {
+        vue_app.end_date = $('#end_date').datetimepicker('viewDate');
+    });
+    $('#video_modal').on('hidden.bs.modal', function () {
+            // do something…
+        vue_app.closeVideoModal();
+    })
+})
     var vue_app = new Vue({
     	el: '#app',
         delimiters: ["((","))"],
@@ -99,13 +100,13 @@ $(function() {
                         return '<img style="cursor: pointer; width:100%; height:100%" src="//img.youtube.com/vi/'+youtube_video_id+'/0.jpg">';
                     }
                     else {
-                        return '<div style="background-color:gray; width:100%; height:183px" class="d-flex flex-row p-2 flex-column justify-content-center text-center flex-fill">' +
+                        return '<div style="cursor: pointer; background-color:gray; width:100%; height:183px" class="d-flex flex-row p-2 flex-column justify-content-center text-center flex-fill">' +
                             '<div class="align-self-center p-2"><h5 style="color:white;">No Automatic Thumbnail Available</h5></div>' +
                         '</div>'
                         // return '<img style="cursor: pointer; width:100%; height:183px" src="//img.youtube.com/vi/0/0.jpg">';  
                     }
                 } catch(error) {
-                    return '<div style="background-color:gray; width:100%; height:183px" class="d-flex flex-row p-2 flex-column justify-content-center text-center flex-fill">' +
+                    return '<div style="cursor: pointer; background-color:gray; width:100%; height:183px" class="d-flex flex-row p-2 flex-column justify-content-center text-center flex-fill">' +
                             '<div class="align-self-center p-2"><h5 style="color:white;">No Automatic Thumbnail Available</h5></div>' +
                         '</div>'
                     // return '<img style="cursor: pointer; width:100%; height:100%" src="//img.youtube.com/vi/0/0.jpg">';  
