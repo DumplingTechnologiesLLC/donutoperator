@@ -78,6 +78,14 @@
   text-decoration: none;
   color: gray;
 }
+.timeline li {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -o-user-select: none;
+  -moz-user-select: none;
+}
 .timeline li a{
   text-decoration: none;
   color: #373a3c;

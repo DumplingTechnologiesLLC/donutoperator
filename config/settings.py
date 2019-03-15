@@ -31,7 +31,7 @@ DEBUG = (type(debug_val) is str and debug_val == "True") or (
 local_val = os.environ.get("LOCAL", False)
 LOCAL = (type(local_val) is str and local_val == "True") or (
     type(local_val) is bool and local_val)
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', "www.peoplekilledbypolice.com"]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', "www.peoplekilledbypolice.com",]
 
 
 # Application definition
@@ -84,7 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'roster.context_processors.supply_basic_data'
+                'roster.context_processors.supply_basic_data',
             ],
         },
     },
