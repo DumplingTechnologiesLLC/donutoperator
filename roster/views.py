@@ -637,6 +637,8 @@ class Graphs(View):
 
 
 class AjaxSelect2Shootings(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def get(self, request):  # pragma: no cover
         """Ajax Only
 
@@ -669,6 +671,8 @@ class AjaxSelect2Shootings(LoginRequiredMixin, View):
 
 
 class DeleteShootingView(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def post(self, request):
         """Ajax Only
 
@@ -700,6 +704,8 @@ class DeleteShootingView(LoginRequiredMixin, View):
 
 
 class EditShootingView(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def post(self, request):
         """Ajax Only
 
@@ -754,6 +760,8 @@ class EditShootingView(LoginRequiredMixin, View):
 
 
 class SubmitShootingView(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def post(self, request):
         """Ajax only
 
@@ -823,6 +831,7 @@ class FeedbackPage(FormView):
 
 
 class TipList(LoginRequiredMixin, ListView):
+    login_url = "/login/"
     model = Tip
 
     def post(self, request):
@@ -863,6 +872,7 @@ class ShootingDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ShootingDetailView, self).get_context_data(**kwargs)
         return context
+
 
 class RosterListView(View):
     def get(self, request, date=datetime.datetime.now().year):
