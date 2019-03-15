@@ -124,15 +124,30 @@
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
   background-color: #F5F5F5;
 }
-
 .timeline-container::-webkit-scrollbar
 {
   /*width: 2px;*/
   height:6px;
   background-color: #F5F5F5;
 }
-
 .timeline-container::-webkit-scrollbar-thumb
+{
+  background-color: #373a3c;
+}
+.timeline-container::-moz-scrollbar-track
+{
+  -moz-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+.timeline-container::-moz-scrollbar
+{
+  /*width: 2px;*/
+  height:6px;
+  background-color: #F5F5F5;
+}
+
+.timeline-container::-moz-scrollbar-thumb
 {
   background-color: #373a3c;
 }
