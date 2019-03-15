@@ -57,6 +57,11 @@
   margin-left: 40px;
   margin-right: 40px;
 }
+.timeline-container-mobile {
+  max-width: 100px !important;
+  margin-left: 20px;
+  margin-right: 20px;
+}
 .timeline-selected-year {
   font-size:18px !important;
   font-weight: bolder !important;

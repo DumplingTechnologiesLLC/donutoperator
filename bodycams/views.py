@@ -567,10 +567,10 @@ class BodycamIndexView(View):
         except ValueError:
             messages.warning(request, "No data exists for that year.")
             return HttpResponseRedirect(reverse("bodycams:bodycams"))
-        # if mobileBrowser(request):
-        #     template = "mobile/bodycam/bodycam_index.html"
-        # else:
-        template = "bodycam/bodycam_index.html"
+        if mobileBrowser(request):
+            template = "mobile/bodycam/bodycam_index.html"
+        else:
+            template = "bodycam/bodycam_index.html"
         return render(request, template, {
             "year": display_date.year,
         })

@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.db.models.functions import TruncMonth
+from config.utils import mobileBrowser
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.list import ListView
@@ -9,8 +9,7 @@ from django.views import View
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from roster.models import Shooting, Tag, Source, Tip
-from roster.utils import (QUERYSET_KEY, retrieve_from_cache,
-                          store_in_cache, invalidate_cache)
+from roster.utils import (retrieve_from_cache, store_in_cache, invalidate_cache)
 from roster.forms import ShootingModelForm, TipModelForm, FeedbackModelForm
 from roster.serializers import ShootingSerializer, TagSerializer
 from rest_framework.generics import ListAPIView
@@ -876,6 +875,10 @@ class RosterListView(View):
         except ValueError as e:
             messages.warning(request, "No data exists for that year.")
             return HttpResponseRedirect(reverse("roster:index"))
-        return render(request, "roster/index.html", {
+        if mobileBrowser(request):
+            template = "mobile/roster/index.html"
+        else:
+            template = "roster/index.html"
+        return render(request, template, {
             "year": display_date.year,
         })
