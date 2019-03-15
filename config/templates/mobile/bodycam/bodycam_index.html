@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-mobile.html" %}
 {% load widget_tweaks %}
 {% load static %}
 
@@ -6,10 +6,10 @@
 <div id="app" v-cloak>
 	<div class="row" style="margin-top:25px">
 	    <div class="col-lg-8 offset-lg-2" style="display:flex;justify-content:center;align-items:center;  margin-top:40px">
-			<h1 style="text-align:center;">{{year}} Bodycam Database MOBILE</h1>
+			<h1 style="text-align:center;">{{year}} Bodycam Database</h1>
 		</div>
 	</div>
-	{% include 'partials/bodycam-timeline.html' %}
+	{% include 'partials/mobile/bodycam-timeline.html' %}
 	<div class="row">
 	    <div class="col-lg-12">
 	        <div class="card border-dark" style="margin-bottom:20px;">
