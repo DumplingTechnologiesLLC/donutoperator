@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'blog',
     'bodycams',
+    'robots',
     # 'storages',
     "captcha",
     'corsheaders',
@@ -277,3 +278,10 @@ def get_cache():
 
 
 CACHES = get_cache()
+ROBOTS_SITEMAP_URLS = [
+    'https://www.peoplekilledbypolice.com/sitemap.xml',
+]
+if LOCAL:
+    ROBOTS_SITEMAP_URLS = [
+        'localhost:8000/sitemap.xml',
+    ]
