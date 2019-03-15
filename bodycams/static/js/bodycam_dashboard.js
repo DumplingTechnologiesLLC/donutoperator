@@ -1,4 +1,27 @@
-
+var stopVideo = function ( element ) {
+    var iframe = element.querySelector( 'iframe');
+    var video = element.querySelector( 'video' );
+    if ( iframe ) {
+        var iframeSrc = iframe.src;
+        iframe.src = iframeSrc;
+    }
+    if ( video ) {
+        video.pause();
+    }
+};
+$(function() {
+    $('.timeline-container').mousewheel(function(e, delta) {
+        this.scrollLeft -= (delta * 40);
+        e.preventDefault();
+    });
+    $(".timeline-container").scrollTo($("#timelineYear" + YEAR));
+    $('#bodycam_details').on('hidden.bs.modal', function () {
+        stopVideo(document.getElementById("bodycam_details"))
+    })
+    $('#shooting_details').on('hidden.bs.modal', function () {
+        stopVideo(document.getElementById("shooting_details"))
+    })
+})
 var vue_app = new Vue({
     	el: '#app',
         delimiters: ["((","))"],
@@ -131,7 +154,7 @@ var vue_app = new Vue({
 				Returns:
 				Nothing
 				*/
-                this.displayed_shooting = obj
+                this.displayed_shooting = obj;
                 $('#shooting_details').modal('toggle');
             },
             editBodycam: function(id) {
