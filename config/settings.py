@@ -31,7 +31,7 @@ DEBUG = (type(debug_val) is str and debug_val == "True") or (
 local_val = os.environ.get("LOCAL", False)
 LOCAL = (type(local_val) is str and local_val == "True") or (
     type(local_val) is bool and local_val)
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', "www.peoplekilledbypolice.com"]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', "www.peoplekilledbypolice.com", "09eca673.ngrok.io"]
 
 
 # Application definition

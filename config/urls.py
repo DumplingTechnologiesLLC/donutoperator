@@ -21,7 +21,6 @@ from config.sitemaps import KillingsSitemap, BodycamSitemap
 from filebrowser.sites import site as filebrowser_site
 from rest_framework.documentation import include_docs_urls
 from config.views import *
-from django.views.generic import TemplateView
 
 sitemaps = {
     'killings': KillingsSitemap,
