@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.db.models import Count
 from bodycams.models import Bodycam
 from django.urls import reverse
+from config.utils import mobileBrowser
 from django.contrib import messages
 from roster.models import Shooting, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -351,6 +352,7 @@ class BodycamsAPI(ListAPIView):
         return queryset.prefetch_related(
             "tags", "shooting__sources", "shooting")
 
+
 class BodycamLink(LoginRequiredMixin, View):
     def post(self, request):
         """AJAX only
@@ -565,6 +567,10 @@ class BodycamIndexView(View):
         except ValueError:
             messages.warning(request, "No data exists for that year.")
             return HttpResponseRedirect(reverse("bodycams:bodycams"))
-        return render(request, "bodycam/bodycam_index.html", {
+        if mobileBrowser(request):
+            template = "mobile/bodycam/bodycam_index.html"
+        else:
+            template = "bodycam/bodycam_index.html"
+        return render(request, template, {
             "year": display_date.year,
         })
