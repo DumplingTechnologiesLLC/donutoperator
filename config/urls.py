@@ -21,6 +21,7 @@ from config.sitemaps import KillingsSitemap, BodycamSitemap
 from filebrowser.sites import site as filebrowser_site
 from rest_framework.documentation import include_docs_urls
 from config.views import *
+from django.views.generic import TemplateView
 
 sitemaps = {
     'killings': KillingsSitemap,
@@ -35,6 +36,7 @@ urlpatterns = [
         name='django.contrib.sitemaps.views.sitemap'),
     url(r'^e1da49db34b0bdfdddaba2ad6552f848/$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
+    url(r'^robots\.txt', include('robots.urls')),
     url(r'^api/documentation', APIList.as_view(), name="api-documentation"),
     url(r'^admin/', admin.site.urls),
     url(r'^docs/', include_docs_urls(title='PKBP API')),

@@ -16,8 +16,10 @@ urlpatterns = [
     url(r'^bodycams/(?P<date>[0-9]+)$', BodycamIndexView.as_view(), name="date-index"),
     url(r'^bodycam/(?P<pk>[-\w]+)/$', BodycamDetailView.as_view(),
         name='bodycam-detail'),
-    url(r'^ajax/bodycams/json$', BodycamData.as_view(), name="bodycam-data"),
-    url(r'^ajax/bodycam/submit$', BodycamSubmit.as_view(), name="bodycam-submit"),
-    url(r'^ajax/bodycam/edit$', BodycamEdit.as_view(), name="bodycam-edit"),
-    url(r'^ajax/bodycam/link$', BodycamLink.as_view(), name="link-bodycam-shooting"),
+    url(r'^ajax/', include([
+        url(r'^bodycams/json$', BodycamData.as_view(), name="bodycam-data"),
+        url(r'^bodycam/submit$', BodycamSubmit.as_view(), name="bodycam-submit"),
+        url(r'^bodycam/edit$', BodycamEdit.as_view(), name="bodycam-edit"),
+        url(r'^bodycam/link$', BodycamLink.as_view(), name="link-bodycam-shooting"),
+    ]))
 ]
