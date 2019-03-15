@@ -1,3 +1,4 @@
+from django.views.generic.detail import DetailView
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -855,6 +856,13 @@ class RosterListData(View):
             safe=False
         )
 
+
+class ShootingDetailView(DetailView):
+    model = Shooting
+
+    def get_context_data(self, **kwargs):
+        context = super(ShootingDetailView, self).get_context_data(**kwargs)
+        return context
 
 class RosterListView(View):
     def get(self, request, date=datetime.datetime.now().year):

@@ -16,11 +16,25 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import sitemap
+from config.sitemaps import KillingsSitemap, BodycamSitemap
 from filebrowser.sites import site as filebrowser_site
 from rest_framework.documentation import include_docs_urls
 from config.views import *
 
+sitemaps = {
+    'killings': KillingsSitemap,
+    'bodycams': BodycamSitemap
+}
+
 urlpatterns = [
+    url(r'^sitemap\.xml$',
+        sitemap, {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'),
+    url(r'^sitemap-(?P<section>.+)\.xml$', sitemap, {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'),
+    url(r'^e1da49db34b0bdfdddaba2ad6552f848/$', sitemap, {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'),
     url(r'^api/documentation', APIList.as_view(), name="api-documentation"),
     url(r'^admin/', admin.site.urls),
     url(r'^docs/', include_docs_urls(title='PKBP API')),
@@ -33,7 +47,6 @@ urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url("^grappelli/", include("grappelli.urls")),
     url(r'^captcha/', include('captcha.urls')),
-    url(r'^e1da49db34b0bdfdddaba2ad6552f848/$', Sitemap.as_view(), name="sitemap"),
     url(r'', include('roster.urls')),
     url(r'', include('blog.urls')),
     url(r'', include('bodycams.urls')),

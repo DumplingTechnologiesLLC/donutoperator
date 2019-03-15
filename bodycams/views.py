@@ -1,3 +1,4 @@
+from django.views.generic.detail import DetailView
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.db.models import Count
@@ -502,7 +503,7 @@ class BodycamDashboard(LoginRequiredMixin, View):
             display_date = datetime.datetime(int(date), 1, 1, 0, 0)
         except ValueError:
             return HttpResponseRedirect(reverse("bodycams:dashboard"))
-        return render(request, "bodycam/bodycam_dashboard.html", {
+        return render(request, "bodycams/bodycam_dashboard.html", {
             "year": display_date.year,
         })
 
@@ -549,6 +550,14 @@ class BodycamData(View):
         }, safe=False)
 
 
+class BodycamDetailView(DetailView):
+    model = Bodycam
+
+    def get_context_data(self, **kwargs):
+        context = super(BodycamDetailView, self).get_context_data(**kwargs)
+        return context
+
+
 class BodycamIndexView(View):
     def get(self, request, date=datetime.datetime.now().year):
         '''Returns the bodycam index view
@@ -570,7 +579,7 @@ class BodycamIndexView(View):
         if mobileBrowser(request):
             template = "mobile/bodycam/bodycam_index.html"
         else:
-            template = "bodycam/bodycam_index.html"
+            template = "bodycams/bodycam_index.html"
         return render(request, template, {
             "year": display_date.year,
         })
