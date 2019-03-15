@@ -87,9 +87,30 @@
         }, 3000)
     </script>
     <!-- main content here -->
-    <div id="loader_cover" class="overlay" style="background: black; position: fixed; top: 0px; right: 0; bottom: 0; left: 0; opacity: 0.7; z-index: 999;">
-            <i id="loader" class="fa fa-circle-o-notch fa-spin fa-5x fa-fw overlay-text" style="margin-left: 150px; margin-top: -15px;"></i>
-            <span class="overlay-text">Now Loading</span>
+    <div
+        id="loader_cover"
+        class="overlay"
+        style="
+            background: black;
+            position: fixed;
+            top: 0px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0.7;
+            z-index: 999;
+            display:flex;
+            justify-content:center;
+            align-items:center;">
+            <div style="
+                display: flex;
+                flex-direction: column;
+                justify-content:center;
+                align-items:center;">
+                <span class="overlay-text">Now Loading</span>
+                <i id="loader" class="fa fa-circle-o-notch fa-spin fa-5x fa-fw overlay-text"></i>
+                
+            </div>
     </div>
     <div class="container-fluid">
         <div class="row">
