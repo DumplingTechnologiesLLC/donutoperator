@@ -99,7 +99,7 @@
 			    		<div v-html="generateThumbnail(bodycam.video)" @click="showVideo(bodycam.id)">							    
 						</div>
 					    <ul class="list-group list-group-flush">
-							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center">Department: ((bodycam.department))</li>
+							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center">((bodycam.department))</li>
 							<li class="list-group-item" style="display:flex; justify-content: center; align-items: : center">
 								<span style="padding: 5px; margin-right: 5px" v-for="tag in bodycam.tags" class="badge badge-primary">((tag.text))</span>
 								<span v-if="bodycam.tags.length == 0">No Tags Available</span>

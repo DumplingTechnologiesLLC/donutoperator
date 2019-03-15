@@ -7,14 +7,6 @@
 {% block content %}
 <div class="row" id="app" v-cloak>
     <div class="col-lg-12">
-        <div class="row" style="padding-top:15px; padding-bottom: 15px">
-            <div class="col-lg-6" style="display:flex; justify-content: center; align-items:center;">
-                <a v-bind:href="calculatePreviousYear()" class="btn btn-secondary">View Previous Year's Data</a>
-            </div>
-            <div class="col-lg-6" style="display:flex; justify-content: center; align-items:center;">
-                <a v-if="year != currentYear" v-bind:href="calculateNextYear()" class="btn btn-secondary adjust-buttons">View Following Year's Data</a>
-            </div>
-        </div>
         <div class="row">
             <div class="col-lg-12" style="display:flex;justify-content:center;align-items:center;">
                 <h1 style="text-align:center">{{year}} Bodycams</h1>
@@ -25,6 +17,7 @@
                 <h4 style="text-align:center"> ((bodycams.length)) Bodycams For This Year</h4>
             </div>
         </div>
+        {% include 'partials/bodycam-admin-timeline.html' %}
         <div class="row">
 		    <div class="col-lg-12">
 		        <div class="card border-dark" style="margin-bottom:20px;">
@@ -115,11 +108,6 @@
                                 <i class="fa fa-sort-asc" v-if="order.date == 1" aria-hidden="true"></i>
                                 <i class="fa fa-sort-desc" v-if="order.date == -1" aria-hidden="true"></i>
                             </th>
-                            <th class="noselect" style="cursor: pointer;" v-on:click="order_by('description')">
-                                Description 
-                                <i class="fa fa-sort-asc" v-if="order.description == 1" aria-hidden="true"></i>
-                                <i class="fa fa-sort-desc" v-if="order.description == -1" aria-hidden="true"></i>
-                            </th>
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('department')">
                                 Department 
                                 <i class="fa fa-sort-asc" v-if="order.department == 1" aria-hidden="true"></i>
@@ -151,9 +139,6 @@
                             <td>
                                 ((bodycam.date))
                             </td>
-                            <td style="max-width: 500px; overflow-x: scroll; white-space: pre;">
-                                ((bodycam.description))
-                            </td>
                             <td>
                                 ((bodycam.department))
                             </td>
@@ -166,11 +151,16 @@
                             <td>
                                 <span style="padding: 5px; margin-right: 5px" v-for="tag in bodycam.tags" class="badge badge-primary">((tag.text))</span>
                             <td>
-                                <button v-on:click="openBodycamDetails(bodycam.id)" type="button" class="btn btn-sm btn-primary">Details</button>
+                                <div class="btn-group">
+                                    <button type="button":disabled="typeof bodycam.shooting == 'undefined' || bodycam.shooting.id == -1" v-on:click="openDetails(bodycam.shooting)" class="btn btn-sm btn-info">Shooting Details</button>
+                                    <button v-on:click="openBodycamDetails(bodycam.id)" type="button" class="btn btn-sm btn-primary">Details</button>
+                                </div>
                             </td>
                             <td>
-                                <button v-on:click="editBodycam(bodycam.id)" type="button" class="btn btn-sm btn-primary">Edit</button>
-                                <button v-on:click="deleteBodycam(bodycam.id)" type="button" class="btn btn-sm btn-danger"><i style="font-size:16px" class="fa fa-trash fa-2" aria-hidden="true"></i></button>
+                                <div class="btn-group">
+                                    <button v-on:click="editBodycam(bodycam.id)" type="button" class="btn btn-sm btn-primary">Edit</button>
+                                    <button v-on:click="deleteBodycam(bodycam.id)" type="button" class="btn btn-sm btn-danger"><i style="font-size:16px" class="fa fa-trash fa-2" aria-hidden="true"></i></button>
+                                </div>
                             </td>
                         </tr>
                         <tr v-show="bodycams.length == 0">
@@ -195,7 +185,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="card-img-top" v-html="displayed_bodycam.video" style="height:500px">
+                            <div class="card-img-top" v-html="displayed_bodycam.video" style="height:500px"></div>
                         </div>
                     </div>
                     <hr>
@@ -218,60 +208,12 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                	<button type="button":disabled="typeof displayed_bodycam.shooting == 'undefined' || displayed_bodycam.shooting.id == -1" v-on:click="openDetails(displayed_bodycam.shooting)" class="btn btn-info">View Shooting Details</button>
                 	<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#bodycam_details">Close</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal" id="shooting_details" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">((displayed_shooting.name)), ((displayed_shooting.date))</h5>
-                    <button type="button" class="close" data-toggle="modal" data-target="#shooting_details" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h5>Donut's Take</h5>
-                            <div v-if="displayed_shooting.video_url != 'None'" v-html="displayed_shooting.video_url"> </div>
-                            <div v-else style="background-color:gray; width:100%; height:315px" class="d-flex flex-row    p-2 flex-column justify-content-center flex-fill">
-                                <div class="align-self-center p-2"><h1 style="color:white;">No Video Available</h1></div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h5>Sources</h5>
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr v-for="source in displayed_shooting.sources">
-                                        <td style="max-width: 100px; word-wrap: break-word;"><a v-bind:href="source">((source))</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h5>Further Details</h5>
-                            <div style="height: 200px; overflow-y: scroll" v-if="displayed_shooting.description !== undefined && displayed_shooting.description.length != 0"  v-html="displayed_shooting.description">
-                                
-                            </div>
-                            <p style="height:200px; overflow-y:scroll" v-else>No further details at this time.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#shooting_details">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'partials/mobile/details_modal.html' %}
 </div>
 {% endblock content %}
 
@@ -285,6 +227,7 @@
         bodycam_data: "{% url 'bodycams:bodycam-data' %}",
     }
 </script>
+<script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/bodycam_dashboard.js' %}"></script>
 {% endblock js %}
 
