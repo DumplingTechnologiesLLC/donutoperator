@@ -355,6 +355,8 @@ class BodycamsAPI(ListAPIView):
 
 
 class BodycamLink(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def post(self, request):
         """AJAX only
         Links an existing bodycam and an existing killing together based on id
@@ -393,6 +395,8 @@ class BodycamLink(LoginRequiredMixin, View):
 
 
 class BodycamEdit(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def post(self, request):
         """AJAX only
         Edits an existing bodycam, including tags, then returns the id of the
@@ -444,6 +448,8 @@ class BodycamEdit(LoginRequiredMixin, View):
 
 
 class BodycamSubmit(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def post(self, request):
         '''AJAX only
         Creates a new bodycam, with tags added to it, and then returns the id of the
@@ -487,6 +493,8 @@ class BodycamSubmit(LoginRequiredMixin, View):
 
 
 class BodycamDashboard(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def get(self, request, date=datetime.datetime.now().year):
         """Return sthe admin page for managing bodycams
 
