@@ -8,10 +8,12 @@ urlpatterns = [
         url("tags", views.TagsAPI.as_view(), name="api-tags"),
     ])),
     url(
-    	r'^ajax/ajax-shootings$',
-    	views.AjaxSelect2Shootings.as_view(),
-    	name="ajax-shootings"
+        r'^ajax/ajax-killings$',
+        views.AjaxSelect2Shootings.as_view(),
+        name="ajax-shootings"
     ),
+    url(r'^killing/(?P<pk>[-\w]+)/$', views.ShootingDetailView.as_view(),
+        name='shooting-detail'),
     url(r'^graphs/(?P<year>[0-9]+)/$', views.Graphs.as_view(), name="graphs-year"),
     url(r'^graphs$', views.Graphs.as_view(), name="graphs"),
     url(r'^tip$', views.TipPage.as_view(), name="tip-page"),

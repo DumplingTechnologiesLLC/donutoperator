@@ -7,11 +7,6 @@ class APIList(View):
         return render(request, "config/api_list.html", {})
 
 
-class Sitemap(View):
-    def get(self, request):
-        return render(request, "config/sitemap.html")
-
-
 class ChangeLog(View):
     def get(self, request):
         return render(request, "config/changelog.html", {})

@@ -9,7 +9,7 @@ class TagAdminInline(admin.TabularInline):
 
 
 class BodycamAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date')
+    list_display = ('id', 'title', 'date')
     search_fields = ['title']
     inlines = (TagAdminInline,)
     # form = BodycamModelForm

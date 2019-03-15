@@ -13,7 +13,7 @@ class SourceAdminInline(admin.TabularInline):
 
 
 class ShootingAdmin(admin.ModelAdmin):
-    list_display = ('name', 'date')
+    list_display = ('id', 'name', 'date')
     search_fields = ['name']
     inlines = (TagAdminInline, SourceAdminInline)
     form = ShootingModelForm

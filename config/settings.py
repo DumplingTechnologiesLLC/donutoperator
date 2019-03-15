@@ -39,6 +39,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', "www.peoplekilledbypolice.com"]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -170,7 +172,7 @@ if not DEBUG and not LOCAL:
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
-
+SITE_ID = 1
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,

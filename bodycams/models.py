@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
+from django.contrib.sitemaps import ping_google
 # Create your models here.
 
 
@@ -81,10 +83,17 @@ class Bodycam(models.Model):
     created = models.DateTimeField(
         "Creation Date", editable=False, null=True, blank=True)
 
+    def get_absolute_url(self):
+        return reverse('bodycams:bodycam-detail', args=[str(self.id)])
+
     def save(self, *args, **kwargs):  # pragma: no cover
         ''' On save, update timestamps '''
         if not self.id:
             self.created = timezone.now()
+        try:
+            ping_google()
+        except Exception:
+            pass
         return super(Bodycam, self).save(*args, **kwargs)
 
     def as_dict(self):
