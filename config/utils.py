@@ -1,4 +1,4 @@
-
+import logging
 # list of mobile User Agents
 mobile_uas = [
     'w3c ', 'acs-', 'alav', 'alca', 'amoi', 'audi', 'avan', 'benq', 'bird', 'blac',
@@ -19,8 +19,9 @@ def mobileBrowser(request):
     ''' Super simple device detection, returns True for mobile devices '''
 
     mobile_browser = False
-    ua = request.META['HTTP_USER_AGENT'].lower()[0:4]
-
+    ua = request.META.get('HTTP_USER_AGENT', "nope").lower()[0:4]
+    if ua == "nope":
+        logging.warning("NO HTTP_USER_AGENT! {}".format(request.META.__dict__))
     if (ua in mobile_uas):
         mobile_browser = True
     else:
