@@ -21,7 +21,7 @@ def mobileBrowser(request):
     mobile_browser = False
     ua = request.META.get('HTTP_USER_AGENT', "nope").lower()[0:4]
     if ua == "nope":
-        logging.warning("NO HTTP_USER_AGENT! {}".format(request.META.__dict__))
+        logging.warning("NO HTTP_USER_AGENT! {}".format(request.META))
     if (ua in mobile_uas):
         mobile_browser = True
     else:
