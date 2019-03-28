@@ -26,7 +26,7 @@ def mobileBrowser(request):
         mobile_browser = True
     else:
         for hint in mobile_ua_hints:
-            if request.META['HTTP_USER_AGENT'].find(hint) > 0:
+            if request.META.get('HTTP_USER_AGENT', "").find(hint) > 0:
                 mobile_browser = True
 
     return mobile_browser
