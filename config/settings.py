@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 # import django_heroku
-import dj_database_url
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -53,15 +53,23 @@ INSTALLED_APPS = [
     'blog',
     'bodycams',
     'robots',
+    # "rules",
     # 'storages',
     "captcha",
     'corsheaders',
     "rest_framework",
+    'rules.apps.AutodiscoverRulesConfig',
 ]
 if LOCAL:
     INSTALLED_APPS += ['django_extensions']
 if not DEBUG and not LOCAL:
     INSTALLED_APPS += ['storages']
+
+AUTHENTICATION_BACKENDS = (
+    'rules.permissions.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -106,6 +114,7 @@ if LOCAL:
         }
     }
 else:
+    import dj_database_url
     database_url = os.environ.get("DATABASE_URL", None)
     DATABASES = {
         'default': dj_database_url.config(

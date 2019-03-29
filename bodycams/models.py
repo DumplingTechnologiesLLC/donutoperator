@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.sitemaps import ping_google
+from django.contrib.auth import get_user_model
+User = get_user_model()
 # Create your models here.
 
 
@@ -77,6 +79,17 @@ class Bodycam(models.Model):
         'roster.Shooting',
         related_name='bodycams',
         on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    specially_exempted_users = models.ManyToManyField(
+        User,
+        related_name="exempted_bodycams"
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="bodycams",
         blank=True,
         null=True,
     )

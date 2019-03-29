@@ -14,6 +14,7 @@ from roster.utils import (retrieve_from_cache, store_in_cache, invalidate_cache)
 from roster.forms import ShootingModelForm, TipModelForm, FeedbackModelForm
 from roster.serializers import ShootingSerializer, TagSerializer
 from rest_framework.generics import ListAPIView
+import rules
 import datetime
 import logging
 import json
@@ -694,6 +695,8 @@ class DeleteShootingView(LoginRequiredMixin, View):
         data = request.POST.get("id")
         try:
             year = Shooting.objects.get(pk=data).date.year
+            if not request.user.has_perm("core.can_edit_shooting", Shooting.objects.get(pk=data)):
+                return HttpResponse("You lack the permissions to perform this action.", status=400)
             Shooting.objects.get(pk=data).delete()
             invalidate_cache(year)
             return HttpResponse(status=200)
@@ -747,6 +750,8 @@ class EditShootingView(LoginRequiredMixin, View):
                     "Please provide a positive number for the age", status=400)
         try:
             shooting = Shooting.objects.get(pk=int(data["id"]))
+            if not request.user.has_perm("core.can_edit_shooting", shooting):
+                return HttpResponse("You lack the permissions to perform this action", status=400)
         except Shooting.DoesNotExist as e:
             error_data = json.dumps(request.POST).replace("\\\"", "'")
             logging.error("request data: {}".format(error_data))
@@ -804,6 +809,8 @@ class SubmitShootingView(LoginRequiredMixin, View):
         form = ShootingModelForm(data)
         if form.is_valid():
             shooting = submit_form(form, data)
+            shooting.created_by = request.user
+            shooting.save()
             return HttpResponse(shooting.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
 
@@ -857,6 +864,7 @@ class RosterListData(View):
             store_in_cache(shootings, date)
         else:
             total = len(shootings)
+        print(shootings[1])
         return JsonResponse(
             {
                 "shootings": [obj.as_dict() for obj in shootings],

@@ -246,18 +246,23 @@ var vue_app = new Vue({
                                     });
                                 },
                                 error: function(data) {
-                                    console.log(data)
-                                    $.confirm({
-                                        title: 'Encountered an error!',
-                                        content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
-                                        type: 'red',
-                                        typeAnimated: true,
-                                        backgroundDismiss: false,
-                                        buttons: {
-                                            close: function () {
+                                    if (data.status == 400) {
+                                        showErrorMessage('Please review your submission', data.responseText)
+                                    }
+                                    else {
+                                        console.log(data)
+                                        $.confirm({
+                                            title: 'Encountered an error!',
+                                            content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
+                                            type: 'red',
+                                            typeAnimated: true,
+                                            backgroundDismiss: false,
+                                            buttons: {
+                                                close: function () {
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 },
                             });
                         },
