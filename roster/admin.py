@@ -1,6 +1,6 @@
 from django.contrib import admin
 from roster.models import *
-from roster.forms import ShootingModelForm
+from roster.forms import ShootingModelFormAdmin
 # Register your models here.
 
 
@@ -16,7 +16,7 @@ class ShootingAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'date')
     search_fields = ['name']
     inlines = (TagAdminInline, SourceAdminInline)
-    form = ShootingModelForm
+    form = ShootingModelFormAdmin
 
 
 admin.site.register(Shooting, ShootingAdmin)

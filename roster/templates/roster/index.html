@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% load static %}
-
+{% load rules %}
 {% block title %}Donut - KBP{% endblock %}
 {% block css %}
 <title>PeopleKilledByPolice: Information and sources regarding all individuals killed by police in {{year}}</title>
@@ -276,18 +276,23 @@
                             });
                         },
                         error: function(data) {
-                            console.log(data)
-                            $.confirm({
-                                title: 'Encountered an error!',
-                                content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
-                                type: 'red',
-                                typeAnimated: true,
-                                backgroundDismiss: false,
-                                buttons: {
-                                    close: function () {
+                            if (data.status == 400) {
+                                showErrorMessage('Please review your submission', data.responseText)
+                            }
+                            else {
+                                console.log(data)
+                                $.confirm({
+                                    title: 'Encountered an error!',
+                                    content: 'Something went wrong when processing the request. Send Pedro a text message and save this information: ' + data.responseText,
+                                    type: 'red',
+                                    typeAnimated: true,
+                                    backgroundDismiss: false,
+                                    buttons: {
+                                        close: function () {
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         },
                     });
                 },

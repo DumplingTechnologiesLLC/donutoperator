@@ -10,6 +10,7 @@ from roster.models import Shooting, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin
 import datetime
 import json
+import rules
 import logging
 from django.views import View
 from bodycams.forms import BodycamModelForm
@@ -45,6 +46,10 @@ def link_bodycam_and_shooting(bodycam, data, request):
                  " Please refresh the page and try to link the bodycam manually."),
                 status=406
             )
+        if not request.user.has_perm("core.can_edit_shooting", shooting):
+            return HttpResponse("You lack the permissions to perform this action.", status=400)
+        if not request.user.has_perm("core.can_edit_bodycam", bodycam):
+            return HttpResponse("You lack the permissions to perform this action.", status=400)
         bodycam.shooting = shooting
         shooting.has_bodycam = True
         shooting.save()
@@ -383,6 +388,10 @@ class BodycamLink(LoginRequiredMixin, View):
         try:
             bodycam = Bodycam.objects.get(pk=bodycam_id)
             shooting = Shooting.objects.get(pk=shooting_id)
+            if not request.user.has_perm("core.can_edit_shooting", shooting):
+                return HttpResponse("You lack the permissions to perform this action.", status=400)
+            if not request.user.has_perm("core.can_edit_bodycam", bodycam):
+                return HttpResponse("You lack the permissions to perform this action.", status=400)
             bodycam.shooting = shooting
             bodycam.save()
             shooting.has_bodycam = True
@@ -431,6 +440,8 @@ class BodycamEdit(LoginRequiredMixin, View):
         id = data["id"]
         try:
             bodycam = Bodycam.objects.get(pk=id)
+            if not request.user.has_perm("core.can_edit_bodycam", bodycam):
+                return HttpResponse("You lack the permissions to perform this action.", status=400)
         except Bodycam.DoesNotExist:
             error_data = json.dumps(request.POST).replace("\\\"", "'")
             logging.error("request data: {}".format(error_data))
@@ -485,8 +496,11 @@ class BodycamSubmit(LoginRequiredMixin, View):
         form = BodycamModelForm(data)
         if form.is_valid():
             bodycam = submit_form(form, data)
+            bodycam.created_by = request.user
+            bodycam.save()
             return_value = link_bodycam_and_shooting(bodycam, data, request)
             if return_value is not None:
+                bodycam.delete()
                 return return_value
             return HttpResponse(bodycam.id, status=200)
         return HttpResponse(create_html_errors(form), status=400)
@@ -531,8 +545,10 @@ class BodycamDashboard(LoginRequiredMixin, View):
         """
         pk = request.POST.get("pk")
         try:
-            article = Bodycam.objects.get(pk=pk)
-            article.delete()
+            bodycam = Bodycam.objects.get(pk=pk)
+            if not request.user.has_perm("core.can_edit_bodycam", bodycam):
+                return HttpResponse("You lack the permissions to perform this action.", status=400)
+            bodycam.delete()
             messages.success(request, "Bodycam deleted successfully")
             return HttpResponseRedirect(reverse("bodycams:dashboard"))
         except Bodycam.DoesNotExist:

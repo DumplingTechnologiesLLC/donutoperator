@@ -3,6 +3,9 @@ from bodycams.models import Bodycam
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.sitemaps import ping_google
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class Shooting(models.Model):
@@ -107,6 +110,17 @@ class Shooting(models.Model):
     race = models.IntegerField("Race", choices=RACE_CHOICES)
     gender = models.IntegerField("Gender", choices=GENDER_CHOICES)
     date = models.DateField(auto_now=False, auto_now_add=False)
+    specially_exempted_users = models.ManyToManyField(
+        User,
+        related_name="exempted_shootings"
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="shootings",
+        blank=True,
+        null=True,
+    )
     created = models.DateTimeField(
         "Creation Date", editable=False, null=True, blank=True)
 
