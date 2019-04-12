@@ -864,7 +864,6 @@ class RosterListData(View):
             store_in_cache(shootings, date)
         else:
             total = len(shootings)
-        print(shootings[1])
         return JsonResponse(
             {
                 "shootings": [obj.as_dict() for obj in shootings],
