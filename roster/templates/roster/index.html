@@ -5,6 +5,7 @@
 {% block title %}Donut - KBP{% endblock %}
 {% block css %}
 <title>PeopleKilledByPolice: Information and sources regarding all individuals killed by police in {{year}}</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/pc-bootstrap-datetimepicker.min.css' %}">
 {% endblock css %}
 
 
@@ -13,7 +14,7 @@
     <div class="col-lg-12">
         <div class="row" style="margin-top:25px">
             <div class="col-lg-12" style="display:flex;justify-content:center;align-items:center;">
-                <h1 style="text-align:center">((shootings.length)) Officer Involved Killings in {{year}}</h1>
+                <h1 style="text-align:center">((maxKilling)) Officer Involved Killings in {{year}}</h1>
             </div>
         </div>
         {% include 'partials/timeline.html' %}
@@ -68,39 +69,92 @@
                         <div class="form-group row">
                             <div class="col-lg-4">
                                 <label for="name_text">Killed on or after</label>
-                                <div class="input-group date" id="start_date" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" data-target="#start_date"/>
-                                    <div class="input-group-append" data-target="#start_date" data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    </div>
-                                </div>
+                                <date-picker v-model="start_date" :config="{format: 'YYYY/MM/DD'}"></date-picker>
                             </div>
                             <div class="col-lg-4">
                                 <label for="name_text">Killed on or before</label>
-                                <div class="input-group date" id="end_date" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" data-target="#end_date"/>
-                                    <div class="input-group-append" data-target="#end_date" data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    </div>
-                                </div>
+                                <date-picker v-model="end_date" :config="{format: 'YYYY/MM/DD'}"></date-picker>
                             </div>
                             <div class="col-lg-4">
-                                <label>Filter by age</label>
-                                <input type="text" class="form-control" v-model="age" placeholder="Valid formats: no age, single number, between x and y, x - y ">
+                                <label>Filter by</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="one" value="range" v-model="ageType">
+                                    <label class="form-check-label" for="inlineCheckbox1">Age Range</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="two" value="age" v-model="ageType">
+                                  <label class="form-check-label" for="inlineCheckbox2">Specific Age</label>
+                                </div>
+                                <input type="number" class="form-control" v-model="age" placeholder="Specific age" v-if="ageType == 'age'">
+                                <div class="input-group" v-else>
+                                    <input type="number" v-model="lowerAge" class="form-control" placeholder="Default: No minimum">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">To</label>
+                                    </div>
+                                    <input type="number" v-model="upperAge" class="form-control" placeholder="Default: No maximum">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-12">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" v-model="noName">
+                                    <label class="form-check-label">
+                                        Filter by No Name
+                                        <i class="fa fa-info-circle" aria-hidden="true" title="This will override the name filter"></i>
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" v-model="noAge">
+                                    <label class="form-check-label">
+                                        Filter by No Age
+                                        <i class="fa fa-info-circle" aria-hidden="true" title="This will override the age filter"></i>
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" v-model="noCity">
+                                    <label class="form-check-label">
+                                        Filter by No City
+                                        <i class="fa fa-info-circle" aria-hidden="true" title="This will override the city filter"></i>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-lg-12">
                                 <button type="button" class="btn btn-warning" v-on:click="resetFilters" style="margin-top:30px;">Reset Filters</button>
+                                <button type="button" class="btn btn-primary" v-on:click="filterShootings(page)" style="margin-top:30px;">Filter Shootings</button>
                             </div>
-                        </div>
-
+                        </div> 
                     </form>
                 </div>
                 </div>
             </div>
         </div>
-        <span>((displayed_shootings.length)) matches displayed</span>
+        <div class="row">
+            <div class="col-lg-6 col-xs-12">
+                <nav aria-label="Page navigation example">
+                    <paginate
+                        :page-count="totalPages"
+                        page-range="3"
+                        margin-pages="2"
+                        :click-handler="filterShootings"
+                        prev-text="Prev"
+                        next-text="Next"
+                        container-class="pagination"
+                        page-class="page-item"
+                        page-link-class="page-link"
+                        prev-link-class="page-link"
+                        next-link-class="page-link"
+                        break-view-class="page-item"
+                        break-view-link-class="page-link">
+                    </paginate>
+                </nav>
+            </div>
+            <div class="col-lg-6 col-xs-12" style="text-align:right">
+                ((startKilling)) to ((endKilling)) of ((maxKilling))
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-12">
                 <table class="table table-striped table-hover">
@@ -108,38 +162,38 @@
                         <tr style="background-color:white;">
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('name')">
                                 Name 
-                                <i class="fa fa-sort-asc" v-if="order.name == 1" aria-hidden="true"></i>
-                                <i class="fa fa-sort-desc" v-if="order.name == -1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-asc" v-if="order == 'name'" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order == '-name'" aria-hidden="true"></i>
                             </th>
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('age')">
                                 Age 
-                                <i class="fa fa-sort-asc" v-if="order.age == 1" aria-hidden="true"></i>
-                                <i class="fa fa-sort-desc" v-if="order.age == -1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-asc" v-if="order == 'age'" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order == '-age'" aria-hidden="true"></i>
                             </th>
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('date')">
                                 Date 
-                                <i class="fa fa-sort-asc" v-if="order.date == 1" aria-hidden="true"></i>
-                                <i class="fa fa-sort-desc" v-if="order.date == -1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-asc" v-if="order == 'date'" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order == '-date'" aria-hidden="true"></i>
                             </th>
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('race')">
                                 Race 
-                                <i class="fa fa-sort-asc" v-if="order.race == 1" aria-hidden="true"></i>
-                                <i class="fa fa-sort-desc" v-if="order.race == -1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-asc" v-if="order == 'race'" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order == '-race'" aria-hidden="true"></i>
                             </th>
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('gender')">
                                 Gender 
-                                <i class="fa fa-sort-asc" v-if="order.gender == 1" aria-hidden="true"></i>
-                                <i class="fa fa-sort-desc" v-if="order.gender == -1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-asc" v-if="order == 'gender'" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order == '-gender'" aria-hidden="true"></i>
                             </th>
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('state')">
                                 State 
-                                <i class="fa fa-sort-asc" v-if="order.state == 1" aria-hidden="true"></i>
-                                <i class="fa fa-sort-desc" v-if="order.state == -1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-asc" v-if="order == 'state'" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order == '-state'" aria-hidden="true"></i>
                             </th>
                             <th class="noselect" style="cursor: pointer;" v-on:click="order_by('city')">
                                 City 
-                                <i class="fa fa-sort-asc" v-if="order.city == 1" aria-hidden="true"></i>
-                                <i class="fa fa-sort-desc" v-if="order.city == -1" aria-hidden="true"></i>
+                                <i class="fa fa-sort-asc" v-if="order == 'city'" aria-hidden="true"></i>
+                                <i class="fa fa-sort-desc" v-if="order == '-city'" aria-hidden="true"></i>
                             </th>
                             <th>
                                 Tags 
@@ -158,7 +212,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="shooting in displayed_shootings">
+                        <tr v-for="shooting in shootings">
                             <td>
                                 ((shooting.name))
                             </td>
@@ -197,7 +251,18 @@
                             </td>
                             {% endif %}
                         </tr>
-                        <tr v-show="shootings.length == 0">
+                        <tr v-if="loading">
+                            {% if user.is_authenticated %}
+                            <td colspan="11" style="text-align:center">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </td>
+                            {% else %}
+                            <td colspan="10" style="text-align:center">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        <tr v-show="shootings.length == 0 && !loading">
                             {% if user.is_authenticated %}
                             <td colspan="11" style="text-align:center">
                                 No shootings yet
@@ -361,5 +426,9 @@
     {% endif %}
 </script>
 <script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vuePaginate.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vue-select.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/pc-bootstrap-datetimepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vue-bootstrap-datetimepicker.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
 {% endblock %}

@@ -10,11 +10,11 @@ from django.views import View
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from roster.models import Shooting, Tag, Source, Tip
-from roster.utils import (retrieve_from_cache, store_in_cache, invalidate_cache)
+from django.core.paginator import Paginator
 from roster.forms import ShootingModelForm, TipModelForm, FeedbackModelForm
 from roster.serializers import ShootingSerializer, TagSerializer
 from rest_framework.generics import ListAPIView
-import rules
+# import rules
 import datetime
 import logging
 import json
@@ -851,23 +851,39 @@ class TipList(LoginRequiredMixin, ListView):
 
 class RosterListData(View):
     def get(self, request):
+        data = request.GET.dict()
+        if "orderBy" not in data or "pageSize" not in data or "page" not in data:
+            return HttpResponse("Bad request", status=400)
+        if "state__in" in data:
+            data["state__in"] = json.loads(data["state__in"])
+        if "gender__in" in data:
+            data["gender__in"] = json.loads(data["gender__in"])
+        if "race__in" in data:
+            data["race__in"] = json.loads(data["race__in"])
+        if "tags__text__in" in data:
+            data["tags__text__in"] = json.loads(data["tags__text__in"])
+        order_by = data["orderBy"]
+        page_size = data["pageSize"]
         try:
-            date = int(request.GET.get("year", datetime.datetime.now().year))
-        except ValueError as e:
-            return HttpResponse("Invalid date", status=400,)
-        shootings = retrieve_from_cache(date)
-        if not shootings:
-            shootings = Shooting.objects.filter(
-                date__year=date).order_by('-date').prefetch_related(
-                "tags", "sources", "bodycams")
-            total = shootings.count()
-            store_in_cache(shootings, date)
-        else:
-            total = len(shootings)
+            page = int(data["page"])
+        except Exception:
+            page = 1
+        del data["orderBy"]
+        del data["pageSize"]
+        del data["page"]
+        shootings = Shooting.objects.filter(**data).order_by(order_by)
+        max_shootings = Shooting.objects.filter(date__year=data["date__year"]).count()
+        p = Paginator(shootings, page_size)
+        if page < 1 or page > p.num_pages:
+            page = 1
+        shootings = p.page(page)
         return JsonResponse(
             {
+                "endKilling": shootings.end_index(),
+                "startKilling": shootings.start_index(),
                 "shootings": [obj.as_dict() for obj in shootings],
-                "total": total
+                "maxKillings": max_shootings,
+                "totalPages": p.num_pages,
             },
             safe=False
         )

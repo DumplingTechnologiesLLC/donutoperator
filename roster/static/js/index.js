@@ -48,40 +48,39 @@ $(function() {
     $('#gender_select').on("change", function(e) { 
         vue_app.genders_selected = $(this).val();
     });
-    $('#start_date').datetimepicker({
-        format:"L",
-        useCurrent: false,
-    });
-    $('#end_date').datetimepicker({
-        format:"L",
-        useCurrent: false,
-    });
-    $('#start_date').on("change.datetimepicker", function (e) {
-        vue_app.start_date = $('#start_date').datetimepicker('viewDate');
-    });
-    $('#end_date').on("change.datetimepicker", function (e) {
-        vue_app.end_date = $('#end_date').datetimepicker('viewDate');
-    });
     setTimeout(function() {
         // since modern browsers ignore autcomplete=off (thanks...) we need to set it to
         // something they don't recognize to make it work properly
         $(".select2-search__field").attr("autocomplete", "aklsjehrfklasjhclkajsehf");
     }, 500)
 })
+Vue.component('paginate', VuejsPaginate)
+Vue.component('date-picker', VueBootstrapDatetimePicker);
 var vue_app = new Vue({
     el: '#app',
     delimiters: ["((","))"],
     data: {
-        order: {
-            name: 0,
-            age: 0,
-            date: 0,
-            race: 0,
-            gender: 0,
-            state: 0,
-            city: 0,
-        },
-        order_attribute: "",
+        order: "-date",
+
+        // pagination information
+        totalPages: 0,
+        startKilling: 0,
+        endKilling: 0,
+        maxKilling: 0,
+        page: 1,
+        pageSize: 50,
+        loading: true,
+
+        // filter by blanks
+        noCity: false,
+        noName: false,
+        noAge: false,
+
+        // used for calculating the age
+        ageType: "range",
+        lowerAge: "",
+        upperAge: "",
+
         states_selected: [], // populated by jQuery upon select2 select
         races_selected: [], // populated by jQuery upon select2 select
         tags_selected: [], // populate by jQuery upon select2 select
@@ -102,13 +101,31 @@ var vue_app = new Vue({
     },
     mounted: function() {
         var self = this;
-        $.getJSON(SHOOTING_DATA_URL, {"year": self.year}).done(function(data) {
-            self.shootings = data.shootings,
-            $("#loader_cover").addClass("toggled");
-            $("#body").removeAttr("style");
-        })
+        self.filterShootings();
     },
     methods: {
+        filterShootings: function(page) {
+            var self = this;
+            if (page) {
+                self.page = page;
+            }
+            self.loading = true;
+            self.shootings = [];
+            $.get(SHOOTING_DATA_URL, this.queryParams).done(function(data) {
+                self.shootings = data.shootings;
+                self.maxKilling = data.maxKillings;
+                self.startKilling = data.startKilling;
+                self.endKilling = data.endKilling;
+                self.totalPages = data.totalPages;
+                self.loading = false;
+            }).fail(function(data) {
+                $.alert({
+                    type: 'red',
+                    title: "An error has occurred",
+                    content: "We were unable to load the results. The server may be under heavy load or under maintenance. Please try again later."
+                })
+            });
+        },
         deleteShooting: DELETE_KILLING_FUNCTION,
         editShooting: EDIT_SHOOTING_FUNCTION,
         order_by: function(attribute) {
@@ -121,23 +138,18 @@ var vue_app = new Vue({
             :param attribute: a string of a key
             */
             var self = this;
-            this.order_attribute = attribute;
-            $.each(self.order, function(key, value) {
-                if (key == attribute) {
-                    if (self.order[attribute] == 0) {
-                        self.order[attribute] = 1;
-                    }
-                    else if (self.order[attribute] == 1) {
-                        self.order[attribute] = -1;
-                    }
-                    else {
-                        self.order[attribute] = 1;
-                    }
+            if (this.order.indexOf(attribute) > -1) {
+                if (this.order.indexOf("-") > -1) {
+                    this.order = attribute
                 }
                 else {
-                    self.order[key] = 0;
+                    this.order = "-" + attribute;
                 }
-            });
+            }
+            else {
+                this.order = '-' + attribute;
+            }
+            this.filterShootings(this.page);
         },
         resetFilters: function() {
             /*Resets the filter choices
@@ -152,9 +164,6 @@ var vue_app = new Vue({
             */
             var self = this;
             self.order_attribute = "";
-            $.each(self.order, function(key, value) {
-                self.order[key] = 0;
-            });
             $("#state_select").val([]).trigger("change")
             $("#race_select").val([]).trigger("change")
             $("#tag_select").val([]).trigger("change")
@@ -170,6 +179,7 @@ var vue_app = new Vue({
             self.age = "";
             $('#start_date').datetimepicker('clear');
             $('#end_date').datetimepicker('clear');
+            this.filterShootings();
         },
         calculateNextYear: function() {
             /*Calculates the next year for setting the url of the Next Year button
@@ -258,186 +268,60 @@ var vue_app = new Vue({
             */
             return moment().format("YYYY")
         },
-        displayed_shootings: function() {
-            /*Calculates what shootings should be displayed to the user and returns the valid shootings
-				
-            Copies the list of shootings (so we don't affect the list)
-            Filters by text, then city, then states, then genders, then races of the shooting,
-            then tags, then start date, then end date, then orders them by the order attribute
-            */
-            var self = this;
-            var displayed_shootings = this.shootings.slice();
-            if (this.name.length > 0) {
-                displayed_shootings = displayed_shootings.filter(function(shooting) {
-                    if (shooting.name.toUpperCase().indexOf(self.name.toUpperCase()) > -1) {
-                        return true;
-                    } 
-                })
+        queryParams: function() {
+            data = {
+                "date__year": this.year,
+                orderBy: this.order,
+                pageSize: this.pageSize,
+                page: this.page,
             }
-            if (this.city.length > 0) {
-                displayed_shootings = displayed_shootings.filter(function(shooting) {
-                    if (shooting.city.toUpperCase().indexOf(self.city.toUpperCase()) > -1) {
-                        return true;
-                    } 
-                })
+            if (this.name && !this.noName) {
+                data["name__icontains"] = this.name;
+            }
+            if (this.city && !this.noCity) {
+                data["city__icontains"] = this.city;
             }
             if (this.states_selected.length > 0) {
-                displayed_shootings = displayed_shootings.filter(function(shooting) {
-                    if (self.states_selected.indexOf("" + shooting.state_value) > -1) {
-                        return true;
-                    }
-                })
+                data["state__in"] = JSON.stringify(this.states_selected);
             }
             if (this.genders_selected.length > 0) {
-                displayed_shootings = displayed_shootings.filter(function(shooting) {
-                    if (self.genders_selected.indexOf("" + shooting.gender_value) > -1) {
-                        return true;
-                    }
-                })
+                data["gender__in"] = JSON.stringify(this.genders_selected);
             }
             if (this.races_selected.length > 0) {
-                displayed_shootings = displayed_shootings.filter(function(shooting) {
-                    if (self.races_selected.indexOf("" + shooting.race_value) > -1) {
-                        return true;
-                    }
-                })
+                data["race__in"] = JSON.stringify(this.races_selected);
             }
             if (this.tags_selected.length > 0) {
-                displayed_shootings = displayed_shootings.filter(function(shooting) {
-                    for (var y = 0; y < shooting.tags.length; y++) {
-                        if (self.tags_selected.indexOf("" + shooting.tags[y].text) > -1) {
-                            return true;
-                        }
-                    }
-                })
+                data["tags__text__in"] = JSON.stringify(this.tags_selected);
             }
-            if (this.start_date.length != 0) {
-                displayed_shootings = displayed_shootings.filter(function(shooting) {
-                    var date = moment(shooting.date, "YYYY-MM-DD");
-                    if (self.start_date < date) {
-                        return true;
-                    }
-                })
+            if (this.start_date) {
+                data["date__gte"] = this.start_date.format("YYYY-MM-DD");
             }
-            if (this.end_date.length != 0) {
-                displayed_shootings = displayed_shootings.filter(function(shooting) {
-                    var date = moment(shooting.date, "YYYY-MM-DD");
-                    if (self.end_date > date) {
-                        return true;
-                    }
-                })
+            if (this.end_date) {
+                data["date__lte"] = this.end_date.format("YYYY-MM-DD");
             }
-            if (self.age.length != 0) {
-                if (!isNaN(self.age)) {
-                    displayed_shootings = displayed_shootings.filter(function(shooting) {
-                        if (self.age == shooting.age) {
-                            return true;
-                        }
-                    })
+            if (this.noName) {
+                data["name"] = "No Name";
+            }
+            if (this.noCity) {
+                data["city"] = "No City";
+            }
+            if (this.ageType == "range" && !this.noAge) {
+                if (this.lowerAge) {
+                    data["age__gte"] = this.lowerAge;
                 }
-                else if (self.age.toUpperCase() == "NO AGE") {
-                    displayed_shootings = displayed_shootings.filter(function(shooting) {
-                        if ("No Age" == shooting.age) {
-                            return true;
-                        }
-                    })
-                }
-                else if (self.age.indexOf("-") > -1) {
-                    // 1-15
-                    var ages = self.age.split("-")
-                    if (ages.length == 2 && !isNaN(ages[0] && !isNaN(ages[1]))) {
-                        displayed_shootings = displayed_shootings.filter(function(shooting) {
-                            if (ages[0] <= shooting.age && ages[1] >= shooting.age) {
-                                return true;
-                            }
-                        })
-                    }
-                }
-                else if (self.age.toLowerCase().indexOf("between") > -1 && self.age.toLowerCase().indexOf("and") > -1) {
-                    // between 1 and 15
-                    var age_string = self.age.toLowerCase();
-                    age_string = age_string.replace('between','')
-                    var ages = age_string.split("and")
-                    if (ages.length == 2 && !isNaN(ages[0] && !isNaN(ages[1]))) {
-                        displayed_shootings = displayed_shootings.filter(function(shooting) {
-                            if (ages[0] <= shooting.age && ages[1] >= shooting.age) {
-                                return true;
-                            }
-                        })
-                    }
+                if (this.upperAge) {
+                    data["age__lte"] = this.upperAge;
                 }
             }
-            if (self.order_attribute != "") {
-                order_order = self.order[self.order_attribute]; // 1 for ascending, -1 for descending
-                if (order_order == 1) {
-                    displayed_shootings.sort(function(a , b) {
-                        if (self.order_attribute == "date") {
-                            if (moment(a[self.order_attribute], "YYYY-MM-DD").isBefore(moment(b[self.order_attribute], "YYYY-MM-DD"))) {
-                                return 1;
-                            }
-                            else if (moment(b[self.order_attribute], "YYYY-MM-DD").isBefore(moment(a[self.order_attribute], "YYYY-MM-DD"))) {
-                                return -1;
-                            }
-                            return 0
-                        }
-                        else if (self.order_attribute == "age") {
-                            if (a[self.order_attribute] == "No Age" && b[self.order_attribute] != "No Age") {
-                                return -1;
-                            }
-                            else if (b[self.order_attribute] == "No Age" && a[self.order_attribute != "No Age"]) {
-                                return 1;
-                            }
-                             else if (a[self.order_attribute] < b[self.order_attribute]){
-                                return  -1;
-                            }
-                            else if (b[self.order_attribute] > a[self.order_attribute]) {
-                                return 1;
-                            }
-                            return 0;
-                        }
-                        else {
-                            return a[self.order_attribute].localeCompare(b[self.order_attribute])
-                        }
-                    });
-                    if (self.order_attribute == "age") {
-                        // not sure why, but age sorting doesn't work ascending, only descending.
-                        // so this is my workaround solution
-                        displayed_shootings = displayed_shootings.reverse()
-                    }
-                }
-                else {
-                    displayed_shootings.sort(function(a , b) {
-                        if (self.order_attribute == "date") {
-                            if (moment(a[self.order_attribute], "YYYY-MM-DD").isBefore(moment(b[self.order_attribute], "YYYY-MM-DD"))) {
-                                return -1;
-                            }
-                            else if (moment(b[self.order_attribute], "YYYY-MM-DD").isBefore(moment(a[self.order_attribute], "YYYY-MM-DD"))) {
-                                return 1;
-                            }
-                            return 0
-                        }
-                        else if (self.order_attribute == "age") {
-                            if (a[self.order_attribute] == "No Age" && b[self.order_attribute] != "No Age") {
-                                return -1;
-                            }
-                            else if (b[self.order_attribute] == "No Age" && a[self.order_attribute != "No Age"]) {
-                                return 1;
-                            }
-                             else if (a[self.order_attribute] < b[self.order_attribute]){
-                                return  -1;
-                            }
-                            else if (b[self.order_attribute] > a[self.order_attribute]) {
-                                return 1;
-                            }
-                            return 0;
-                        }
-                        else {
-                            return b[self.order_attribute].localeCompare(a[self.order_attribute])
-                        }
-                    })
+            else {
+                if (this.age) {
+                    data["age"] = this.age;
                 }
             }
-            return displayed_shootings
-        }
+            if (this.noAge) {
+                data["age"] = -1;
+            }
+            return data;
+        },
     }
 })
