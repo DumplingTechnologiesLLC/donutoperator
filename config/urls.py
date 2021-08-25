@@ -13,9 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.urls import include, path, re_path
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
+# from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from config.sitemaps import KillingsSitemap, BodycamSitemap
 from filebrowser.sites import site as filebrowser_site
@@ -27,30 +27,30 @@ sitemaps = {
     'bodycams': BodycamSitemap
 }
 
+
 urlpatterns = [
-    url(r'^sitemap\.xml$',
-        sitemap, {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap'),
-    url(r'^sitemap-(?P<section>.+)\.xml$', sitemap, {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap'),
-    url(r'^e1da49db34b0bdfdddaba2ad6552f848/$', sitemap, {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap'),
-    url(r'^robots\.txt', include('robots.urls')),
-    url(r'^api/documentation', APIList.as_view(), name="api-documentation"),
-    url(r'^admin/', admin.site.urls),
-    url(r'^docs/', include_docs_urls(title='PKBP API')),
-    url(r'^admin/filebrowser/', include(filebrowser_site.urls)),
-    url(r'^about/$', AboutPage.as_view(), name="about-page"),
-    url(r'^changelog/$', ChangeLog.as_view(), name="changelog"),
-    url(r'^login/$', auth_views.login, name='login'),
-    url(r'^logout/$', auth_views.logout,
-        {'next_page': '/'}, name='logout'),
-    url(r'^tinymce/', include('tinymce.urls')),
-    url("^grappelli/", include("grappelli.urls")),
-    url(r'^captcha/', include('captcha.urls')),
-    url(r'', include('roster.urls')),
-    url(r'', include('blog.urls')),
-    url(r'', include('bodycams.urls')),
+    re_path(r'^admin/filebrowser/', filebrowser_site.urls),
+    re_path(r'^sitemap\.xml$', sitemap, {
+            'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    re_path(r'^sitemap-(?P<section>.+)\.xml$', sitemap, {'sitemaps': sitemaps},
+            name='django.contrib.sitemaps.views.sitemap'),
+    re_path(r'^e1da49db34b0bdfdddaba2ad6552f848/$', sitemap, {'sitemaps': sitemaps},
+            name='django.contrib.sitemaps.views.sitemap'),
+    re_path(r'^robots\.txt', include('robots.urls')),
+    re_path(r'^api/documentation', APIList.as_view(),
+            name="api-documentation"),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^docs/', include_docs_urls(title='PKBP API')),
+    re_path(r'^about/$', AboutPage.as_view(), name="about-page"),
+    re_path(r'^changelog/$', ChangeLog.as_view(), name="changelog"),
+    re_path(r'^login/$', login, name='login'),
+    re_path(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
+    re_path(r'^tinymce/', include('tinymce.urls')),
+    re_path("^grappelli/", include("grappelli.urls")),
+    re_path(r'^captcha/', include('captcha.urls')),
+    re_path(r'', include('roster.urls')),
+    re_path(r'', include('blog.urls')),
+    re_path(r'', include('bodycams.urls')),
 ]
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # if settings.DEBUG:

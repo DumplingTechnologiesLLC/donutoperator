@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'grappelli',
     'filebrowser',
     'roster',
-    'widget_tweaks',
+    # 'widget_tweaks',
     'blog',
     'bodycams',
     'robots',
@@ -66,8 +66,6 @@ INSTALLED_APPS = [
     "rest_framework",
     'rules.apps.AutodiscoverRulesConfig',
 ]
-if LOCAL:
-    INSTALLED_APPS += ['django_extensions']
 if not DEBUG and not LOCAL:
     INSTALLED_APPS += ['storages']
 
@@ -75,6 +73,8 @@ AUTHENTICATION_BACKENDS = (
     'rules.permissions.ObjectPermissionBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 
 MIDDLEWARE = [
