@@ -1,0 +1,306 @@
+[
+  {
+    "date": "December 28, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Corey J. Achstein",
+    "age": 28,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.suffolknewsherald.com/2015/12/28/police-investigate-officer-involved-shooting/"
+    ]
+  },
+  {
+    "date": "December 19, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Trevon J. Scruggs",
+    "age": 24,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wdbj7.com/news/local/investigators-respond-to-standoff-in-campbell-county/37045958"
+    ]
+  },
+  {
+    "date": "December 14, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "James Paul Bertuglia",
+    "age": 40,
+    "tags": ["Restraint/Physical Force", "Chemical"],
+    "sources": [
+      "http://www.newsadvance.com/news/local/warrant-officers-deployed-tasers/article_a9e916f0-0dd3-5924-8cd7-60acc94506df.html"
+    ]
+  },
+  {
+    "date": "October 17, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Paterson Brown Jr.",
+    "age": 18,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.richmond.com/news/local/chesterfield/article_c725c915-9977-5246-be48-5a2b51f13953.html",
+      "http://www.richmond.com/news/local/crime/article_3d0f771c-ec00-5e08-bc14-880bb971b5e8.html"
+    ]
+  },
+  {
+    "date": "September 23, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Kenneth Ray Pinter Jr.",
+    "age": 45,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wsls.com/2015/09/24/grayson-county-deputy-involved-deadly-shooting/"
+    ]
+  },
+  {
+    "date": "September 20, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Michael Thomas Pierce, Jr.",
+    "age": 23,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.dnronline.com/article/hpd_officer_shooting",
+      "https://www.youtube.com/watch?v=oMo1htD0Fsg"
+    ]
+  },
+  {
+    "date": "September 6, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Angelo Delano Perry",
+    "age": 35,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wavy.com/2015/09/06/2-dead-after-officer-involved-shooting-in-va-beach/",
+      "https://www.youtube.com/watch?v=xfMpzBe1UzM"
+    ]
+  },
+  {
+    "date": "September 6, 2015",
+    "state": "VA",
+    "gender": 1,
+    "race": 2,
+    "name": "India Kager",
+    "age": 28,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wavy.com/2015/09/06/2-dead-after-officer-involved-shooting-in-va-beach/",
+      "https://www.youtube.com/watch?v=xfMpzBe1UzM"
+    ]
+  },
+  {
+    "date": "August 23, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Kenneth Henry Morgan",
+    "age": 64,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.fredericksburg.com/news/crime_courts/man-with-knife-shot-killed-by-king-george-deputy/article_f893b988-49b0-11e5-9210-23429a121796.html"
+    ]
+  },
+  {
+    "date": "August 19, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "No Name",
+    "age": -1,
+    "tags": ["Restraint/Physical Force"],
+    "sources": [
+      "http://pilotonline.com/news/local/crime/portsmouth-prosecutor-calls-for-special-grand-jury-in-jamycheal-mitchell/article_073247b6-e1d8-5856-969a-d49e51be450b.html"
+    ]
+  },
+  {
+    "date": "August 5, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Keshawn D. Hargrove",
+    "age": 20,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.richmond.com/news/local/crime/article_365ac55a-e6eb-5338-9718-d0e85151df09.html"
+    ]
+  },
+  {
+    "date": "August 4, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Franklin M. Short",
+    "age": 71,
+    "tags": ["Gun"],
+    "sources": ["http://wtvr.com/2015/08/04/powhatan-sheriff-shooting/"]
+  },
+  {
+    "date": "July 4, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Kawanza Jamaal Beaty",
+    "age": 23,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.dailypress.com/news/newport-news/dp-officer-involved-shooting-in-newport-news-leaves-victim-dead-20150704-story.html"
+    ]
+  },
+  {
+    "date": "June 24, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Damien A. Harrell",
+    "age": 26,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wavy.com/2015/06/24/deputy-involved-shooting-closes-part-of-ft-eustis-in-york-county/"
+    ]
+  },
+  {
+    "date": "May 25, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Thomas R. Ramey",
+    "age": 64,
+    "tags": ["Vehicle"],
+    "sources": [
+      "http://www.shenvalleynow.com/news/article/luray_couple_dies_in_memorial_day_crash"
+    ]
+  },
+  {
+    "date": "May 25, 2015",
+    "state": "VA",
+    "gender": 1,
+    "race": 4,
+    "name": "Barbara V. Ramey",
+    "age": 64,
+    "tags": ["Vehicle"],
+    "sources": [
+      "http://www.shenvalleynow.com/news/article/luray_couple_dies_in_memorial_day_crash"
+    ]
+  },
+  {
+    "date": "May 19, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 5,
+    "name": "Alfredo Rials-Torres",
+    "age": 54,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.arlnow.com/2015/05/19/breaking-officer-involved-shooting-in-buckingham/"
+    ]
+  },
+  {
+    "date": "May 5, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Robert Frost",
+    "age": 46,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wsls.com/story/28977735/vsp-investigating-officer-involved-shooting-in-pulaski"
+    ]
+  },
+  {
+    "date": "April 30, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Jeffery O. Adkins",
+    "age": 53,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.13newsnow.com/story/news/local/virginia/2015/04/30/greensville-co-man-killed-in-officer-involved-shooting/26633591/"
+    ]
+  },
+  {
+    "date": "April 22, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "William L. Chapman II",
+    "age": 18,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.13newsnow.com/story/news/local/mycity/portsmouth/2015/04/22/shooting-at-portsmouth-walmart/26169939/",
+      "http://wavy.com/2016/09/15/portsmouth-reaches-agreement-with-family-of-william-chapman/"
+    ]
+  },
+  {
+    "date": "April 3, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Christopher A. Prevatt",
+    "age": 38,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.your4state.com/story/d/story/officer-involved-shooting-in-frederick-county-va/44206/kxs_nGb-a0avHXjp20EB1w"
+    ]
+  },
+  {
+    "date": "March 30, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Dominick R. Wise",
+    "age": 30,
+    "tags": ["Taser", "Restraint/Physical Force"],
+    "sources": [
+      "http://www.fredericksburg.com/news/crime_courts/culpeper-man-dies-after-being-tasered-by-police/article_46debc2a-d727-11e4-a18f-5b06a6f5b1bd.html"
+    ]
+  },
+  {
+    "date": "March 24, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Walter Brown III",
+    "age": 29,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wavy.com/2015/03/24/portsmouth-police-confirm-officer-involved-shooting/"
+    ]
+  },
+  {
+    "date": "February 8, 2015",
+    "state": "VA",
+    "gender": 1,
+    "race": 2,
+    "name": "Natasha McKenna",
+    "age": 37,
+    "tags": ["Taser", "Restraint/Physical Force"],
+    "sources": [
+      "http://www.washingtonpost.com/local/crime/woman-dies-after-a-stun-gun-was-used-on-her-in-the-fairfax-county-jail/2015/02/08/14a7f498-4987-4e47-be50-5d31b39825ef_story.html",
+      "http://www.wusa9.com/story/news/local/virginia/2015/09/10/video-released-deputies-restraining-inmate-before-death/72010328/"
+    ]
+  },
+  {
+    "date": "January 15, 2015",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Mario A. Jordan",
+    "age": 34,
+    "tags": ["Gun"],
+    "sources": [
+      "http://hamptonroads.com/2015/01/man-dies-after-exchange-gunfire-chesapeake-police"
+    ]
+  }
+]

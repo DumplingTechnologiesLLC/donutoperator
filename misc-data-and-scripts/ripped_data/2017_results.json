@@ -1,0 +1,364 @@
+[
+  {
+    "date": "December 27, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "Kenneth J. Perna-Rutsky",
+    "age": 38,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.richmond.com/news/local/chesterfield/update-chesterfield-police-id-dead-gunman-who-had-exchanged-fire/article_ba1e7368-8ca0-565e-83c5-bea313729783.html"
+    ]
+  },
+  {
+    "date": "December 15, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Robert Allen Morrison",
+    "age": 57,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wdbj7.com/content/news/Police-Investigating-armed-robbery-in-Lexington--464414033.html"
+    ]
+  },
+  {
+    "date": "December 5, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Johnnie D. Carter",
+    "age": 24,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wset.com/news/local/police-officer-involved-shooting-leaves-man-dead-in-henry-co"
+    ]
+  },
+  {
+    "date": "November 27, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 7,
+    "name": "Bijan C. Ghaisar",
+    "age": 25,
+    "tags": ["Gun"],
+    "sources": [
+      "http://coveringthecorridor.com/2017/11/report-man-shot-by-park-police-on-fort-hunt-road-dies/"
+    ]
+  },
+  {
+    "date": "November 27, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 5,
+    "name": "Jacob L. Baumgart",
+    "age": 15,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.richmond.com/news/local/crime/off-duty-richmond-police-officer-wounded-teenager-killed-in-early/article_935f2ecb-3b76-503f-b210-4909070626eb.html"
+    ]
+  },
+  {
+    "date": "November 14, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Antonio T. Green",
+    "age": 47,
+    "tags": ["Vehicle"],
+    "sources": [
+      "https://wtop.com/local/2017/11/police-pedestrian-struck-and-killed-by-police-vehicle/"
+    ]
+  },
+  {
+    "date": "November 8, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Victor Bray",
+    "age": 31,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wset.com/news/local/breaking-roanoke-police-on-scene-in-roanoke"
+    ]
+  },
+  {
+    "date": "November 6, 2017",
+    "state": "VA",
+    "gender": 1,
+    "race": 4,
+    "name": "Pamela L. Webber",
+    "age": 54,
+    "tags": ["Gun"],
+    "sources": [
+      "https://www.wsls.com/news/virginia/lynchburg/update-woman-killed-in-officer-involved-shooting-in-lynchburg"
+    ]
+  },
+  {
+    "date": "October 17, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "DeAndre Bethea",
+    "age": 24,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wric.com/2017/10/18/officer-involved-shooting-investigation-underway-at-hampton-convenience-store/"
+    ]
+  },
+  {
+    "date": "October 13, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "J.C. Hawkins Jr.",
+    "age": 42,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.nbc29.com/story/36591949/charlottesville-police-suspect-dies-in-officer-involved-shooting-near-rivanna-trail"
+    ]
+  },
+  {
+    "date": "October 9, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "Robert Avendano",
+    "age": -1,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wcyb.com/news/virginia/washington-county-va/suspectkilled-in-washington-county-va-officer-involved-shooting/634584999"
+    ]
+  },
+  {
+    "date": "September 19, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Jimmie Knight Smith",
+    "age": 55,
+    "tags": ["Gun"],
+    "sources": [
+      "https://www.wsls.com/news/virginia/southwest-virginia/officer-involved-shooting-in-grayson-county"
+    ]
+  },
+  {
+    "date": "September 15, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "Ruben Chavira Urbina",
+    "age": 15,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.fauquier.com/prince_william_times/news/updated-teenager-dead-after-police-involved-shooting-in-haymarket/article_8707f1f6-9a32-11e7-b530-bbb63eb1df09.html"
+    ]
+  },
+  {
+    "date": "July 25, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Alexander J. Schoessel",
+    "age": 23,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.richmond.com/news/local/crime/police-suspect-wielding-knife-ax-killed-after-confrontation-with-officers/article_50245fb9-761d-5423-9abc-bad546c8ef13.html"
+    ]
+  },
+  {
+    "date": "July 17, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Eric Wesley Clark",
+    "age": 43,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.fredericksburg.com/news/crime_courts/culpeper-deputies-shoot-driver-who-presented-deadly-threat/article_5a555c8e-6bbb-11e7-987b-279185929a69.html"
+    ]
+  },
+  {
+    "date": "July 17, 2017",
+    "state": "VA",
+    "gender": 1,
+    "race": 2,
+    "name": "India Nichole Nelson",
+    "age": 25,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.13newsnow.com/news/police-investigate-shooting-outside-of-naval-station-norfolk/457458135"
+    ]
+  },
+  {
+    "date": "July 2, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Tyson Chad Williams",
+    "age": 39,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wtkr.com/2017/07/03/norfolk-police-officer-shot-suspect-killed-in-ocean-view-shooting/"
+    ]
+  },
+  {
+    "date": "June 14, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "James T. Hodgkinson",
+    "age": 66,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.cbsnews.com/news/james-t-hodgkinson-identified-as-suspect-in-alexandria-shooting/"
+    ]
+  },
+  {
+    "date": "May 18, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Daniel George Boak",
+    "age": 28,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.nbcwashington.com/news/local/One-Shot-Officer-Injured-in-Arlington-422840974.html"
+    ]
+  },
+  {
+    "date": "May 15, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Jaison Fitzgerald",
+    "age": 29,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wtvr.com/2017/05/15/police-investigating-officer-involved-shooting-in-richmond/"
+    ]
+  },
+  {
+    "date": "May 14, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "James A. Burton Sr.",
+    "age": 48,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wsls.com/news/virginia/new-river-valley/police-involved-in-standoff-in-pulaski"
+    ]
+  },
+  {
+    "date": "May 6, 2017",
+    "state": "VA",
+    "gender": 1,
+    "race": 4,
+    "name": "Mary Oakes Babcock",
+    "age": 36,
+    "tags": ["Vehicle"],
+    "sources": [
+      "http://wric.com/2017/05/06/henrico-police-investigating-after-officer-kills-two-pedestrians/"
+    ]
+  },
+  {
+    "date": "May 6, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "James Alan Joyce Jr.",
+    "age": 37,
+    "tags": ["Vehicle"],
+    "sources": [
+      "http://wric.com/2017/05/06/henrico-police-investigating-after-officer-kills-two-pedestrians/"
+    ]
+  },
+  {
+    "date": "April 29, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Caleb Jackson, Jr.",
+    "age": 35,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.13newsnow.com/news/local/mycity/newport-news/officer-involved-in-shooting-in-newport-news/435151201"
+    ]
+  },
+  {
+    "date": "March 8, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Clifton Antwone Watts",
+    "age": 30,
+    "tags": ["Restraint/Physical Force"],
+    "sources": [
+      "http://www.roanoke.com/news/crime/roanoke/state-police-investigating-after-man-dies-in-roanoke-police-custody/article_ba509d5a-b2cd-50ca-a41f-cdbec89383eb.html"
+    ]
+  },
+  {
+    "date": "February 24, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Robert Colton Wright",
+    "age": 22,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.13newsnow.com/news/police-on-scene-at-nas-oceana/414548851"
+    ]
+  },
+  {
+    "date": "January 24, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Sabin Marcus Jones",
+    "age": 45,
+    "tags": ["Taser", "Restraint/Physical Force"],
+    "sources": [
+      "http://www.nbc12.com/story/34345766/va-man-with-schizophrenia-dies-after-being-shot-with-taser-by-law-enforcement"
+    ]
+  },
+  {
+    "date": "January 19, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "William D. Fisher",
+    "age": 49,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wric.com/2017/01/20/caroline-county-deputy-under-investigation-after-shooting-killing-man/"
+    ]
+  },
+  {
+    "date": "January 17, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Rodney L. Hoback Jr.",
+    "age": 26,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wset.com/news/local/man-shot-by-giles-county-deputy-dies-from-his-injuries"
+    ]
+  },
+  {
+    "date": "January 16, 2017",
+    "state": "VA",
+    "gender": 0,
+    "race": 7,
+    "name": "Mohammad Azim Doudzai",
+    "age": 32,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wjla.com/news/local/2-people-shot-in-domestic-related-shooting-in-herndon-2-alarm-fire-on-same-block",
+      "https://www.youtube.com/watch?v=HCFJwASeylU",
+      "https://www.youtube.com/watch?v=pXHblZs9Tsw"
+    ]
+  }
+]

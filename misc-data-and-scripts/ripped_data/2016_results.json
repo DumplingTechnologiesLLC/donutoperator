@@ -1,0 +1,293 @@
+[
+  {
+    "date": "August 21, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Brandon Coles",
+    "age": 25,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wtvr.com/2016/08/21/allen-drive-fatal-shooting/",
+      "http://www.richmond.com/news/local/crime/article_0b970859-1dfb-5652-949e-25cb191402f8.html"
+    ]
+  },
+  {
+    "date": "August 16, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 5,
+    "name": "Yovani Amaya Gomez",
+    "age": 29,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.nbcwashington.com/news/local/Deputy-Involved-Shooting-Reported-at-Inova-Fairfax-Hospital-390275431.html"
+    ]
+  },
+  {
+    "date": "August 5, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Johannes M. Wood",
+    "age": 58,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.loudountimes.com/news/article/developing_loudoun_county_deputy_fatally_shoots_man_with_a_knife_in_aldie43"
+    ]
+  },
+  {
+    "date": "August 4, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "E.J. Walters Jr.",
+    "age": 69,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wate.com/2016/08/05/suspect-flees-hawkins-county-fatally-wounded-in-virginia/"
+    ]
+  },
+  {
+    "date": "August 1, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Kenneth Eugene Bonanno",
+    "age": 65,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.fredericksburg.com/townnews/police/man-shot-and-killed-by-stafford-deputies/article_920e30fa-bfb6-59c9-b499-606df45e998c.html",
+      "http://www.fredericksburg.com/news/crime_courts/stafford-commonwealth-s-attorney-clears-deputies-involved-in-fatal-shooting/article_a9f44910-5090-50b2-9a36-560b00e4ef11.html"
+    ]
+  },
+  {
+    "date": "June 7, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Willis N. Walker Jr.",
+    "age": 49,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.newsplex.com/content/news/2-dead-following-officer-involved-incident-in-Culpeper-County-382191061.html"
+    ]
+  },
+  {
+    "date": "June 2, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Willie Demetrius James",
+    "age": 43,
+    "tags": ["Gun"],
+    "sources": [
+      "http://pilotonline.com/news/local/crime/man-shot-and-killed-by-police-in-norfolk-police-say/article_77ad85c6-c5b6-5278-89a9-e9f5d67c92e1.html"
+    ]
+  },
+  {
+    "date": "May 7, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Robert E. Crittsinger Jr.",
+    "age": 79,
+    "tags": ["Vehicle"],
+    "sources": [
+      "http://wavy.com/2016/05/07/fatal-wreck-involving-police-cruiser-in-norfolk/"
+    ]
+  },
+  {
+    "date": "April 26, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Joshua Brooks",
+    "age": 26,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wavy.com/2016/04/27/man-shot-after-chesapeake-police-return-gunfire/"
+    ]
+  },
+  {
+    "date": "April 23, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Eric C. Wakup",
+    "age": 30,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.13newsnow.com/news/police-negotiators-respond-to-barricade-situation-in-norfolk/150086792"
+    ]
+  },
+  {
+    "date": "April 20, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Paul Arthur Gianelos",
+    "age": 45,
+    "tags": ["Restraint/Physical Force"],
+    "sources": [
+      "http://www.fairfaxtimes.com/articles/fairfax_county/death-investigation-in-mason-district-man-dies-after-struggle-with/article_0f8de6fa-072e-11e6-99a9-9fc362d989d0.html"
+    ]
+  },
+  {
+    "date": "April 2, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 1,
+    "name": "Jeffrey Ponce Aguilar",
+    "age": 26,
+    "tags": ["Vehicle"],
+    "sources": [
+      "http://wtop.com/fairfax-county/2016/04/police-pedestrian-dies-after-hit-by-patrol-car-in-franconia/"
+    ]
+  },
+  {
+    "date": "March 31, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "James Brown III",
+    "age": 34,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.richmond.com/news/local/crime/article_4f1d910e-d3a6-58e3-98a0-7e24a76977f1.html"
+    ]
+  },
+  {
+    "date": "March 26, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Terrance Blackburn",
+    "age": 36,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wset.com/news/local/virginia-state-police-investigating-fatal-officer-involved-shooting-in-buchanan-county"
+    ]
+  },
+  {
+    "date": "March 22, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Travis J. Blair",
+    "age": 33,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.fredericksburg.com/news/crime_courts/fredericksburg-police-involved-in-shooting/article_6f90fd72-f058-11e5-b03d-c70d5d029629.html"
+    ]
+  },
+  {
+    "date": "March 20, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Boyd Keith Ballard",
+    "age": 61,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wlox.com/story/31521884/hopewell-police-identify-man-killed-in-officer-involved-shooting"
+    ]
+  },
+  {
+    "date": "March 19, 2016",
+    "state": "VA",
+    "gender": 1,
+    "race": 2,
+    "name": "India Beaty",
+    "age": 25,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wavy.com/2016/03/19/norfolk-police-shoot-kill-allegedly-armed-woman/"
+    ]
+  },
+  {
+    "date": "March 11, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Tyre Privott",
+    "age": 25,
+    "tags": ["Gun"],
+    "sources": [
+      "http://pilotonline.com/news/local/crime/one-person-dead-in-police-officer-involved-shooting-in-norfolk/article_fabfcbc2-be4e-5b55-8315-b88aadf3e059.html"
+    ]
+  },
+  {
+    "date": "March 5, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Evan Ezekiel Joseph",
+    "age": 38,
+    "tags": ["Gun"],
+    "sources": [
+      "http://stcroixsource.com/content/news/local-news/2016/03/05/st-thomas-man-dies-after-encounter-vi-police"
+    ]
+  },
+  {
+    "date": "February 26, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Kionte Desean Spencer",
+    "age": 18,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.roanoke.com/news/crime/roanoke_county/roanoke-county-police-shoot-person-reported-to-be-armed/article_d9686890-549f-5171-9bae-ec7681b79029.html"
+    ]
+  },
+  {
+    "date": "February 13, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Dyzhawn L. Perkins",
+    "age": 19,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wric.com/2016/02/13/19-year-old-dead-after-police-involved-shooting/"
+    ]
+  },
+  {
+    "date": "January 12, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Keith Richardson",
+    "age": 58,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wtkr.com/2016/01/10/police-on-scene-of-barricade-situation-in-norfolk-2/",
+      "https://www.youtube.com/watch?v=JNhAT1QwM9k"
+    ]
+  },
+  {
+    "date": "January 9, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Gregory Lee Hill",
+    "age": 26,
+    "tags": ["Restraint/Physical Force", "Chemical"],
+    "sources": [
+      "http://www.richmond.com/news/local/article_3f237902-73c3-53bc-8a12-4c88e0b43aa0.html"
+    ]
+  },
+  {
+    "date": "January 9, 2016",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Avery Etienne Charlery",
+    "age": 26,
+    "tags": ["Gun"],
+    "sources": [
+      "http://viconsortium.com/featured/two-die-in-shootout-outside-eclipse-nightclub-in-st-thomas/"
+    ]
+  }
+]
