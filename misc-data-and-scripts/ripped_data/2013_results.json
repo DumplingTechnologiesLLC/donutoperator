@@ -1,0 +1,173 @@
+[
+  {
+    "date": "November 19, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Joshua Hathaway",
+    "age": 19,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wset.com/story/24006538/update-expecting-more-information-soon-about-lu-dorm-shooting"
+    ]
+  },
+  {
+    "date": "October 31, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "Shane Whitworth",
+    "age": 30,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wtkr.com/2013/10/30/beach-police-investigate-shooting-after-barricade-situation/"
+    ]
+  },
+  {
+    "date": "October 30, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "James Bryant",
+    "age": 28,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wjla.com/articles/2013/10/man-shot-killed-by-officer-at-homeless-shelter-near-fort-belvoir-96190.html"
+    ]
+  },
+  {
+    "date": "October 26, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "Jonathan Robertson",
+    "age": 32,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wvva.com/story/23797507/eyewitness-shots-fired-between-police-truck-in-pearisburg"
+    ]
+  },
+  {
+    "date": "September 14, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "Courtney Andrew Hollomon",
+    "age": 30,
+    "tags": ["Gun"],
+    "sources": [
+      "http://hamptonroads.com/2013/09/police-offduty-cop-shoots-kills-robber-va-beach"
+    ]
+  },
+  {
+    "date": "August 30, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "John Geer",
+    "age": 46,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.nbcwashington.com/news/local/Shots-Fired-at-Springfield-Va-Home-221693811.html",
+      "http://wjla.com/news/local/ex-officer-adam-torres-sentenced-to-one-year-in-jail-for-shooting-killing-john-geer"
+    ]
+  },
+  {
+    "date": "August 10, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "James William Wallace",
+    "age": 31,
+    "tags": ["Gun"],
+    "sources": [
+      "http://hamptonroads.com/2013/08/man-killed-deputyinvolved-isle-wight-shooting"
+    ]
+  },
+  {
+    "date": "June 18, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Marlon Jermaine Dixon",
+    "age": 41,
+    "tags": ["Restraint/Physical Force"],
+    "sources": [
+      "http://wtkr.com/2013/06/18/breaking-man-dies-while-police-try-to-place-him-in-emergency-custody/"
+    ]
+  },
+  {
+    "date": "June 8, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Gregory Rosson, Jr.",
+    "age": 21,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.newsleader.com/article/20130608/NEWS01/306080016/Officer-shoots-kills-Afton"
+    ]
+  },
+  {
+    "date": "May 29, 2013",
+    "state": "VA",
+    "gender": 1,
+    "race": 1,
+    "name": "Mhai Scott",
+    "age": 38,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.washingtonpost.com/local/deputy-woman-shot-at-costco-in-loudoun-county/2013/05/29/e5c4656a-c897-11e2-9245-773c0123c027_story.html"
+    ]
+  },
+  {
+    "date": "May 22, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Julian Dawkins",
+    "age": 22,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wjla.com/articles/2013/05/fatal-shooting-in-alexandria-was-police-involved-shooting-89122.html"
+    ]
+  },
+  {
+    "date": "May 21, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Anthony Michael Bland",
+    "age": 26,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wydaily.com/2013/05/21/jcc-police-identify-man-shot-killed-by-officer/"
+    ]
+  },
+  {
+    "date": "May 20, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Joshua Johnson",
+    "age": 22,
+    "tags": ["Gun"],
+    "sources": [
+      "http://hamptonroads.com/2013/05/police-officer-injured-suspect-dead-norfolk-shooting"
+    ]
+  },
+  {
+    "date": "May 5, 2013",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Linwood R. Lambert Jr.",
+    "age": 46,
+    "tags": ["Restraint/Physical Force", "Taser"],
+    "sources": [
+      "http://www.sovanow.com/index.php?/news/article/state_police_probe_death_of_man_in_south_boston_police_custody",
+      "http://www.msnbc.com/msnbc-news/watch/linwood-lamberts-encounter-with-virginia-police-564497987647",
+      "http://wtvr.com/2016/09/22/federal-review-clears-va-officers-who-tasered-man-20-times-before-death/"
+    ]
+  }
+]

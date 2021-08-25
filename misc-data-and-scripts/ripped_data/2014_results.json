@@ -1,0 +1,170 @@
+[
+  {
+    "date": "October 28, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Richard Thomas Bergeron",
+    "age": 37,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wdbj7.com/news/local/lynchburg-bedford/deputy-involved-in-bedford-county-shooting/29390802"
+    ]
+  },
+  {
+    "date": "October 20, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "Gary E. Lee",
+    "age": 54,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.timesdispatch.com/news/local/central-virginia/affidavit-man-killed-by-hopewell-police-shouted-he-had-killed/article_a8b637c5-fc2b-5307-b69b-5671bd5e9046.html"
+    ]
+  },
+  {
+    "date": "October 16, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Dennis G. Hoke, Jr.",
+    "age": 42,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.roanoke.com/news/crime/one-person-dead-following-officer-involved-shooting-in-augusta-county/article_efa66fe0-1d37-5c22-80c3-5e62b17e277d.html"
+    ]
+  },
+  {
+    "date": "October 2, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "Larry Allen Miller",
+    "age": 69,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wdbj7.com/news/local/new-river-valley/large-police-presence-in-stafford-drive-area-of-christiansburg/28371828"
+    ]
+  },
+  {
+    "date": "July 30, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 5,
+    "name": " David A. Mendoza",
+    "age": 32,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wdbj7.com/news/local/smith-mountain-lake/deputy-kills-man-who-broke-into-home-held-woman-at-gunpoint-in-shower/27221348"
+    ]
+  },
+  {
+    "date": "July 8, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": " Dennis Morrell",
+    "age": 55,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wcyb.com/news/standoff-underway-in-washington-county-va/26847554"
+    ]
+  },
+  {
+    "date": "July 5, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 6,
+    "name": "O'Benson Antoine",
+    "age": 23,
+    "tags": ["Gun"],
+    "sources": [
+      "http://virginislandsdailynews.com/news/v-i-officer-kills-man-on-st-thomas-1.1714116"
+    ]
+  },
+  {
+    "date": "June 27, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Michael Huffman",
+    "age": 56,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.wcyb.com/news/shooting-investigated-in-damascus/26694690"
+    ]
+  },
+  {
+    "date": "June 7, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "David Latham",
+    "age": 35,
+    "tags": ["Gun"],
+    "sources": [
+      "http://pilotonline.com/news/local/crime/norfolk-officer-found-not-guilty-of-manslaughter-in-mentally-ill/article_c8d0b268-8876-5456-9e4d-ee3bc54551a8.html"
+    ]
+  },
+  {
+    "date": "June 4, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Lawrence H. Faine",
+    "age": 72,
+    "tags": ["Gun"],
+    "sources": [
+      "http://wavy.com/2014/06/04/suspect-injured-in-officer-involved-shooting/"
+    ]
+  },
+  {
+    "date": "May 31, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "James Andrew Brown II",
+    "age": 29,
+    "tags": ["Gun"],
+    "sources": [
+      "http://hamptonroads.com/2014/05/two-officers-are-shot-one-suspect-dead-norfolk"
+    ]
+  },
+  {
+    "date": "May 24, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 5,
+    "name": "Christian Alberto Sierra",
+    "age": 17,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.leesburgtoday.com/news/purcellville-police-officer-involved-in-fatal-shooting/article_f6a67d28-e38f-11e3-a4a5-0019bb2963f4.html"
+    ]
+  },
+  {
+    "date": "May 18, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 4,
+    "name": "Thomas Neil Saunders",
+    "age": 47,
+    "tags": ["Gun"],
+    "sources": [
+      "http://www.nbc12.com/story/25547986/giles-county-officer-involved-shooting"
+    ]
+  },
+  {
+    "date": "April 28, 2014",
+    "state": "VA",
+    "gender": 0,
+    "race": 2,
+    "name": "Clyde Norford",
+    "age": 31,
+    "tags": ["Gun"],
+    "sources": [
+      "http://virginislandsdailynews.com/news/police-id-man-killed-by-officer-1.1676304"
+    ]
+  }
+]
