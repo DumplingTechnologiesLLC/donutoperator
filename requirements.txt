@@ -13,3 +13,4 @@ coreapi
 # coreapi-cli
 dj-database-url
 boto3
+django-simple-captcha
