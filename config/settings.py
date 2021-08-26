@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'grappelli',
     'filebrowser',
     'roster',
-    # 'widget_tweaks',
+    'widget_tweaks',
     'blog',
     'bodycams',
     'robots',
