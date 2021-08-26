@@ -9,75 +9,139 @@ User = get_user_model()
 
 
 class Shooting(models.Model):
+    AL = 0
+    AK = 1
+    AZ = 2
+    AR = 3
+    CA = 4
+    CO = 5
+    CT = 6
+    DE = 7
+    FL = 8
+    GA = 9
+    HI = 10
+    ID = 11
+    IL = 12
+    IN = 13
+    IA = 14
+    KS = 15
+    KY = 16
+    LA = 17
+    ME = 18
+    MD = 19
+    MA = 20
+    MI = 21
+    MN = 22
+    MS = 23
+    MO = 24
+    MT = 25
+    NE = 26
+    NV = 27
+    NH = 28
+    NJ = 29
+    NM = 30
+    NY = 31
+    NC = 32
+    ND = 33
+    OH = 34
+    OK = 35
+    OR = 36
+    PA = 37
+    RI = 38
+    SC = 39
+    SD = 40
+    TN = 41
+    TX = 42
+    UT = 43
+    VT = 44
+    VA = 45
+    WA = 46
+    WV = 47
+    WI = 48
+    WY = 49
+    DC = 50
+    PR = 51
+    GU = 52
     STATE_CHOICES = (
-        (0, "AL"),
-        (1, "AK"),
-        (2, "AZ"),
-        (3, "AR"),
-        (4, "CA"),
-        (5, "CO"),
-        (6, "CT"),
-        (7, "DE"),
-        (8, "FL"),
-        (9, "GA"),
-        (10, "HI"),
-        (11, "ID"),
-        (12, "IL"),
-        (13, "IN"),
-        (14, "IA"),
-        (15, "KS"),
-        (16, "KY"),
-        (17, "LA"),
-        (18, "ME"),
-        (19, "MD"),
-        (20, "MA"),
-        (21, "MI"),
-        (22, "MN"),
-        (23, "MS"),
-        (24, "MO"),
-        (25, "MT"),
-        (26, "NE"),
-        (27, "NV"),
-        (28, "NH"),
-        (29, "NJ"),
-        (30, "NM"),
-        (31, "NY"),
-        (32, "NC"),
-        (33, "ND"),
-        (34, "OH"),
-        (35, "OK"),
-        (36, "OR"),
-        (37, "PA"),
-        (38, "RI"),
-        (39, "SC"),
-        (40, "SD"),
-        (41, "TN"),
-        (42, "TX"),
-        (43, "UT"),
-        (44, "VT"),
-        (45, "VA"),
-        (46, "WA"),
-        (47, "WV"),
-        (48, "WI"),
-        (49, "WY"),
-        (50, "DC"),
-        (51, "PR"),
-        (52, "GU"),
+        (AL, "AL"),
+        (AK, "AK"),
+        (AZ, "AZ"),
+        (AR, "AR"),
+        (CA, "CA"),
+        (CO, "CO"),
+        (CT, "CT"),
+        (DE, "DE"),
+        (FL, "FL"),
+        (GA, "GA"),
+        (HI, "HI"),
+        (ID, "ID"),
+        (IL, "IL"),
+        (IN, "IN"),
+        (IA, "IA"),
+        (KS, "KS"),
+        (KY, "KY"),
+        (LA, "LA"),
+        (ME, "ME"),
+        (MD, "MD"),
+        (MA, "MA"),
+        (MI, "MI"),
+        (MN, "MN"),
+        (MS, "MS"),
+        (MO, "MO"),
+        (MT, "MT"),
+        (NE, "NE"),
+        (NV, "NV"),
+        (NH, "NH"),
+        (NJ, "NJ"),
+        (NM, "NM"),
+        (NY, "NY"),
+        (NC, "NC"),
+        (ND, "ND"),
+        (OH, "OH"),
+        (OK, "OK"),
+        (OR, "OR"),
+        (PA, "PA"),
+        (RI, "RI"),
+        (SC, "SC"),
+        (SD, "SD"),
+        (TN, "TN"),
+        (TX, "TX"),
+        (UT, "UT"),
+        (VT, "VT"),
+        (VA, "VA"),
+        (WA, "WA"),
+        (WV, "WV"),
+        (WI, "WI"),
+        (WY, "WY"),
+        (DC, "DC"),
+        (PR, "PR"),
+        (GU, "GU"),
     )
+    MALE = 0
+    FEMALE = 1
+    UNKNOWN_GENDER = 2
     GENDER_CHOICES = (
-        (0, "Male"),
-        (1, "Female"),
-        (2, "Unknown")
+        (MALE, "Male"),
+        (FEMALE, "Female"),
+        (UNKNOWN_GENDER, "Unknown")
     )
+    NATIVE_AMERICAN = 0
+    ASIAN = 1
+    BLACK = 2
+    PACIFIC_ISLANDER = 3
+    WHITE = 4
+    HISPANIC_LATINO = 5
+    NONE_GIVEN = 6
+    OTHER = 7
     RACE_CHOICES = (
-        (0, "Native American"),
-        (1, "Asian"),
-        (2, "Black"),
-        (3, "Native Hawaiian or Other Pacific Islander"),
-        (4, "White"),
-        (5, "Hispanic/Latino"),
-        (6, "None Given"),
-        (7, "Other"),
+        (NATIVE_AMERICAN, "Native American"),
+        (ASIAN, "Asian"),
+        (BLACK, "Black"),
+        (PACIFIC_ISLANDER, "Native Hawaiian or Other Pacific Islander"),
+        (WHITE, "White"),
+        (HISPANIC_LATINO, "Hispanic/Latino"),
+        (NONE_GIVEN, "None Given"),
+        (OTHER, "Other"),
     )
     has_bodycam = models.BooleanField("Has Bodycam", default=False)
     state = models.IntegerField("State", choices=STATE_CHOICES)
