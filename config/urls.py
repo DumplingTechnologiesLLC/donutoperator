@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import include, path, re_path
 from django.contrib import admin
-# from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.sitemaps.views import sitemap
 from config.sitemaps import KillingsSitemap, BodycamSitemap
 from filebrowser.sites import site as filebrowser_site
@@ -43,8 +43,9 @@ urlpatterns = [
     re_path(r'^docs/', include_docs_urls(title='PKBP API')),
     re_path(r'^about/$', AboutPage.as_view(), name="about-page"),
     re_path(r'^changelog/$', ChangeLog.as_view(), name="changelog"),
-    re_path(r'^login/$', login, name='login'),
-    re_path(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
+    re_path(r'^login/$', LoginView.as_view(), name='login'),
+    re_path(r'^logout/$', LogoutView.as_view(),
+            {'next_page': '/'}, name='logout'),
     re_path(r'^tinymce/', include('tinymce.urls')),
     re_path("^grappelli/", include("grappelli.urls")),
     re_path(r'^captcha/', include('captcha.urls')),

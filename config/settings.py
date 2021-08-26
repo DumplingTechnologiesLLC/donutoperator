@@ -109,7 +109,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
+LOGOUT_REDIRECT_URL = '/'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 if LOCAL:
