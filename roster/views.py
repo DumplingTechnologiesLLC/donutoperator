@@ -269,8 +269,10 @@ class ShootingsAPI(ListAPIView):
         limit = self.request.GET.get("limit", None)  # tested
         offset = self.request.GET.get("offset", None)  # tested
         shooting_id = self.request.GET.get("id", None)  # tested
-        tag_intersect = self.convert_to_bool(self.request.GET.get("tag_intersect", None))
-        tag_limit = self.convert_to_bool(self.request.GET.get("tag_limit", None))
+        tag_intersect = self.convert_to_bool(
+            self.request.GET.get("tag_intersect", None))
+        tag_limit = self.convert_to_bool(
+            self.request.GET.get("tag_limit", None))
         date_filtering_necesssary = True
 
         queryset = Shooting.objects.all().order_by("-date")
@@ -282,7 +284,8 @@ class ShootingsAPI(ListAPIView):
                 queryset = tags.first().shootings.all()
                 for t in tags:
                     if tag_intersect:
-                        queryset = queryset.intersection(queryset, t.shootings.all())
+                        queryset = queryset.intersection(
+                            queryset, t.shootings.all())
                     else:
                         queryset = queryset.union(queryset, t.shootings.all())
                 date_filtering_necesssary = False
@@ -343,7 +346,8 @@ class ShootingsAPI(ListAPIView):
                     queryset = queryset.filter(gender__in=corrected_genders)
             elif gender_lookup_table.get(gender) is not None:
                 date_filtering_necesssary = False
-                queryset = queryset.filter(gender=gender_lookup_table.get(gender))
+                queryset = queryset.filter(
+                    gender=gender_lookup_table.get(gender))
         if text is not None:
             date_filtering_necesssary = False
             queryset = queryset.filter(description__icontains=text)
@@ -351,7 +355,8 @@ class ShootingsAPI(ListAPIView):
             if "," in city:
                 date_filtering_necesssary = False
                 cities = city.split(",")
-                queryset = queryset.filter(city__iregex=r'(' + '|'.join(cities) + ')')
+                queryset = queryset.filter(
+                    city__iregex=r'(' + '|'.join(cities) + ')')
             elif city == "null":
                 date_filtering_necesssary = False
                 queryset = queryset.filter(city__isnull=True)
@@ -593,7 +598,10 @@ class Graphs(View):
                 "label": y["year"],
                 "data": y["sum"]
             })
-        oldest_age = shootings.latest("age").age
+        try:
+            oldest_age = shootings.latest("age").age
+        except Shooting.DoesNotExist:
+            oldest_age = -1
         ages = []
         for x in range(0, oldest_age):
             ages.append({
@@ -821,7 +829,8 @@ class TipPage(FormView):
     success_url = "/"
 
     def form_valid(self, form):
-        messages.success(self.request, "Thank you for the input, we will look into it.")
+        messages.success(
+            self.request, "Thank you for the input, we will look into it.")
         form.save()
         return super().form_valid(form)
 
@@ -832,7 +841,8 @@ class FeedbackPage(FormView):
     success_url = "/"
 
     def form_valid(self, form):
-        messages.success(self.request, "Thank you for the input, we will look into it.")
+        messages.success(
+            self.request, "Thank you for the input, we will look into it.")
         form.save()
         return super().form_valid(form)
 
@@ -872,7 +882,8 @@ class RosterListData(View):
         del data["pageSize"]
         del data["page"]
         shootings = Shooting.objects.filter(**data).order_by(order_by)
-        max_shootings = Shooting.objects.filter(date__year=data["date__year"]).count()
+        max_shootings = Shooting.objects.filter(
+            date__year=data["date__year"]).count()
         p = Paginator(shootings, page_size)
         if page < 1 or page > p.num_pages:
             page = 1
