@@ -36,7 +36,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     "www.peoplekilledbypolice.com",
     "donutoperator.herokuapp.com",
-    "4e6a5c03.ngrok.io"
+    "staging-donut-operator.herokuapp.com"
 ]
 
 
