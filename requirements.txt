@@ -12,3 +12,4 @@ django-storages
 coreapi
 # coreapi-cli
 dj-database-url
+boto3
