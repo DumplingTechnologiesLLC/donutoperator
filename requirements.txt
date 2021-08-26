@@ -11,3 +11,4 @@ django-robots
 django-storages
 coreapi
 # coreapi-cli
+dj-database-url
