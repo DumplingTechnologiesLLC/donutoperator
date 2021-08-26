@@ -16,3 +16,4 @@ boto3
 django-simple-captcha
 django-widget-tweaks
 psycopg2
+pylibmc
