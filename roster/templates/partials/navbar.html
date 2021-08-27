@@ -37,11 +37,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LL57BGWVQ3S3S&source=url" target="_blank">Support this Project</a>
             </li>
-             <li class="nav-item dropdown">
+             <li class="nav-item dropdown" >
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Website Feedback
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown2" style="left: unset; right: 0;">
                     <a class="dropdown-item" href="{% url 'roster:tip-page' %}">Submit Police Killing Tip</a>
                     <a class="dropdown-item" href="{% url 'roster:feedback-page' %}">Submit Website Feedback / Bug Report</a>
                 </div>
@@ -56,20 +56,20 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'roster:tip-list' %}">{{number_of_tips}} New Tips</a>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" >
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Admin Actions
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <button class="dropdown-item" onclick="$('#add_killing').modal('toggle')">Submit New Killing</button>
-                <button class="dropdown-item" onclick="$('#add_bodycam').modal('toggle')">Submit New Bodycam</button>
-                <a class="dropdown-item" href="{% url 'bodycams:dashboard' %}">Manage Bodycams</a>
-                {% has_perm 'core.can_make_articles' user as can_make_articles %}
-                {% if can_make_articles %}
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'blog:create' %}">Submit News Story</a>
-                <a class="dropdown-item" href="{% url 'blog:dashboard' %}">Manage Articles</a>
-                {% endif %}
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="left: unset; right: 0;">
+                    <button class="dropdown-item" onclick="$('#add_killing').modal('toggle')">Submit New Killing</button>
+                    <button class="dropdown-item" onclick="$('#add_bodycam').modal('toggle')">Submit New Bodycam</button>
+                    <a class="dropdown-item" href="{% url 'bodycams:dashboard' %}">Manage Bodycams</a>
+                    {% has_perm 'core.can_make_articles' user as can_make_articles %}
+                    {% if can_make_articles %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'blog:create' %}">Submit News Story</a>
+                    <a class="dropdown-item" href="{% url 'blog:dashboard' %}">Manage Articles</a>
+                    {% endif %}
                 </div>
             </li>
             {% endif %}
