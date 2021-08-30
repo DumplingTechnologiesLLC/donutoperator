@@ -6,12 +6,12 @@
                 v-bind:href="calculatePreviousYear()"
                 class="fa fa-chevron-left timeline-arrow"
                 id="timeline-arrow-left"
-                aria-hidden="true">
+                aria-label="Previous Year">
             </a>
             <div class="timeline-container">
                 <ul id="dates">
                     {% for for_year in valid_years %}
-                        <li id="timelineYear{{for_year}}"><a class="{% if for_year == year %}timeline-selected-year{% endif %}"href="{% url 'roster:date-index' date=for_year %}">{{for_year}}</a></li>
+                        <li id="timelineYear{{for_year}}"><a class="{% if for_year == year %}timeline-selected-year{% endif %}"href="{% url 'videos:date-index' date=for_year %}">{{for_year}}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -20,7 +20,7 @@
                 v-bind:href="calculateNextYear()"
                 class="fa fa-chevron-right timeline-arrow"
                 id="timeline-arrow-right"
-                aria-hidden="true">
+                aria-label="Next Year">
             </a>
           </div>
     </div>

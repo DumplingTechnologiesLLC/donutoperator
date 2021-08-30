@@ -11,7 +11,7 @@
             <div class="timeline-container">
                 <ul id="dates">
                     {% for for_year in valid_years %}
-                        <li id="timelineYear{{for_year}}"><a class="{% if for_year == year %}timeline-selected-year{% endif %}"href="{% url 'bodycams:dashboard-date' date=for_year %}">{{for_year}}</a></li>
+                        <li id="timelineYear{{for_year}}"><a class="{% if for_year == year %}timeline-selected-year{% endif %}"href="{% url 'videos:dashboard-date' date=for_year %}">{{for_year}}</a></li>
                     {% endfor %}
                 </ul>
             </div>

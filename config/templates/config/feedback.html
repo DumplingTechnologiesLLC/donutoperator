@@ -22,7 +22,7 @@
 				 	{% if forloop.first %}
 					<div class='form-group'>
 						<label for="">Found a bug? Hate the design? Want a new feature? Tell us about it.</label><br>
-						<small class="text-muted">Please do not use this form to submit tips about shootings we have missed. Feedback here is only seen by the development team, not the data curators. Use <a href="{% url 'roster:tip-page' %}">this</a> form instead.</small>
+						<small class="text-muted">Please do not use this form to submit tips about shootings we have missed. Feedback here is only seen by the development team, not the data curators. Use <a href="{% url 'videos:tip-page' %}">this</a> form instead.</small>
 						{% render_field form.text  style="resize: both;" class+="form-control" %}
 						<small class="text-muted">If you're submitting information about a bug, please include details about your browser, and what you did to find the bug, so we can replicate it.</small>
 					</div>

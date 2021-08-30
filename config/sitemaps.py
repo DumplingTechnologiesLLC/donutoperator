@@ -1,24 +1,11 @@
 from django.contrib.sitemaps import Sitemap
-from roster.models import Shooting
-from bodycams.models import Bodycam
+from videos.models import Video
 
 
-class KillingsSitemap(Sitemap):
-
-    def items(self):
-        return Shooting.objects.all().order_by("-date")
-
-    def lastmod(self, obj):
-        return obj.created
-
-    def changefreq(self, obj):
-        return "never"
-
-
-class BodycamSitemap(Sitemap):
+class VideoSitemap(Sitemap):
 
     def items(self):
-        return Bodycam.objects.all().order_by("-date")
+        return Video.objects.all().order_by("-date")
 
     def lastmod(self, obj):
         return obj.created

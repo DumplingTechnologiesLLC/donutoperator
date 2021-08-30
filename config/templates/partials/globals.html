@@ -1,0 +1,24 @@
+<script type="text/javascript">
+  const ALL_TAGS = [
+      {% for tag in all_tags %}
+      {
+          id: {{tag.id}},
+          value: `{{tag.text}}`,
+          display: `{{tag.text}}`
+      },
+      {% endfor %}
+  ];
+  const STATES = [
+      {% for state in states %}
+      {
+          value: `{{state.0}}`,
+          display: `{{state.1}}`
+      },
+      {% endfor %}
+  ]
+  {% if user.is_authenticated %}
+    var URLS = {
+    }
+    var CSRFMIDDLEWARETOKEN = "{{csrf_token}}";
+  {% endif %}
+</script>

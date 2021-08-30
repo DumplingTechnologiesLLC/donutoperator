@@ -1,0 +1,27 @@
+<div 
+  v-for="video in videos" 
+  class="card videocard">
+  <div class="card-header d-flex justify-content-center align-items-center">
+    <span>((video.date))</span>
+  </div>
+  <div class="card-body">
+    <p class="card-title text-center videotitle">((video.title))</p>
+    <a :href="video.video" target="_blank">
+      <img :src="generateThumbnail(video.video)" :alt="`${video.title} thumbnail`" @error="generateBackupThumbnail($event, video.video)">					    
+    </a>
+    <p>
+      (( video.description ))
+    </p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item justify-content-center align-items-center">
+      <span v-for="tag in video.tags" class="badge bg-primary videotag">((tag.text))</span>
+      <span v-if="video.tags.length == 0">No Tags Available</span>
+    </li>
+  </ul>
+  <div class="card-footer text-muted d-flex justify-content-center align-items-center">
+    <span>
+      ((video.state)), ((video.city))
+    </span>
+    </div>
+</div>

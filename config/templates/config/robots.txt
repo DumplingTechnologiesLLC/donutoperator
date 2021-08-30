@@ -2,8 +2,8 @@ User-Agent: *
 Disallow: /admin/*
 Disallow: /api/*
 Disallow: /ajax/*
-Disallow: /tips/
-Disallow: /bodycams/dashboard/
-Disallow: /bodycams/dashboard/*
+Disallow: /tips/*
+Disallow: /videos/dashboard/*
+Disallow: /videos/dashboard/*
 
 Sitemap: https://www.peoplekilledbypolice.com/sitemap.xml

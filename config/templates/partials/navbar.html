@@ -1,0 +1,53 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'videos:index' %}">Donut's Unnamed Project</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'about-page' %}">About</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav me-auto flex-grow-1 justify-content-end">
+            {% if not user.is_authenticated %}
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'feedback:feedback-page' %}">
+                    Give Feedback
+                </a>
+            </li>
+            {% endif %}
+            {% if user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">{{number_of_feedbacks}} Feedback</a>
+            </li>
+            {% endif %}
+            {% if user.is_superuser %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Admin Actions
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <button class="dropdown-item" onclick="$('#add_bodycam').modal('toggle')">Submit New Video</button>
+                    <a class="dropdown-item" href="{% url 'videos:dashboard' %}">Manage Videos</a>
+                </div>
+            </li>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Sign Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Sign In <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+            </li>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% if user.is_authenticated %}
+{% include 'partials/killing_modal.html' %}
+{% include 'partials/bodycam_modal.html' %}
+{% endif %}

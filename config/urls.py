@@ -17,19 +17,15 @@ from django.urls import include, path, re_path
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.sitemaps.views import sitemap
-from config.sitemaps import KillingsSitemap, BodycamSitemap
-from filebrowser.sites import site as filebrowser_site
-from rest_framework.documentation import include_docs_urls
+from config.sitemaps import VideoSitemap
 from config.views import *
 
 sitemaps = {
-    'killings': KillingsSitemap,
-    'bodycams': BodycamSitemap
+    'videos': VideoSitemap,
 }
 
 
 urlpatterns = [
-    re_path(r'^admin/filebrowser/', filebrowser_site.urls),
     re_path(r'^sitemap\.xml$', sitemap, {
             'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     re_path(r'^sitemap-(?P<section>.+)\.xml$', sitemap, {'sitemaps': sitemaps},
@@ -37,21 +33,14 @@ urlpatterns = [
     re_path(r'^e1da49db34b0bdfdddaba2ad6552f848/$', sitemap, {'sitemaps': sitemaps},
             name='django.contrib.sitemaps.views.sitemap'),
     re_path(r'^robots\.txt', include('robots.urls')),
-    re_path(r'^api/documentation', APIList.as_view(),
-            name="api-documentation"),
     re_path(r'^admin/', admin.site.urls),
-    re_path(r'^docs/', include_docs_urls(title='PKBP API')),
     re_path(r'^about/$', AboutPage.as_view(), name="about-page"),
-    re_path(r'^changelog/$', ChangeLog.as_view(), name="changelog"),
     re_path(r'^login/$', LoginView.as_view(), name='login'),
     re_path(r'^logout/$', LogoutView.as_view(),
             {'next_page': '/'}, name='logout'),
-    re_path(r'^tinymce/', include('tinymce.urls')),
-    re_path("^grappelli/", include("grappelli.urls")),
     re_path(r'^captcha/', include('captcha.urls')),
-    re_path(r'', include('roster.urls')),
-    re_path(r'', include('blog.urls')),
-    re_path(r'', include('bodycams.urls')),
+    re_path(r'', include('videos.urls')),
+    re_path(r'', include('feedback.urls')),
 ]
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # if settings.DEBUG:
