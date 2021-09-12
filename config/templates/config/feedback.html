@@ -20,15 +20,16 @@
     <div class="card-header">Submit Feedback</div>
     <div class="card-body">
       <form action="" method="post" class="formName">
-        {% csrf_token %} {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %} {% for field in
-        form.visible_fields %} {% if forloop.first %}
+        <!-- prettier-ignore -->
+        {% csrf_token %}
+        <!-- prettier-ignore -->
+        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+        <!-- prettier-ignore -->
+        {% for field in form.visible_fields %}
+        <!-- prettier-ignore -->
+        {% if forloop.first %}
         <div class="form-group">
-          <label for="">Found a bug? Hate the design? Want a new feature? Tell us about it.</label><br />
-          <small class="text-muted"
-            >Please do not use this form to submit tips about shootings we have missed. Feedback here is only
-            seen by the development team, not the data curators. Use
-            <a href="{% url 'videos:tip-page' %}">this</a> form instead.</small
-          >
+          <label for="text">Found a bug? Hate the design? Want a new feature? Tell us about it.</label><br />
           {% render_field form.text style="resize: both;" class+="form-control" %}
           <small class="text-muted"
             >If you're submitting information about a bug, please include details about your browser, and what
@@ -42,8 +43,10 @@
           <span class="help-block" style="color: red">{{ error }}</span>
           {% endfor %}
         </div>
-        {% endif %} {% endfor %}
-        <button type="submit" class="btn btn-success">Submit Tip</button>
+        {% endif %}
+        <!-- prettier-ignore -->
+        {% endfor %}
+        <button type="submit" class="btn col-12 btn-success" style="margin-top: 1em">Submit Tip</button>
       </form>
     </div>
   </div>
