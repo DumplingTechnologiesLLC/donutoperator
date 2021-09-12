@@ -1,12 +1,12 @@
 (() => {
   setTimeout(() => {
     const timeline = document.querySelector('.timeline-container');
-    timeline.addEventListener('wheel', (e, delta) => {
-      this.scrollLeft -= delta * 40;
+    timeline.addEventListener('wheel', (e) => {
+      timeline.scrollLeft -= (e.deltaY / 100) * 40 * -1;
       e.preventDefault();
     });
     const timelineCurrentYear = document.getElementById(`timelineYear${YEAR}`);
-    timeline.scrollLeft = timelineCurrentYear.offsetLeft;
+    timeline.scrollLeft = timelineCurrentYear.offsetLeft - timeline.offsetLeft;
     // timelineCurrentYear.scrollIntoView({
     //     behavior: "smooth"
     // });
