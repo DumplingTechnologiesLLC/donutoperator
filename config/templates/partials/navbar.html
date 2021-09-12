@@ -24,14 +24,18 @@
             </li>
             {% endif %}
             {% if user.is_superuser %}
+            
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Admin Actions
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <button class="dropdown-item" onclick="$('#add_bodycam').modal('toggle')">Submit New Video</button>
-                    <a class="dropdown-item" href="{% url 'videos:dashboard' %}">Manage Videos</a>
-                </div>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    
+                    <li>
+                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#videoModal">Submit New Video</button>
+                    </li>
+                </ul>
+              </li>
             </li>
             {% endif %}
             {% if user.is_authenticated %}
@@ -48,6 +52,5 @@
     </div>
 </nav>
 {% if user.is_authenticated %}
-{% include 'partials/killing_modal.html' %}
-{% include 'partials/bodycam_modal.html' %}
+{% include 'partials/modal.html' %}
 {% endif %}

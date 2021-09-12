@@ -55,9 +55,6 @@
     
     {% block js %}
     {% endblock js %}
-    {% if user.is_authenticated %}
-    <script type="text/javascript" src="{% static 'js/navbar.js' %}"></script>    
-    {% endif %}
-    <script type="text/javascript" src="{% static 'js/utils.js' %}"></script>
+    
 </body>
 </html>

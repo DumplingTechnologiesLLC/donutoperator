@@ -1,0 +1,153 @@
+<div id="adminSection">
+  <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle" v-text="modalTitle"></h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-toggle="modal"
+            data-bs-target="#videoModal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form class="form videoform" action="" method="post">
+            <div class="form-group">
+              <label for="videoTitle">Video Title</label>
+              <input
+                id="videoTitle"
+                name="videoTitle"
+                type="text"
+                class="form-control"
+                v-model="video.title"
+              />
+              <ul v-if="Array.isArray(errors.title) && errors.title.length !== 0" class="error-messages">
+                <li v-for="error in errors.title" :key="error" class="error-message">
+                  <span v-text="error"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="videoVideo">Video URL</label>
+              <input
+                id="videoVideo"
+                name="videoVideo"
+                type="text"
+                class="form-control"
+                :value="video.video"
+                @change="handleVideoTitle"
+              />
+              <small class="text-muted">
+                Should be in format https://www.youtube.com/watch?v=&lt;youtube_id&gt;
+              </small>
+              <ul v-if="Array.isArray(errors.video) && errors.video.length !== 0" class="error-messages">
+                <li v-for="error in errors.video" :key="error" class="error-message">
+                  <span v-text="error"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="videoDescription">Video Description</label>
+              <textarea
+                name="videoDescription"
+                id="videoDescription"
+                cols="30"
+                rows="5"
+                class="form-control"
+                v-model="video.description"
+              ></textarea>
+              <ul
+                v-if="Array.isArray(errors.description) && errors.description.length !== 0"
+                class="error-messages"
+              >
+                <li v-for="error in errors.description" :key="error" class="error-message">
+                  <span v-text="error"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="videoTags">Video Tags</label>
+              <multiselect
+                id="videoTags"
+                name="videoTags"
+                track-by="value"
+                v-model="video.tags"
+                :custom-label="getDropdownLabel"
+                :tabindex="0"
+                :multiple="true"
+                :taggable="true"
+                :options="tags"
+                :searchable="true"
+                :close-on-select="false"
+                @tag="addTag"
+              >
+                <template slot="option" slot-scope="props"> ((props.option.display)) </template>
+              </multiselect>
+              <small class="text-muted"
+                >If you want to add a new tag, just type it in the dropdown and select it</small
+              >
+              <ul v-if="Array.isArray(errors.tags) && errors.tags.length !== 0" class="error-messages">
+                <li v-for="error in errors.tags" :key="error" class="error-message">
+                  <span v-text="error"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="videoState">Video State</label>
+              <multiselect
+                id="videoState"
+                name="videoState"
+                track-by="value"
+                v-model="video.state"
+                :custom-label="getDropdownLabel"
+                :tabindex="0"
+                :options="states"
+                :searchable="true"
+                :close-on-select="true"
+              >
+                <template slot="option" slot-scope="props"> ((props.option.display)) </template>
+              </multiselect>
+              <ul v-if="Array.isArray(errors.state) && errors.state.length !== 0" class="error-messages">
+                <li v-for="error in errors.state" :key="error" class="error-message">
+                  <span v-text="error"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="videoCity">Video City</label>
+              <input type="text" name="videoCity" id="videoCity" class="form-control" v-model="video.city" />
+              <ul v-if="Array.isArray(errors.city) && errors.city.length !== 0" class="error-messages">
+                <li v-for="error in errors.city" :key="error" class="error-message">
+                  <span v-text="error"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="videoDate">Video Date</label>
+              <input type="date" name="videoDate" id="videoDate" class="form-control" v-model="video.date" />
+              <ul v-if="Array.isArray(errors.date) && errors.date.length !== 0" class="error-messages">
+                <li v-for="error in errors.date" :key="error" class="error-message">
+                  <span v-text="error"></span>
+                </li>
+              </ul>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            @click="closeModal"
+            data-bs-toggle="modal"
+            data-bs-target="#videoModal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" @click="submitVideo" v-text="submitText"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

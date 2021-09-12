@@ -4,6 +4,7 @@ from .views import *
 
 app_name = "videos"
 router = routers.SimpleRouter()
+router.register(r'api/videos/admin', EditorVideoViewSet, basename="videos")
 router.register(r'api/videos', VideoViewSet, basename="videos-readonly")
 # router.register(r'accounts', AccountViewSet)
 

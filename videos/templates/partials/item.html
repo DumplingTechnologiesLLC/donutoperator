@@ -1,27 +1,52 @@
-<div 
-  v-for="video in videos" 
-  class="card videocard">
-  <div class="card-header d-flex justify-content-center align-items-center">
-    <span>((video.date))</span>
-  </div>
+<div v-for="video in videos" class="card videocard">
   <div class="card-body">
     <p class="card-title text-center videotitle">((video.title))</p>
     <a :href="video.video" target="_blank">
-      <img :src="generateThumbnail(video.video)" :alt="`${video.title} thumbnail`" @error="generateBackupThumbnail($event, video.video)">					    
+      <img
+        :src="generateThumbnail(video.video)"
+        :alt="`${video.title} thumbnail`"
+        @error="generateBackupThumbnail($event, video.video)"
+      />
     </a>
-    <p>
-      (( video.description ))
-    </p>
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item justify-content-center align-items-center">
-      <span v-for="tag in video.tags" class="badge bg-primary videotag">((tag.text))</span>
-      <span v-if="video.tags.length == 0">No Tags Available</span>
-    </li>
-  </ul>
-  <div class="card-footer text-muted d-flex justify-content-center align-items-center">
-    <span>
-      ((video.state)), ((video.city))
-    </span>
+    <small class="text-muted"> Description </small>
+    <p>(( video.description ))</p>
+    <small class="text-muted"> Tags <i class="fa fa-tags"></i> </small>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item justify-content-center align-items-center">
+        <span v-for="tag in video.tags" class="badge bg-primary videotag">((tag.text))</span>
+        <span v-if="video.tags.length == 0">No Tags Available</span>
+      </li>
+    </ul>
+    <div class="doublecolumn">
+      <div class="column">
+        <small class="text-muted"> Location <i class="fa fa-map-marker"></i> </small>
+        <p>((video.state)), ((video.city))</p>
+      </div>
+      <div class="column">
+        <small class="text-muted"> Date <i class="fa fa-calendar"></i> </small>
+        <p>
+          <span>((video.date))</span>
+        </p>
+      </div>
     </div>
+  </div>
+
+  {% if user.is_authenticated %}
+  <div class="card-footer">
+    <div class="btn-group col-12" role="group">
+      <button
+        class="btn btn-primary col-12"
+        :data-details="JSON.stringify(video)"
+        onclick="issueEdit(this)"
+        data-bs-toggle="modal"
+        data-bs-target="#videoModal"
+      >
+        Edit
+      </button>
+      <button class="btn btn-danger col-12" :data-details="JSON.stringify(video)" onclick="issueDelete(this)">
+        Delete
+      </button>
+    </div>
+  </div>
+  {% endif %}
 </div>

@@ -42,6 +42,16 @@
   margin-left: 5px;
   padding-top: 0;
 }
+.loginform button {
+  margin-top: .5em;
+}
+.error-messages {
+  margin: 0;
+}
+.error-message {
+  color: red;
+}
+
 
 .navbar-dark .navbar-nav .nav-link {
   color: rgba(255,255,255, .75)
@@ -51,14 +61,22 @@ body {
   min-height: 100vh;
 }
 
+.videoform textarea {
+  resize: vertical;
+}
+.videoform .form-group {
+  margin-bottom: .5em;
+}
+
+
 /**
 * Video Entries
 */
 .videocard {
   /* width: 18rem;  */
   margin: 5px;
-  border: 1px solid #373a3c;
-  box-shadow: 0px 4px 4px 4px rgba(0,0,0, 0.1);
+  border: 1px solid #e7e7e7;
+  box-shadow: 0px 4px 4px 4px rgba(0,0,0, 0.05);
 }
 .videocard img{
   width: 100%;
@@ -79,6 +97,16 @@ body {
   font-size: 24px;
   font-weight: bold;
   margin: 0 auto;
+}
+.list-group-flush {
+  border-top: 0 !important;
+}
+.list-group-item {
+  padding-left: 0 !important;
+}
+.doublecolumn {
+  display: flex;
+  justify-content: space-between
 }
 
 

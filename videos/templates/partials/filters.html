@@ -1,77 +1,100 @@
 <div class="card border-dark filterscard">
   <div class="card-header">Filters</div>
   <div class="card-body">
-      <form>
-          <div class="form-group row filters">
-            <div class="filtercontainer">
-                <label for="text_text">Filter by text</label>
-                <input id="text_text" type="text" class="form-control" placeholder="Matches to the title or to the description" v-model="text">
-            </div>
-            <div class="filtercontainer">
-                <label for="tag_select">Filter by tag</label>
-                <multiselect 
-                    track-by="id"
-                    id="tag_select"
-                    name="tag_select"
-                    v-model="selectedTags"
-                    :custom-label="getDropdownLabel"
-                    :multiple="true" 
-                    :options="tags" 
-                    :searchable="true" 
-                    :close-on-select="true" >
-                    <template slot="option" slot-scope="props">
-                        ((props.option.display))
-                    </template>
-                </multiselect>
-                <small class="text-muted">Videos with 1 or more matches will be displayed</small>
-            </div>
-            <div class="filtercontainer">
-                <label for="state_select">Filter by state</label>
-                <multiselect 
-                  id="state_select"
-                  name="state_select"
-                  track-by="value"
-                  v-model="selectedStates"
-                  :custom-label="getDropdownLabel" 
-                  :multiple="true"
-                  :options="states" 
-                  :searchable="true" 
-                  :close-on-select="true" >
-                    <template slot="option" slot-scope="props">
-                        ((props.option.display))
-                    </template>
-                </multiselect>
-                <small class="text-muted">Videos with 1 or more matches will be displayed</small>
-            </div>
-            <div class="filtercontainer">
-                <label for="city_text">Filter by city</label>
-                <input 
-                    id="city_text" 
-                    name="city_text" 
-                    type="text" 
-                    class="form-control" 
-                    placeholder="Partial and similar matches will be included." 
-                    v-model="city">
-            </div>
-            <div class="filtercontainer">
-                <label for="startDate">Date on or after</label>
-                <input type="date" class="form-control" id="startDate" name="startDate" v-model="startDate">
-            </div>
-            <div class="filtercontainer">
-                <label for="endDate">Date on or before</label>
-                <input type="date" class="form-control" id="endDate" name="endDate" v-model="endDate">
-            </div>
-            <div class="filtercontainer filterscontainer--button">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-warning filtersbutton" v-on:click="resetFilters" >
-                        Reset Filters
-                    </button>
-                    <button type="button" class="btn btn-primary filtersbutton" v-on:click="getItems" >
-                        Submit
-                    </button>
-                </div>
-            </div>
-          </div>
-      </form>
+    <form>
+      <div class="form-group row filters">
+        <div class="filtercontainer">
+          <label for="text_text">Filter by text</label>
+          <input
+            id="text_text"
+            type="text"
+            class="form-control"
+            placeholder="Matches to the title or to the description"
+            :value="filters.text"
+            @change="updateFilter('text', $event.target.value)"
+          />
+        </div>
+        <div class="filtercontainer">
+          <label for="tag_select">Filter by tag</label>
+          <multiselect
+            track-by="id"
+            id="tag_select"
+            name="tag_select"
+            :value="filters.selectedTags"
+            @change="updateFilter('selectedTags', $event)"
+            :custom-label="getDropdownLabel"
+            :multiple="true"
+            :options="tags"
+            :searchable="true"
+            :close-on-select="true"
+          >
+            <template slot="option" slot-scope="props"> ((props.option.display)) </template>
+          </multiselect>
+          <small class="text-muted">Videos with 1 or more matches will be displayed</small>
+        </div>
+        <div class="filtercontainer">
+          <label for="state_select">Filter by state</label>
+          <multiselect
+            id="state_select"
+            name="state_select"
+            track-by="value"
+            :value="filters.selectedStates"
+            @change="updateFilter('selectedStates', $event)"
+            :custom-label="getDropdownLabel"
+            :multiple="true"
+            :options="states"
+            :searchable="true"
+            :close-on-select="true"
+          >
+            <template slot="option" slot-scope="props"> ((props.option.display)) </template>
+          </multiselect>
+          <small class="text-muted">Videos with 1 or more matches will be displayed</small>
+        </div>
+        <div class="filtercontainer">
+          <label for="city_text">Filter by city</label>
+          <input
+            id="city_text"
+            name="city_text"
+            type="text"
+            class="form-control"
+            placeholder="Partial and similar matches will be included."
+            :value="filters.city"
+            @change="updateFilter('city', $event.target.value)"
+          />
+        </div>
+        <div class="filtercontainer">
+          <label for="startDate">Date on or after</label>
+          <input
+            type="date"
+            class="form-control"
+            id="startDate"
+            name="startDate"
+            :value="filters.date"
+            @change="updateFilter('date', $event.target.value)"
+          />
+        </div>
+        <div class="filtercontainer">
+          <label for="endDate">Date on or before</label>
+          <input
+            type="date"
+            class="form-control"
+            id="endDate"
+            name="endDate"
+            :value="filters.endDate"
+            @change="updateFilter('endDate', $event.target.value)"
+          />
+        </div>
+      </div>
+    </form>
+    <div class="filtercontainer filterscontainer--button">
+      <div class="btn-group">
+        <button type="button" class="btn btn-warning filtersbutton" @click.prevent="resetFilters()">
+          Reset Filters
+        </button>
+        <button type="button" class="btn btn-primary filtersbutton" @click.prevent="getItems()">
+          Submit
+        </button>
+      </div>
+    </div>
   </div>
 </div>

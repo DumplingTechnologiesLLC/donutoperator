@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "C:\\Users\\pedro\\Documents\\Personal Projects\\Heroku\\DonutProject\\DonutProject\\venv\\Scripts\\python.exe"
+    "python.pythonPath": "C:\\Users\\pedro\\Documents\\Personal Projects\\Heroku\\DonutProject\\DonutProject\\venv\\Scripts\\python.exe",
+    "restructuredtext.syntaxHighlighting.disabled": true
 }
