@@ -59,18 +59,14 @@ window.vuexStore = new Vuex.Store({
     async deleteItem(context, id) {
       context.commit('setInFlight', true);
       try {
-        await axios.delete(
-          `${SERVER_URLS.items}${id}`,
-          { id },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': getCookie('csrftoken'),
-            },
-          }
-        );
-        context.dispatch('setItems');
-        return true;
+        await axios.delete(`${SERVER_URLS.items}${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+        });
+        context.dispatch('fetchItems');
+        return false;
       } catch (error) {
         context.commit('setInFlight', false);
         return 'An error occurred while trying to delete the video. Contact the administrator.';
@@ -109,7 +105,7 @@ window.vuexStore = new Vuex.Store({
           context.dispatch('fetchItems');
           return {
             error: false,
-            message: payload.id !== undefined ? 'Video updated successfully' : 'Video created sucessfully',
+            message: payload.id !== undefined ? 'Video updated successfully' : 'Video created successfully',
             icon: 'check',
             errors: {},
           };

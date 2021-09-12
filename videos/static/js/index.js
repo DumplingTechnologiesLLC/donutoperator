@@ -50,7 +50,12 @@ const VueApp = new Vue({
     async handleDeleteClick(event) {
       if (confirm('Please confirm you wish to delete this video?')) {
         const data = JSON.parse(event.detail.el.getAttribute('data-details'));
-        await this.$store.dispatch('deleteItem', data.id);
+        const error = await this.$store.dispatch('deleteItem', data.id);
+        if (error) {
+          this.toast(error, 'times');
+        } else {
+          this.toast('Video deleted successfully', 'check');
+        }
       }
     },
 
@@ -106,6 +111,25 @@ const VueApp = new Vue({
     },
 
     /**
+     * @function toast
+     * @param {String} message the message to toast
+     * @param {String} icon the icon for the toast
+     */
+    toast(message, icon) {
+      this.$toasted.show(message, {
+        action: {
+          text: 'Close',
+          onClick(e, toastObject) {
+            toastObject.goAway(0);
+          },
+        },
+        icon: {
+          name: icon,
+        },
+      });
+    },
+
+    /**
      * @function getItems
      * @listens onclick of submit button
      * Reaches out to API and requests videos
@@ -113,11 +137,7 @@ const VueApp = new Vue({
     getItems: async function () {
       const error = await this.$store.dispatch('fetchItems');
       if (error) {
-        this.$toasted(error, {
-          icon: {
-            name: 'times',
-          },
-        });
+        this.toast(error, 'times');
       }
     },
 

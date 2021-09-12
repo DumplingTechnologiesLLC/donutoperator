@@ -1,51 +1,52 @@
+<!-- prettier-ignore -->
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% load static %}
-
+<!-- prettier-ignore -->
 {% block title %}Donut - KBP{% endblock %}
 {% block css %}
-<title>PeopleKilledByPolice: Provide feedback to the development team of PKBP on bugs, website feature requests, and more.</title>
 {% endblock css %}
 
 {% block content %}
-<div style="display:flex; justify-content: center; align-items: center;flex-direction:column; margin-top:25px">
-    <div class="card border-primary " style="margin-bottom:20px;">
-        <div class="card-header">Submit Feedback</div>
-        <div class="card-body">
-			<form action="" method="post" class="formName">
-				{% csrf_token %}
-		    	{% for hidden in form.hidden_fields %}
-				  {{ hidden }}
-				{% endfor %}
-
-				{% for field in form.visible_fields %}
-				 	{% if forloop.first %}
-					<div class='form-group'>
-						<label for="">Found a bug? Hate the design? Want a new feature? Tell us about it.</label><br>
-						<small class="text-muted">Please do not use this form to submit tips about shootings we have missed. Feedback here is only seen by the development team, not the data curators. Use <a href="{% url 'videos:tip-page' %}">this</a> form instead.</small>
-						{% render_field form.text  style="resize: both;" class+="form-control" %}
-						<small class="text-muted">If you're submitting information about a bug, please include details about your browser, and what you did to find the bug, so we can replicate it.</small>
-					</div>
-				 	{% else %}
-				  	<div class="form-group">
-					    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-					    {{ field|add_class:'form-control' }}
-					    {% for error in field.errors %}
-					      <span class="help-block" style="color:red">{{ error }}</span>
-					    {% endfor %}
-				  	</div>
-				 	{% endif %}
-				{% endfor %}
-				<button type="submit" class="btn btn-success">Submit Tip</button>
-		    </form>
+<div
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 25px;
+  "
+>
+  <div class="card border-primary" style="margin-bottom: 20px">
+    <div class="card-header">Submit Feedback</div>
+    <div class="card-body">
+      <form action="" method="post" class="formName">
+        {% csrf_token %} {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %} {% for field in
+        form.visible_fields %} {% if forloop.first %}
+        <div class="form-group">
+          <label for="">Found a bug? Hate the design? Want a new feature? Tell us about it.</label><br />
+          <small class="text-muted"
+            >Please do not use this form to submit tips about shootings we have missed. Feedback here is only
+            seen by the development team, not the data curators. Use
+            <a href="{% url 'videos:tip-page' %}">this</a> form instead.</small
+          >
+          {% render_field form.text style="resize: both;" class+="form-control" %}
+          <small class="text-muted"
+            >If you're submitting information about a bug, please include details about your browser, and what
+            you did to find the bug, so we can replicate it.</small
+          >
         </div>
+        {% else %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field|add_class:'form-control' }} {% for error in field.errors %}
+          <span class="help-block" style="color: red">{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% endif %} {% endfor %}
+        <button type="submit" class="btn btn-success">Submit Tip</button>
+      </form>
     </div>
+  </div>
 </div>
-{% endblock content %}
-
-{% block js %}
-<script type="text/javascript">
-	$("#loader_cover").addClass("toggled");
-	$("#body").removeAttr("style")
-</script>
-{% endblock js %}
+{% endblock content %} {% block js %} {% endblock js %}

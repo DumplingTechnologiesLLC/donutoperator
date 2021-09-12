@@ -58,18 +58,27 @@ const VueAdminApp = new Vue({
         const [relevantPart] = value.split('&');
         this.video.video = relevantPart;
       } else {
-        this.$toasted.show('Invalid URL format.', {
-          action: {
-            text: 'Close',
-            onClick(e, toastObject) {
-              toastObject.goAway(0);
-            },
-          },
-          icon: {
-            name: 'times',
-          },
-        });
+        this.toast('Invalid URL format.', 'times');
       }
+    },
+
+    /**
+     * @function toast
+     * @param {String} message the message to toast
+     * @param {String} icon the icon for the toast
+     */
+    toast(message, icon) {
+      this.$toasted.show(message, {
+        action: {
+          text: 'Close',
+          onClick(e, toastObject) {
+            toastObject.goAway(0);
+          },
+        },
+        icon: {
+          name: icon,
+        },
+      });
     },
 
     /**
@@ -128,6 +137,7 @@ const VueAdminApp = new Vue({
             name: icon,
           },
         });
+        this.$set(this, 'video', defaultVideo);
       }
     },
 

@@ -1,32 +1,50 @@
-{% extends 'base.html' %}
+<!-- prettier-ignore -->
+{% extends 'base.html' %} 
 {% load widget_tweaks %}
-{% load static %}
-
-{% block title %}Donut - KBP{% endblock %}
+{% load static %} 
+{% block title %}
+	Donut - KBP
+{% endblock%} 
 {% block css %}
-<title>PeopleKilledByPolice: The team of individuals who own and curate data for the PeopleKilledByPolice project</title>
+<title>
+  PeopleKilledByPolice: The team of individuals who own and curate data for the PeopleKilledByPolice project
+</title>
 {% endblock css %}
-
+<!-- prettier-ignore -->
 {% block content %}
-<div style="display:flex; justify-content: center; align-items: center;flex-direction:column; margin-top:25px">
-	<h1>Purpose</h1>
-	<p style="max-width: 800px; text-align: center; margin-top: 10px;">To allow users to search for Donut's videos by various parameters.</p>
-	<h1 style="margin-top:20px">About the Website</h1>
-	<p style="max-width: 800px; text-align: center; margin-top: 10px;">The landing page serves as the videos database, and allows users to filter the videos by various criteria including biographical, geographical and contextual information.</p>
-	<h1 style="margin-top:40px">Current Contributors</h1>
-	<div style="display: flex; flex-direction: row, align-items:flex-start;">
-		<div style="display: flex; align-items: center; justify-content: center; flex-direction: column">
-			<img src="{% static 'donuts_profile.jpg' %}" style="border-radius: 50%; width:120px;">
-			<figcaption style="display: flex; align-items: center; justify-content: center;"><strong>DonutOperator</strong></figcaption>
-			<figcaption style="display: flex; align-items: center; justify-content: center;"><strong>Owner and Chief Contributor</strong></figcaption>
-		</div>
-	</div>
+<div
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 25px;
+  "
+>
+  <h1>Purpose</h1>
+  <p style="max-width: 800px; text-align: center; margin-top: 10px">
+    Allow users to search through police videos by various methods, including tags describing the videos.
+  </p>
+  <h1 style="margin-top: 20px">About the Website</h1>
+  <p style="max-width: 800px; text-align: center; margin-top: 10px">
+    The landing page serves as the videos database, and allows users to filter the videos by various criteria
+    including biographical, geographical and contextual information.
+  </p>
+  <h1 style="margin-top: 40px">Current Contributors</h1>
+  <div style="display: flex; flex-direction: row, align-items:flex-start;">
+    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column">
+      <img src="{% static 'donuts_profile.jpg' %}" style="border-radius: 50%; width: 120px" />
+      <figcaption style="display: flex; align-items: center; justify-content: center">
+        <strong>DonutOperator</strong>
+      </figcaption>
+      <figcaption style="display: flex; align-items: center; justify-content: center">
+        <strong>Owner and Chief Contributor</strong>
+      </figcaption>
+    </div>
+  </div>
 </div>
 {% endblock content %}
-
+<!-- prettier-ignore -->
 {% block js %}
-<script type="text/javascript">
-	$("#loader_cover").addClass("toggled");
-	$("#body").removeAttr("style")
-</script>
+
 {% endblock js %}

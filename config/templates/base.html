@@ -28,6 +28,13 @@
         </div>
     {% endif %}
     <script type="text/javascript">
+        var isIE = /*@cc_on!@*/false || !!document.documentMode;
+        if (isIE) {
+            alert('IE11 is being phased out by Microsoft as of August 17, 2021 and we no longer support IE 11. Please upgrade to Edge.')
+        }
+    </script>
+    <script type="text/javascript">
+        
         setTimeout(() => {
             const messages = document.getElementById("messages");
             if (messages) {
