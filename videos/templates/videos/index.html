@@ -3,10 +3,9 @@
 {% load widget_tweaks %} 
 {% load static %} 
 {% block css %}
-<title>
-  PeopleKilledByPolice: Information and sources regarding all individuals killed
-  by police in {{year}}
-</title>
+{% block title %}
+<title>Donut - {{year}} Police Videos</title>
+{% endblock title %}
 <!-- prettier-ignore -->
 {% endblock css %} 
 {% block content %}
@@ -14,12 +13,7 @@
   <div class="row" style="margin-top: 25px">
     <div
       class="col-lg-8 offset-lg-2"
-      style="
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 40px;
-      "
+      style="display: flex; justify-content: center; align-items: center; margin-top: 40px"
     >
       <h1 style="text-align: center">Videos from {{year}}</h1>
     </div>
