@@ -300,6 +300,12 @@ body {
   flex: 1;
   margin: 0.5em;
 }
+@media screen and (max-width: 800px) {
+  .filtercontainer {
+    min-width: 100%;
+    margin: 0.5em 0;
+  }
+}
 .vdp-datepicker > div {
   width: 100%;
 }
