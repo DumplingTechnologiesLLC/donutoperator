@@ -36,7 +36,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     "www.peoplekilledbypolice.com",
     "donutoperator.herokuapp.com",
-    "staging-donut-operator.herokuapp.com"
+    "staging-donut-operator.herokuapp.com",
     'bodycamdatabase.com',
 ]
 
@@ -294,6 +294,7 @@ def get_cache():
 CACHES = get_cache()
 ROBOTS_SITEMAP_URLS = [
     'https://www.peoplekilledbypolice.com/sitemap.xml',
+    'bodycamdatabase.com/sitemap.xml',
 ]
 if LOCAL:
     ROBOTS_SITEMAP_URLS = [
