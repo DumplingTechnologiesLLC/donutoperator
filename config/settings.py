@@ -37,6 +37,7 @@ ALLOWED_HOSTS = [
     "www.peoplekilledbypolice.com",
     "donutoperator.herokuapp.com",
     "staging-donut-operator.herokuapp.com",
+    'www.bodycamdatabase.com',
     'bodycamdatabase.com',
 ]
 
