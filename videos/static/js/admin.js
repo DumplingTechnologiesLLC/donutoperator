@@ -106,7 +106,6 @@ const VueAdminApp = new Vue({
         stateValue = parseInt(stateValue, 10);
       }
       const payload = { ...this.video, state: stateValue };
-      console.log(payload);
       const url = this.video.id === undefined ? SERVER_URLS.items : `${SERVER_URLS.items}${this.video.id}/`;
       const action = this.video.id === undefined ? axios.post : axios.patch;
       const { error, message, icon, errors } = await this.$store.dispatch('submitVideo', {
