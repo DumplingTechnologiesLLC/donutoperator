@@ -39,6 +39,8 @@ ALLOWED_HOSTS = [
     "staging-donut-operator.herokuapp.com"
 ]
 
+PAGE_SIZE = int(os.environ.get("PAGE_SIZE", 25))
+
 
 # Application definition
 

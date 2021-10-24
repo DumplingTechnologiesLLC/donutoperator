@@ -1,19 +1,5 @@
-(() => {
-  setTimeout(() => {
-    const timeline = document.querySelector('.timeline-container');
-    timeline.addEventListener('wheel', (e) => {
-      timeline.scrollLeft -= (e.deltaY / 100) * 40 * -1;
-      e.preventDefault();
-    });
-    const timelineCurrentYear = document.getElementById(`timelineYear${YEAR}`);
-    timeline.scrollLeft = timelineCurrentYear.offsetLeft - timeline.offsetLeft;
-    // timelineCurrentYear.scrollIntoView({
-    //     behavior: "smooth"
-    // });
-  }, 10);
-})();
-
 Vue.component('multiselect', window.VueMultiselect.default);
+Vue.component('pagination', window.Pagination);
 Vue.use(Toasted, {
   iconPack: 'fontawesome', // set your iconPack, defaults to material. material|fontawesome|custom-class
 });
@@ -24,7 +10,11 @@ const VueApp = new Vue({
   data: {
     states: STATES, // used for filling select2
     tags: ALL_TAGS, // used for filling select2
-    year: YEAR,
+    pageSize: PAGE_SIZE, // set by the server in index.html
+    paginationOptions: {
+      chunk: 5,
+      theme: 'bootstrap4',
+    }
   },
   mounted() {
     this.getItems();
@@ -32,6 +22,15 @@ const VueApp = new Vue({
     window.addEventListener('video-delete', this.handleDeleteClick);
   },
   methods: {
+    /**
+     * @function handlePagination
+     * @param {Number} page - The page that was selected 
+     */
+     handlePagination(page) {
+      this.$store.commit('setPagination', { key: 'page', value: page });
+      this.getItems();
+    },
+
     /**
      * @function handleEditClick
      * @listens on-video-edit
@@ -140,28 +139,11 @@ const VueApp = new Vue({
         this.toast(error, 'times');
       }
     },
-
-    /**
-     * @function calculateNextYear
-     * @listens onclick of timeline right arrow
-     * @returns {String} url for next year
-     */
-    calculateNextYear() {
-      const year = moment(YEAR, 'YYYY').add(1, 'y').format('YYYY');
-      return SERVER_URLS.dateIndex.replace('1234', year);
-    },
-
-    /**
-     * @function calculatePreviousYear
-     * @listens onclick of timeline left arrow
-     * @returns {String} url for next year
-     */
-    calculatePreviousYear() {
-      const year = moment(YEAR, 'YYYY').subtract(1, 'y').format('YYYY');
-      return SERVER_URLS.dateIndex.replace('1234', year);
-    },
   },
   computed: {
+    pagination() {
+      return this.$store.state.pagination
+    },
     filters() {
       return this.$store.state.filters;
     },
