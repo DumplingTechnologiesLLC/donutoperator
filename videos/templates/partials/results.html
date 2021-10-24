@@ -1,6 +1,13 @@
-<span>((videos.length)) matches displayed</span>
+<div class="d-flex justify-content-between flex-nowrap">
+  <pagination 
+    :value="pagination.page"
+    :options="paginationOptions" 
+    :records="pagination.total" 
+    :per-page="pageSize" 
+    @input="handlePagination" />
+</div>
 <div class="row" style="padding-bottom: 25px;">
-  <div class="container-fluid d-flex" style="flex-wrap: wrap; margin-top:40px; justify-content: center;">
+  <div class="container-fluid d-flex justify-content-center mt-2 flex-nowrap">
     {% include 'partials/item.html' %}
     {% include 'partials/noresults.html' %}
   </div>

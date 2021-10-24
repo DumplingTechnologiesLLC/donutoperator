@@ -46,6 +46,7 @@ const VueAdminApp = new Vue({
      */
     closeModal() {
       this.video = JSON.parse(JSON.stringify(defaultVideo));
+      this.$set(this, 'errors', {});
     },
 
     /**
@@ -137,7 +138,9 @@ const VueAdminApp = new Vue({
             name: icon,
           },
         });
-        this.$set(this, 'video', defaultVideo);
+        if (this.video.id === undefined) {
+          this.$set(this, 'video', defaultVideo);
+        }
       }
     },
 
@@ -160,10 +163,8 @@ const VueAdminApp = new Vue({
     storeEditedData() {
       const data = JSON.parse(JSON.stringify(this.$store.state.editedVideo));
       if (typeof data.state === 'string') {
-        data.state = {
-          value: data.state,
-          display: data.state,
-        };
+        const matchingState = STATES.find(s => s.display === data.state);
+        data.state = JSON.parse(JSON.stringify(matchingState));
       }
       return data;
     },

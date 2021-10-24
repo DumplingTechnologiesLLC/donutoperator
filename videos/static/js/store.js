@@ -26,6 +26,11 @@ window.vuexStore = new Vuex.Store({
       startDate: '',
       endDate: '',
     },
+    pagination: {
+      total: 0,
+      page: 1,
+      totalPages: 0,
+    },
     editedVideo: {},
     items: [],
     inFlight: false,
@@ -42,6 +47,9 @@ window.vuexStore = new Vuex.Store({
     },
     setFilter(state, { filter, value }) {
       Vue.set(state.filters, filter, value);
+    },
+    setPagination(state, {key, value}) {
+      Vue.set(state.pagination, key, value);
     },
     setItems(state, items) {
       Vue.set(state, 'items', items);
@@ -81,7 +89,9 @@ window.vuexStore = new Vuex.Store({
         });
         context.commit('setInFlight', false);
         if (response.status === 200) {
-          context.commit('setItems', response.data.slice());
+          context.commit('setItems', response.data.results.slice());
+          context.commit('setPagination', {key: 'total', value: response.data.count});
+          context.commit('setPagination', {key: 'totalPages', value: response.data.total_pages});
           return false;
         } else {
           return 'A server error has occurred';
@@ -89,7 +99,7 @@ window.vuexStore = new Vuex.Store({
       } catch (error) {
         context.commit('setInFlight', false);
         return 'A network error has occurred';
-      }
+      } 
     },
     async submitVideo(context, { url, payload, action }) {
       context.commit('setInFlight', true);
@@ -131,7 +141,7 @@ window.vuexStore = new Vuex.Store({
     computedParams(state) {
       const params = {
         tags: state.filters.selectedTags.map((tag) => tag.value),
-        date__year: YEAR,
+        page: state.pagination.page,
       };
       if (state.filters.text) {
         params.title__icontains = state.filters.text;

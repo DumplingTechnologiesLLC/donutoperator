@@ -13,7 +13,6 @@ urlpatterns = [
     #     url("bodycams", BodycamsAPI.as_view(), name="api-bodycams"),
     # ])),
     url(r'^$', VideoIndexView.as_view(), name="index"),
-    url(r'^(?P<date>[0-9]+)$', VideoIndexView.as_view(), name="date-index"),
     # url(r'^/dashboard$', VideoDashboard.as_view(), name="dashboard"),
     # url(r'^/dashboard/(?P<date>[0-9]+)$',
     #     VideoDashboard.as_view(), name="dashboard-date"),
